@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import ProductCard from '@/components/Product/ProductCard'
+import ProductCard from '@/components/product/product-card'
 import CategoryBar from './category-bar'
 import { getCategoriesAPI, getProductsAPI } from '@/apis/buyerApis'
 
@@ -51,7 +51,7 @@ function HomePage() {
       .finally(() => endLoading())
   }, [])
 
-  const handleClickCategory = (categoryId: string) => {
+  const handleClickCategory = (categoryId: string): void => {
     //
   }
 

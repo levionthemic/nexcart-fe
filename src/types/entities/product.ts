@@ -1,3 +1,4 @@
+import { Review } from './review'
 import { User } from './user'
 
 export interface ProductType {
@@ -18,15 +19,7 @@ export interface Product {
   avgPrice: number
   rating: number
   sold: number
-  reviews: [{
-    comments: [{
-      content: string
-      rating: number
-      createdAt: Date
-      buyerName: string
-      buyerAvatar: string
-    }]
-  }]
+  reviews: Review[]
   features: [{ field: string; content: string }]
   description: string
   quantityInStock: number

@@ -1,4 +1,6 @@
 import { RoleValue } from '@/types/enums/role'
+import { Address } from './address'
+import { AccountStatusValue, GenderValue } from '../enums/account'
 
 export interface User {
   _id: string
@@ -7,15 +9,8 @@ export interface User {
   email: string
   avatar: string
   role: RoleValue
-  buyerAddress?: [
-    {
-      address: string
-      ward: string
-      district: number
-      province: number
-    }
-  ]
-  gender: 'male' | 'female'
+  buyerAddress?: Address[]
+  gender: GenderValue
   phone?: string
-  status: 'active' | 'inactive'
+  status: AccountStatusValue
 }

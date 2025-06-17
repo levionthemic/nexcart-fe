@@ -8,7 +8,8 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
+  DialogTrigger
 } from '@/components/ui/dialog'
 import { OTPInput } from 'input-otp'
 import React, { useEffect, useRef, useState } from 'react'
@@ -20,11 +21,13 @@ import { useRouter } from 'next/navigation'
 export default function OTP({
   open,
   setOpen,
-  email
+  email,
+  trigger
 }: {
   open: boolean
   setOpen: (open: boolean) => void | undefined
-  email: string
+  email: string,
+  trigger: React.ReactNode
 }) {
   const [value, setValue] = useState<string>('')
   const [token, setToken] = useState<string>('')
@@ -70,7 +73,7 @@ export default function OTP({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      {/* <DialogTrigger asChild>{trigger}</DialogTrigger> */}
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
         <div className='flex flex-col items-center gap-2'>
           <div
