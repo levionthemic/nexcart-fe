@@ -17,7 +17,7 @@ export default function CategoryBar({
   onClickCategory
 }: {
   categories: Category[]
-  onClickCategory: (categoryId: string) => void
+  onClickCategory?: (categoryId: string) => void
 }) {
   return (
     <div className='sticky left-0 flex-1 overflow-y-scroll h-96 max-h-96 top-5 scroll-smooth scroll-pr-1'>
@@ -25,7 +25,7 @@ export default function CategoryBar({
       <SidebarMenu className='flex flex-col items-start gap-2 mt-2'>
         {categories?.map((item) => (
           <Collapsible key={item._id} className='w-full group/collapsible'>
-            <SidebarMenuItem>
+            {/* <SidebarMenuItem> */}
               <CollapsibleTrigger className='w-full'>
                 <SidebarMenuButton className='flex items-center justify-between w-full'>
                   {item.name}
@@ -37,7 +37,7 @@ export default function CategoryBar({
                   <SidebarMenuSubItem>SubMenuItem</SidebarMenuSubItem>
                 </SidebarMenuSub>
               </CollapsibleContent>
-            </SidebarMenuItem>
+            {/* </SidebarMenuItem> */}
           </Collapsible>
         ))}
       </SidebarMenu>

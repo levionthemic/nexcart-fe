@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import ProductCard from '@/components/product/product-card'
 import CategoryBar from './category-bar'
 import { getCategoriesAPI, getProductsAPI } from '@/apis/buyerApis'
@@ -20,63 +19,22 @@ import banner from '@/assets/banner.jpg'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { useLoading } from '@/contexts/LoadingContext'
-import { Product } from '@/types/entities/product'
 import { Category } from '@/types/entities/category'
 import Image from 'next/image'
+import CountDown from './countdown'
+import CarouselProducts from './carousel-products'
+import CarouselCategories from './carousel-categories'
 
-function HomePage() {
-  const [bestSellingProducts, setBestSellingProducts] = useState<Product[]>([])
-  const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([])
-  const [productsDisplayed] = useState(DEFAULT_ITEMS_PER_PAGE)
-  const [categories, setCategories] = useState([])
-  const { startLoading, endLoading } = useLoading()
+export default async function HomePage() {
+  const productsData = await getProductsAPI()
+  const bestSellingProducts = productsData.products
+  const recommendedProducts = productsData.products
+  
+  const categories = await getCategoriesAPI()
 
-  useEffect(() => {
-    startLoading()
-    getProductsAPI()
-      .then((data) => {
-        const bestSellingProducts = data.products
-        const recommendedProducts = data.products
-        setBestSellingProducts(bestSellingProducts)
-        setRecommendedProducts(recommendedProducts)
-      })
-      .finally(() => endLoading())
-  }, [])
-
-  useEffect(() => {
-    startLoading()
-    getCategoriesAPI()
-      .then((data) => setCategories(data))
-      .finally(() => endLoading())
-  }, [])
-
-  const handleClickCategory = (categoryId: string): void => {
-    //
-  }
-
-  const targetDate = new Date('2025-06-10T23:59:00').getTime()
-  const [timeLeft, setTimeLeft] = useState(targetDate - new Date().getTime())
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = new Date().getTime()
-      const difference = targetDate - now
-      setTimeLeft(difference)
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [targetDate])
-
-  const formatTime = (milliseconds: number) => {
-    const seconds = Math.floor((milliseconds / 1000) % 60)
-    const minutes = Math.floor((milliseconds / 1000 / 60) % 60)
-    const hours = Math.floor((milliseconds / (1000 * 60 * 60)) % 24)
-    const days = Math.floor(milliseconds / (1000 * 60 * 60 * 24))
-    return { days, hours, minutes, seconds }
-  }
-
-  const { days, hours, minutes, seconds } = formatTime(timeLeft)
+  // const handleClickCategory = (categoryId: string): void => {
+  //   //
+  // }
 
   return (
     <div className='bg-[#F5F5FA]'>
@@ -85,7 +43,7 @@ function HomePage() {
           <SidebarProvider className='col-span-1 px-3 py-4 bg-white rounded-lg min-h-96'>
             <CategoryBar
               categories={categories}
-              onClickCategory={handleClickCategory}
+              // onClickCategory={handleClickCategory}
             />
           </SidebarProvider>
           <div className='col-span-4'>
@@ -110,53 +68,10 @@ function HomePage() {
               Flash sales!
             </span>
 
-            <ul className='flex items-center gap-8'>
-              <li className='flex flex-col items-start font-semibold'>
-                <span className='text-xs'>Ngày</span>
-                <span className='text-3xl'>
-                  {days < 10 ? `0${days}` : days}
-                </span>
-              </li>
-              <li className='text-2xl text-red-500 text-bold'>:</li>
-              <li className='flex flex-col items-start font-semibold'>
-                <span className='text-xs'>Giờ</span>
-                <span className='text-3xl'>
-                  {hours < 10 ? `0${hours}` : hours}
-                </span>
-              </li>
-              <li className='text-2xl text-red-500 text-bold'>:</li>
-              <li className='flex flex-col items-start font-semibold'>
-                <span className='text-xs'>Phút</span>
-                <span className='text-3xl'>
-                  {minutes < 10 ? `0${minutes}` : minutes}
-                </span>
-              </li>
-              <li className='text-2xl text-red-500 text-bold'>:</li>
-              <li className='flex flex-col items-start font-semibold'>
-                <span className='text-xs'>Giây</span>
-                <span className='text-3xl'>
-                  {seconds < 10 ? `0${seconds}` : seconds}
-                </span>
-              </li>
-            </ul>
+            <CountDown />
           </div>
 
-          <Carousel plugins={[Autoplay({ playOnInit: true, delay: 3000 })]}>
-            <CarouselContent>
-              {bestSellingProducts.length > 0
-                ? bestSellingProducts.map((product: Product) => (
-                    <CarouselItem
-                      className='basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:basis-1/6'
-                      key={product._id}
-                    >
-                      <ProductCard product={product} loading={false} />
-                    </CarouselItem>
-                  ))
-                : [...Array(6)].map((_, index) => (
-                    <ProductCard key={index} loading={true} />
-                  ))}
-            </CarouselContent>
-          </Carousel>
+          <CarouselProducts bestSellingProducts={bestSellingProducts} />
 
           <div className='flex items-center justify-center mt-6'>
             <Button className='px-10 py-5 bg-mainColor1-800 hover:bg-mainColor1-600'>
@@ -177,31 +92,7 @@ function HomePage() {
             Duyệt danh mục sản phẩm
           </div>
 
-          <Carousel plugins={[Autoplay({ playOnInit: true, delay: 10000 })]}>
-            <CarouselContent>
-              {categories.length > 0
-                ? categories.map((category: Category) => (
-                    <CarouselItem
-                      className='basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/6'
-                      key={category._id}
-                    >
-                      <div className='border border-mainColor2-100 rounded-md flex flex-col items-center p-1 cursor-pointer hover:border-[3px] hover:shadow-md'>
-                        <Image
-                          src={category.avatar}
-                          alt=''
-                          className='object-cover w-24 h-24 mb-1'
-                        />
-                        <div className='font-medium text-center text-mainColor2-800 line-clamp-1'>
-                          {category.name}
-                        </div>
-                      </div>
-                    </CarouselItem>
-                  ))
-                : [...Array(6)].map((_, index) => (
-                    <ProductCard key={index} loading={true} />
-                  ))}
-            </CarouselContent>
-          </Carousel>
+          <CarouselCategories categories={categories} />
         </div>
 
         <div className='p-4 mt-16 bg-white rounded-lg'>
@@ -221,22 +112,7 @@ function HomePage() {
 
           <Separator className='my-4 h-[2px]' />
 
-          <Carousel plugins={[Autoplay({ playOnInit: true, delay: 3000 })]}>
-            <CarouselContent>
-              {bestSellingProducts.length > 0
-                ? bestSellingProducts.map((product) => (
-                    <CarouselItem
-                      className='basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:basis-1/6'
-                      key={product._id}
-                    >
-                      <ProductCard product={product} loading={false} />
-                    </CarouselItem>
-                  ))
-                : [...Array(6)].map((_, index) => (
-                    <ProductCard key={index} loading={true} />
-                  ))}
-            </CarouselContent>
-          </Carousel>
+          <CarouselProducts bestSellingProducts={bestSellingProducts} />
         </div>
 
         <div className='p-4 my-16 bg-white rounded-lg'>
@@ -317,7 +193,7 @@ function HomePage() {
           <div className='list-recommended-products grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2.5'>
             {recommendedProducts.length > 0
               ? recommendedProducts
-                  .slice(0, productsDisplayed)
+                  .slice(0, DEFAULT_ITEMS_PER_PAGE)
                   .map((product) => (
                     <ProductCard
                       product={product}
@@ -334,5 +210,3 @@ function HomePage() {
     </div>
   )
 }
-
-export default HomePage

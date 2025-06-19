@@ -48,7 +48,7 @@ const request = async <Response>(
 }
 
 const http = {
-  get<Response>(url: string, options: Omit<CustomOptions, 'body'> | undefined) {
+  get<Response>(url: string, options?: Omit<CustomOptions, 'body'> | undefined) {
     return request<Response>('GET', url, options)
   },
   post<Response>(

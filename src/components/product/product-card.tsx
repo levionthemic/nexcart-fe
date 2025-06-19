@@ -1,4 +1,4 @@
-'use client' 
+'use client'
 
 import { clsx } from 'clsx'
 import { MdAddShoppingCart } from 'react-icons/md'
@@ -55,7 +55,10 @@ interface ProductCardPropTypes {
   key?: number | string
 }
 
-export default function ProductCard({ product, loading }: ProductCardPropTypes) {
+export default function ProductCard({
+  product,
+  loading
+}: ProductCardPropTypes) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
 
@@ -179,6 +182,8 @@ export default function ProductCard({ product, loading }: ProductCardPropTypes) 
           <Skeleton className='w-full aspect-square' />
         ) : (
           <Image
+            height={0}
+            width={0}
             src={String(product?.avatar)}
             alt=''
             className='object-contain w-full aspect-square'
@@ -209,13 +214,13 @@ export default function ProductCard({ product, loading }: ProductCardPropTypes) 
             <div className='flex items-center justify-between my-2 text-sm text-gray-400'>
               <div className='flex items-center gap-2'>
                 <span>{product?.rating || '0'}</span>
-                <Rating
+                {/* <Rating
                   emptySymbol={<FaRegStar />}
                   fullSymbol={<FaStar />}
                   initialRating={product?.rating || 0}
                   readonly
                   className='text-[#FBCA04] text-md leading-none'
-                />
+                /> */}
               </div>
 
               <span>| Đã bán: {product?.sold || 0}</span>
@@ -355,4 +360,3 @@ export default function ProductCard({ product, loading }: ProductCardPropTypes) 
     </Card>
   )
 }
-

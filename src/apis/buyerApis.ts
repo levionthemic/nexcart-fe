@@ -1,3 +1,6 @@
+import http from '@/lib/http'
+import { Brand } from '@/types/entities/brand'
+import { Category } from '@/types/entities/category'
 import { Product } from '@/types/entities/product'
 import authorizedAxiosInstance from '@/utils/authorizedAxios'
 
@@ -6,8 +9,14 @@ import authorizedAxiosInstance from '@/utils/authorizedAxios'
  * @author levi
  */
 export const getProductsAPI = async (searchPath = '') => {
-  const response = await authorizedAxiosInstance.get(`/products${searchPath}`)
-  return response.data
+  const response = await http.get<getProductsApiResponse>(`/product${searchPath}`)
+  return response.payload
+}
+export type getProductsApiResponse = {
+  products: Product[],
+  totalProducts: number,
+  categories: Category[],
+  brands: Brand[]
 }
 
 export const getProductsWithFiltersAPI = async (searchPath = '') => {
@@ -38,8 +47,8 @@ export const updateProductDetailAPI = async (
  * @author levi
  */
 export const getCategoriesAPI = async () => {
-  const response = await authorizedAxiosInstance.get('/categories')
-  return response.data
+  const response = await http.get<Category[]>('/category')
+  return response.payload
 }
 
 /**
