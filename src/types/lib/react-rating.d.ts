@@ -8,6 +8,8 @@ declare module 'react-rating' {
     fullSymbol?: React.ReactNode
     className?: string
   }
+  
+  const Rating: React.FC<RatingProps>
 
-  export default class Rating extends React.Component<RatingProps> {}
+  export default Rating
 }

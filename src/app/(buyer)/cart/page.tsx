@@ -1,3 +1,5 @@
+'use client'
+
 import { useDispatch, useSelector } from 'react-redux'
 import {
   deleteItemAPI,
@@ -210,9 +212,11 @@ export default function CartPage() {
       accessorKey: 'avatar',
       cell: ({ row }) => (
         <Image
+          width={64}
+          height={64}
           src={row.getValue('avatar')}
           alt={row.getValue('name')}
-          className='w-16 h-16 rounded'
+          className='rounded'
         />
       ),
       size: 60
@@ -331,7 +335,7 @@ export default function CartPage() {
           </AlertDialog>
           <div
             className='hover:bg-gray-200 p-1.5 rounded-md cursor-pointer transition-all hover:ease-in-out hover:duration-300'
-            onClick={() => navigate(`/buyer/product/${row.original._id}`)}
+            onClick={() => router.push(`/product/${row.original._id}`)}
           >
             <EllipsisIcon className='size-4' />
           </div>

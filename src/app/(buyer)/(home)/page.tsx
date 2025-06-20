@@ -7,19 +7,12 @@ import { MdSupportAgent } from 'react-icons/md'
 import { MdCurrencyExchange } from 'react-icons/md'
 import { MdHighQuality } from 'react-icons/md'
 
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem
-} from '@/components/ui/carousel'
-import Autoplay from 'embla-carousel-autoplay'
 import { DEFAULT_ITEMS_PER_PAGE } from '@/utils/constants'
 
 import banner from '@/assets/banner.jpg'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { Category } from '@/types/entities/category'
 import Image from 'next/image'
 import CountDown from './countdown'
 import CarouselProducts from './carousel-products'

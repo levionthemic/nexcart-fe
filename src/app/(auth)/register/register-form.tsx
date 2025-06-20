@@ -1,3 +1,5 @@
+'use client'
+
 import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import {
@@ -22,7 +24,7 @@ import {
   RegisterFormSchema,
   RegisterFormSchemaType
 } from '@/shared/schemas/auth.schema'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 function RegisterForm() {
@@ -78,7 +80,7 @@ function RegisterForm() {
   })
 
   return (
-    <div className='min-w-[500px] min-h-[600px] bg-gray-200 bg-opacity-10 rounded-3xl border-gray-100 border-solid border-[1px] px-10 pb-4 animate-fadeInTop backdrop-blur-sm'>
+    <div className='min-w-[500px] min-h-[600px] bg-gray-200/10 rounded-3xl border-gray-100 border-solid border-[1px] px-10 pb-4 animate-fadeInTop backdrop-blur-sm'>
       <div className='mt-10 text-4xl font-semibold text-center text-white uppercase'>
         SIGN UP
       </div>

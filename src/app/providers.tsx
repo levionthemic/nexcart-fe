@@ -11,6 +11,7 @@ import { injectStore } from '@/utils/authorizedAxios'
 import { Toaster } from 'sonner'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { LoadingProvider } from '@/contexts/LoadingContext'
+import envConfig from '@/config'
 
 const persistor = persistStore(store)
 injectStore(store)
@@ -19,7 +20,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <GoogleOAuthProvider clientId={process.env.GOOGLE_CLIENT_ID!}>
+        <GoogleOAuthProvider clientId={envConfig.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
           <LoadingProvider>{children}</LoadingProvider>
         </GoogleOAuthProvider>
         <Toaster richColors />

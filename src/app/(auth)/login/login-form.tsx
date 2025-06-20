@@ -21,7 +21,7 @@ import { Role } from '@/types/enums/role'
 import { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { TokenResponse, useGoogleLogin } from '@react-oauth/google'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { FaGoogle } from 'react-icons/fa'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -79,7 +79,7 @@ export default function LoginForm() {
   })
 
   return (
-    <div className='w-[500px] min-h-[500px] bg-gray-200 bg-opacity-10 rounded-3xl border-gray-100 border-solid border-[1px] px-10 pb-4 animate-fadeInTop backdrop-blur-sm'>
+    <div className='w-[500px] min-h-[500px] bg-gray-200/10 rounded-3xl border-gray-100 border-solid border-[1px] px-10 pb-4 animate-fadeInTop backdrop-blur-sm'>
       <div className='mt-10 text-4xl font-semibold text-center text-white uppercase'>
         Login
       </div>

@@ -136,7 +136,7 @@ export default function ProductCard({
       return
     }
 
-    router.push('/buyer/checkout', {
+    router.push('/checkout', {
       state: {
         selectedRows: [
           {
@@ -176,14 +176,14 @@ export default function ProductCard({
     >
       <CardContent
         className='p-2'
-        onClick={() => router.push(`/buyer/product/${product?._id}`)}
+        onClick={() => router.push(`/product/${product?._id}`)}
       >
         {loading ? (
           <Skeleton className='w-full aspect-square' />
         ) : (
           <Image
-            height={0}
-            width={0}
+            height={300}
+            width={300}
             src={String(product?.avatar)}
             alt=''
             className='object-contain w-full aspect-square'
@@ -193,7 +193,7 @@ export default function ProductCard({
 
       <CardHeader
         className='px-4'
-        onClick={() => router.push(`/buyer/product/${product?._id}`)}
+        onClick={() => router.push(`/product/${product?._id}`)}
       >
         {loading ? (
           <Skeleton className='h-[32px]' />
@@ -214,13 +214,13 @@ export default function ProductCard({
             <div className='flex items-center justify-between my-2 text-sm text-gray-400'>
               <div className='flex items-center gap-2'>
                 <span>{product?.rating || '0'}</span>
-                {/* <Rating
+                <Rating
                   emptySymbol={<FaRegStar />}
                   fullSymbol={<FaStar />}
                   initialRating={product?.rating || 0}
                   readonly
                   className='text-[#FBCA04] text-md leading-none'
-                /> */}
+                />
               </div>
 
               <span>| Đã bán: {product?.sold || 0}</span>

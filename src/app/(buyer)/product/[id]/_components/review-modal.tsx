@@ -1,3 +1,5 @@
+'use client'
+
 import { useForm } from 'react-hook-form'
 import Rating from '@/components/ui/rating'
 import { Button } from '@/components/ui/button'

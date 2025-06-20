@@ -1,3 +1,5 @@
+'use client'
+
 import { Label } from '@/components/ui/label'
 import { FaStar } from 'react-icons/fa'
 import { useEffect, useState } from 'react'

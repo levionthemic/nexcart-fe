@@ -27,8 +27,8 @@ export const getProductsWithFiltersAPI = async (searchPath = '') => {
 }
 
 export const getProductDetailsAPI = async (productId: string | undefined) => {
-  const response = await authorizedAxiosInstance.get(`/products/${productId}`)
-  return response.data
+  const response = await http.get<Product>(`/product/${productId}`)
+  return response.payload
 }
 
 export const updateProductDetailAPI = async (
