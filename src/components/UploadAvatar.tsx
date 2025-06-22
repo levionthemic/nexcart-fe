@@ -74,14 +74,19 @@ export default function UploadAvatar({ avatar, className }: UploadAvatarProps) {
               className='h-full w-full object-cover'
               src={previewUrl}
               alt='Preview of uploaded image'
-              width={40}
-              height={40}
-              style={{ objectFit: 'cover' }}
+              width={64}
+              height={64}
             />
           ) : (
             <div aria-hidden='true'>
               {avatar ? (
-                <Image src={avatar} alt='' className='w-full object-cover' />
+                <img
+                  src={avatar || '/assets/background-auth.jpg'}
+                  alt=''
+                  className='w-full object-cover'
+                  width={64}
+                  height={64}
+                />
               ) : (
                 <CircleUserRoundIcon className='opacity-60' size={16} />
               )}

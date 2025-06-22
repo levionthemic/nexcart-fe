@@ -18,8 +18,7 @@ import {
 } from '@/components/ui/select'
 import { Brand } from '@/types/entities/brand'
 import { Category } from '@/types/entities/category'
-import { DEFAULT_PAGE } from '@/utils/constants'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { FaRegStar, FaStar } from 'react-icons/fa'
@@ -32,8 +31,8 @@ interface FilterFormData {
   filterByBrand: string
 }
 
-export interface SearchObjectType {
-  page?: number
+export type SearchObjectType = {
+  page?: string
   keyword?: string
   rating?: string
   minPrice?: string
@@ -98,18 +97,11 @@ export default function ProductFilterForm({
     return { minPrice, maxPrice }
   }
 
-  const searchParams = useSearchParams()
-  const page = Number(searchParams.get('page')) || DEFAULT_PAGE
-  const keyword = String(searchParams.get('keyword'))
-
   const router = useRouter()
 
   useEffect(() => {
     // const { sortKey, sortValue } = defineSort(sortOption)
-    const searchObject: SearchObjectType = {
-      keyword: keyword,
-      page: page
-    }
+    const searchObject: SearchObjectType = {}
 
     if (filterByRate && filterByRate !== 'all') {
       searchObject['rating'] = filterByRate

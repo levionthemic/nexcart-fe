@@ -99,7 +99,7 @@ export default function BuyerHeader() {
     event.preventDefault()
     const searchValue = inputRef?.current?.value
     if (searchValue) {
-      router.push(`/buyer/search?$keyword= ${searchValue})}`)
+      router.push(`/product?keyword=${searchValue}`)
       handleBlur()
       window.scrollTo(0, 0)
     }
@@ -142,7 +142,7 @@ export default function BuyerHeader() {
         setLoading(false)
         return
       }
-      const searchPath = `?q[name]=${keyword})}`
+      const searchPath = `?q[name]=${keyword}`
       getProductsAPI(searchPath)
         .then((data) => {
           setSearchProducts(data?.products || [])
@@ -257,7 +257,7 @@ export default function BuyerHeader() {
                     <SheetClose asChild>
                       <Button
                         className='bg-mainColor2-800/90 hover:bg-mainColor2-800 w-full hover:drop-shadow-lg'
-                        onClick={() => router.push('/buyer/cart')}
+                        onClick={() => router.push('/cart')}
                       >
                         Xem giỏ hàng
                       </Button>
@@ -362,11 +362,11 @@ export default function BuyerHeader() {
                     key={prod._id}
                     className='flex items-center gap-4 hover:bg-gray-100 px-1 rounded-sm my-1 cursor-pointer py-2'
                     onMouseDown={() => {
-                      router.push(`/buyer/product/${prod._id}`)
+                      router.push(`/product/${prod._id}`)
                     }}
                   >
                     <div>
-                      <Image src={prod?.avatar} alt='' className='w-10 h-10' />
+                      <Image src={prod?.avatar} alt='' width={40} height={40} />
                     </div>
                     <div>
                       <span className='text-sm'>{prod?.name}</span>

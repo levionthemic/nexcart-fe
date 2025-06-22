@@ -1,3 +1,5 @@
+'use client'
+
 import {
   Sidebar,
   SidebarContent,
@@ -28,7 +30,7 @@ export default function UserSidebar() {
     },
     {
       title: 'Đơn hàng',
-      url: '/user/order',
+      url: '/user/orders',
       icon: <LuTruck />
     },
     {

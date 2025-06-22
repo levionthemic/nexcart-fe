@@ -1,3 +1,5 @@
+'use client'
+
 import { CiSearch } from 'react-icons/ci'
 import { CiBellOn } from 'react-icons/ci'
 import { BsHandbag } from 'react-icons/bs'

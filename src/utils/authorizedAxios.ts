@@ -8,7 +8,7 @@ import { EnhancedStore } from '@reduxjs/toolkit'
 import { AppStore } from '@/redux/store'
 
 const authorizedAxiosInstance = axios.create({
-  baseURL: `${API_ROOT}/v1`,
+  baseURL: `${API_ROOT}`,
   timeout: 1000 * 60 * 10,
   withCredentials: true,
   headers: {

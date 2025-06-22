@@ -16,7 +16,7 @@ export default function MenuBar() {
           <IoMenu className='text-2xl text-white cursor-pointer hover:scale-110 transition-transform hover:ease-in-out hover:duration-300' />
           <ul className='flex items-center gap-8 text-white text-sm'>
             <li className='py-2 px-4 hover:text-mainColor1-400 hover:bg-white cursor-pointer transition-all hover:ease-in-out hover:duration-300'>
-              <Link href={'/buyer'}>Trang chủ</Link>
+              <Link href={'/'}>Trang chủ</Link>
             </li>
             <li className='py-2 px-4 hover:text-mainColor1-400 hover:bg-white cursor-pointer transition-all hover:ease-in-out hover:duration-300'>
               Sản phẩm

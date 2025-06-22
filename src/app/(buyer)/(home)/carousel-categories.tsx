@@ -18,11 +18,11 @@ export default function CarouselCategories({ categories }: { categories: Categor
               >
                 <div className='border border-mainColor2-100 rounded-md flex flex-col items-center p-1 cursor-pointer hover:border-[3px] hover:shadow-md'>
                   <Image
-                    width={0}
-                    height={0}
+                    width={96}
+                    height={96}
                     src={category.avatar}
                     alt=''
-                    className='object-cover w-24 h-24 mb-1'
+                    className='object-cover mb-1'
                   />
                   <div className='font-medium text-center text-mainColor2-800 line-clamp-1'>
                     {category.name}

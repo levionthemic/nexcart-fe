@@ -27,7 +27,8 @@ export default async function ProductDetail({
 }: {
   params: { id: string }
 }) {
-  const productId = params.id
+  const awaitParams = await params
+  const productId = awaitParams.id
   const product = await getProductDetailsAPI(String(productId))
   const recommendedProducts = (await getProductsAPI()).products
 

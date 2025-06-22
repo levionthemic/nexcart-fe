@@ -65,7 +65,7 @@ export default function LoginForm() {
     )
 
     if (res) {
-      if (res.payload.role === Role.Buyer) router.push('/buyer')
+      if (res.payload.role === Role.Buyer) router.push('/')
       else router.push('/seller')
       toast.success('Đăng nhập thành công!')
     }

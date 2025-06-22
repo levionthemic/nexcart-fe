@@ -9,21 +9,23 @@ import authorizedAxiosInstance from '@/utils/authorizedAxios'
  * @author levi
  */
 export const getProductsAPI = async (searchPath = '') => {
-  const response = await http.get<getProductsApiResponse>(`/product${searchPath}`)
+  const response = await http.get<getProductsApiResponse>(
+    `/product${searchPath}`
+  )
   return response.payload
 }
 export type getProductsApiResponse = {
-  products: Product[],
-  totalProducts: number,
-  categories: Category[],
+  products: Product[]
+  totalProducts: number
+  categories: Category[]
   brands: Brand[]
 }
 
 export const getProductsWithFiltersAPI = async (searchPath = '') => {
-  const response = await authorizedAxiosInstance.get(
-    `/products/filter${searchPath}`
+  const response = await http.get<getProductsApiResponse>(
+    `/product/filter${searchPath}`
   )
-  return response.data
+  return response.payload
 }
 
 export const getProductDetailsAPI = async (productId: string | undefined) => {
@@ -36,7 +38,7 @@ export const updateProductDetailAPI = async (
   updateData: Product
 ) => {
   const response = await authorizedAxiosInstance.put(
-    `/products/${productId}`,
+    `/product/${productId}`,
     updateData
   )
   return response.data

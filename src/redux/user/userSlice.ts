@@ -41,10 +41,11 @@ export const loginUserAPI = createAsyncThunk<User, LoginPayload>(
   }
 )
 
-export const logoutUserAPI = createAsyncThunk<void>(
+export const logoutUserAPI = createAsyncThunk<unknown>(
   'user/logoutUserAPI',
   async () => {
-    await authorizedAxiosInstance.delete('/auth/logout')
+    const response = await authorizedAxiosInstance.delete('/auth/logout')
+    return response
   }
 )
 

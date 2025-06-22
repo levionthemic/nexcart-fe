@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import {
   AlertDialog,
@@ -15,14 +17,20 @@ import { AppDispatch } from '@/redux/store'
 import { logoutUserAPI } from '@/redux/user/userSlice'
 import { clearCart } from '@/redux/cart/cartSlice'
 import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 export default function LogoutComponent({ icon }: { icon: React.ReactNode }) {
   const dispatch = useDispatch<AppDispatch>()
+  const router = useRouter()
 
   const handleLogout = async () => {
     dispatch(clearCart())
     toast.promise(dispatch(logoutUserAPI()), {
-      loading: 'Đang đăng xuất...'
+      loading: 'Đang đăng xuất...',
+      success: () => {
+        router.refresh()
+        return 'Đăng xuất thành công'
+      }
     })
   }
 

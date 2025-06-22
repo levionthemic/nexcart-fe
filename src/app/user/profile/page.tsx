@@ -1,20 +1,14 @@
-import { useSelector } from 'react-redux'
-import { selectCurrentUser } from '@/redux/user/userSlice'
 import productImg from '@/assets/logo.png'
-import UploadAvatar from '@/components/UploadAvatar'
-import { IoIosLogOut, IoMdStar, IoMdStarOutline } from 'react-icons/io'
-import Rating from 'react-rating'
 import { TrendingUp } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import Image from 'next/image'
 import UserHeader from '../_components/header'
 import ProfileLeftForm from './left-form'
 import ProfileRightForm from './right-form'
-import LogoutComponent from '@/components/logout/logout'
+import CustomRating from '@/components/custom-rating/custom-rating'
+import UserInfo from './user-info'
 
 export default function UserProfile() {
-  const currentUser = useSelector(selectCurrentUser)
-
   return (
     <div className='px-4'>
       <div className='flex items-center bg-white rounded-lg h-[100vh] overflow-auto relative'>
@@ -71,13 +65,7 @@ export default function UserProfile() {
                       </span>
                       <div className='flex items-center gap-2 text-xs text-muted-foreground'>
                         <span>{4.5}</span>
-                        <Rating
-                          emptySymbol={<IoMdStarOutline />}
-                          fullSymbol={<IoMdStar />}
-                          initialRating={4.5}
-                          readonly
-                          className='text-[#FBCA04] text-lg leading-none'
-                        />
+                        <CustomRating rating={4.5} />
                       </div>
                     </div>
                   </div>
@@ -98,13 +86,7 @@ export default function UserProfile() {
                       </span>
                       <div className='flex items-center gap-2 text-xs text-muted-foreground'>
                         <span>{4.5}</span>
-                        <Rating
-                          emptySymbol={<IoMdStarOutline />}
-                          fullSymbol={<IoMdStar />}
-                          initialRating={4.5}
-                          readonly
-                          className='text-[#FBCA04] text-lg leading-none'
-                        />
+                        <CustomRating rating={4.5} />
                       </div>
                     </div>
                   </div>
@@ -125,13 +107,7 @@ export default function UserProfile() {
                       </span>
                       <div className='flex items-center gap-2 text-xs text-muted-foreground'>
                         <span>{4.5}</span>
-                        <Rating
-                          emptySymbol={<IoMdStarOutline />}
-                          fullSymbol={<IoMdStar />}
-                          initialRating={4.5}
-                          readonly
-                          className='text-[#FBCA04] text-lg leading-none'
-                        />
+                        <CustomRating rating={4.5} />
                       </div>
                     </div>
                   </div>
@@ -152,13 +128,7 @@ export default function UserProfile() {
                       </span>
                       <div className='flex items-center gap-2 text-xs text-muted-foreground'>
                         <span>{4.5}</span>
-                        <Rating
-                          emptySymbol={<IoMdStarOutline />}
-                          fullSymbol={<IoMdStar />}
-                          initialRating={4.5}
-                          readonly
-                          className='text-[#FBCA04] text-lg leading-none'
-                        />
+                        <CustomRating rating={4.5} />
                       </div>
                     </div>
                   </div>
@@ -181,20 +151,7 @@ export default function UserProfile() {
 
         <div className='flex-1 px-4 flex items-center sticky top-0 right-0 min-h-[100vh]'>
           <div className='bg-gray-100/80 h-[95vh] rounded-xl flex-1 grid grid-rows-2 py-4'>
-            <div className='relative flex flex-col items-center justify-center text-center'>
-              <LogoutComponent
-                icon={
-                  <IoIosLogOut className='absolute top-0 text-xl cursor-pointer right-3 text-mainColor1-800' />
-                }
-              />
-              <UploadAvatar avatar={String(currentUser?.avatar)} />
-              <div className='mt-6 text-xl font-medium text-mainColor2-800'>
-                {currentUser?.name}
-              </div>
-              <div className='text-xs text-mainColor2-800/90'>
-                {currentUser?.email}
-              </div>
-            </div>
+            <UserInfo />
             <div className='grid grid-rows-4 py-2 mx-6 bg-white rounded-xl'>
               <div className='py-2 mx-2'>
                 <div className='bg-[#F7F7FE] w-fit text-center text-xs text-mainColor1-600 px-2 py-1.5 rounded-lg font-medium'>

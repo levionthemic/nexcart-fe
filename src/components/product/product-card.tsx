@@ -261,6 +261,8 @@ export default function ProductCard({
               <div className='flex items-center gap-10 mb-6'>
                 <div className='overflow-hidden border border-gray-300 rounded-lg w-28 h-28'>
                   <Image
+                    width={112}
+                    height={112}
                     src={String(product?.avatar)}
                     alt=''
                     className='object-contain w-full aspect-square'

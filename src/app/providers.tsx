@@ -8,7 +8,6 @@ import { persistStore } from 'redux-persist'
 
 import { injectStore } from '@/utils/authorizedAxios'
 
-import { Toaster } from 'sonner'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { LoadingProvider } from '@/contexts/LoadingContext'
 import envConfig from '@/config'
@@ -23,7 +22,6 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         <GoogleOAuthProvider clientId={envConfig.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
           <LoadingProvider>{children}</LoadingProvider>
         </GoogleOAuthProvider>
-        <Toaster richColors />
       </PersistGate>
     </Provider>
   )
