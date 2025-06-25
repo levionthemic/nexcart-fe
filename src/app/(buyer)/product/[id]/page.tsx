@@ -12,7 +12,7 @@ import {
 import { Separator } from '@/components/ui/separator'
 
 import { DEFAULT_ITEMS_PER_PAGE } from '@/utils/constants'
-import ProductCard from '@/components/product/product-card'
+import ProductCard from '@/components/product'
 
 import Image from 'next/image'
 import ChooseType from './choose-type'
@@ -20,7 +20,8 @@ import ShowAddress from './show-address'
 import ReviewSection from './review-section'
 import QuantityHandling from './quantity-handling'
 import CustomRating from '@/components/custom-rating/custom-rating'
-import { TypeIdProvider } from '@/contexts/variant-handling-context'
+import { VariantHandlingProvider } from '@/contexts/variant-handling-context'
+import WithPersistProvider from '@/components/providers/WithPersistProvider'
 
 export default async function ProductDetail({
   params
@@ -59,7 +60,7 @@ export default async function ProductDetail({
           </BreadcrumbList>
         </Breadcrumb>
 
-        <TypeIdProvider initialProductEndPrice={product.avgPrice}>
+        <VariantHandlingProvider initialProductEndPrice={product.avgPrice}>
           <div className='relative grid grid-cols-4 gap-6'>
             <div className='col-span-3'>
               <div className='relative grid grid-cols-3 gap-6 mb-6 h-fit'>
@@ -100,7 +101,9 @@ export default async function ProductDetail({
                     <div className='mb-1 text-lg font-semibold text-mainColor1-600'>
                       Thông tin vận chuyển
                     </div>
-                    <ShowAddress />
+                    <WithPersistProvider>
+                      <ShowAddress />
+                    </WithPersistProvider>
                     <div className='w-full h-px my-2 border border-t-0 border-gray-200 divider'></div>
                     <div>GHTK</div>
                   </div>
@@ -117,7 +120,9 @@ export default async function ProductDetail({
                           </span>
                           <span className=''>{feature.content}</span>
                         </div>
-                        {index != product?.features?.length - 1 && <Separator />}
+                        {index != product?.features?.length - 1 && (
+                          <Separator />
+                        )}
                       </div>
                     ))}
                   </div>
@@ -134,12 +139,16 @@ export default async function ProductDetail({
                 </div>
               </div>
 
-              <ReviewSection product={product} />
+              <WithPersistProvider>
+                <ReviewSection product={product} />
+              </WithPersistProvider>
             </div>
 
-            <QuantityHandling product={product} />
+            <WithPersistProvider>
+              <QuantityHandling product={product} />
+            </WithPersistProvider>
           </div>
-        </TypeIdProvider>
+        </VariantHandlingProvider>
 
         <div className='p-4 bg-white rounded-lg'>
           <div className='flex items-center gap-2'>

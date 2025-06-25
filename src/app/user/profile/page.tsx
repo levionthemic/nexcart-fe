@@ -7,6 +7,7 @@ import ProfileLeftForm from './left-form'
 import ProfileRightForm from './right-form'
 import CustomRating from '@/components/custom-rating/custom-rating'
 import UserInfo from './user-info'
+import WithPersistProvider from '@/components/providers/WithPersistProvider'
 
 export default function UserProfile() {
   return (
@@ -14,7 +15,9 @@ export default function UserProfile() {
       <div className='flex items-center bg-white rounded-lg h-[100vh] overflow-auto relative'>
         <div className='px-2 h-full w-[75%]'>
           {/* Header */}
-          <UserHeader />
+          <WithPersistProvider>
+            <UserHeader />
+          </WithPersistProvider>
 
           {/* Content */}
           <div>
@@ -32,14 +35,18 @@ export default function UserProfile() {
               <div className='text-lg font-medium text-mainColor2-800'>
                 Thông tin cá nhân
               </div>
-              <ProfileLeftForm />
+              <WithPersistProvider>
+                <ProfileLeftForm />
+              </WithPersistProvider>
             </div>
 
             <div className='my-4'>
               <div className='text-lg font-medium text-mainColor2-800'>
                 Thông tin tài khoản
               </div>
-              <ProfileRightForm />
+              <WithPersistProvider>
+                <ProfileRightForm />
+              </WithPersistProvider>
             </div>
           </div>
 
@@ -151,7 +158,9 @@ export default function UserProfile() {
 
         <div className='flex-1 px-4 flex items-center sticky top-0 right-0 min-h-[100vh]'>
           <div className='bg-gray-100/80 h-[95vh] rounded-xl flex-1 grid grid-rows-2 py-4'>
-            <UserInfo />
+            <WithPersistProvider>
+              <UserInfo />
+            </WithPersistProvider>
             <div className='grid grid-rows-4 py-2 mx-6 bg-white rounded-xl'>
               <div className='py-2 mx-2'>
                 <div className='bg-[#F7F7FE] w-fit text-center text-xs text-mainColor1-600 px-2 py-1.5 rounded-lg font-medium'>

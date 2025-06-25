@@ -28,12 +28,12 @@ authorizedAxiosInstance.interceptors.request.use(
   }
 )
 
-let refreshTokenPromise: Promise<any | null>
+let refreshTokenPromise: Promise<unknown | null> | null
 authorizedAxiosInstance.interceptors.response.use(
   (response) => {
     return response
   },
-  (error) => {
+  async (error) => {
     if (error.response?.status === 401) {
       axiosReduxStore.dispatch(clearCart())
       axiosReduxStore.dispatch(logoutUserAPI())

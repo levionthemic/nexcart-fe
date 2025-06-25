@@ -1,6 +1,7 @@
 import http from '@/lib/http'
 import { Brand } from '@/types/entities/brand'
 import { Category } from '@/types/entities/category'
+import { OrderItem } from '@/types/entities/order'
 import { Product } from '@/types/entities/product'
 import authorizedAxiosInstance from '@/utils/authorizedAxios'
 
@@ -79,7 +80,7 @@ export const addOrderAPI = async (data, buyNow = false) => {
   return response.data
 }
 
-export const clusterOrderAPI = async (data) => {
-  const response = await authorizedAxiosInstance.post('/order/cluster', data)
+export const clusterOrderAPI = async (data: OrderItem[]) => {
+  const response = await authorizedAxiosInstance.post('/order/cluster', { itemList: data })
   return response.data
 }

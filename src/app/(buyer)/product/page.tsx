@@ -1,4 +1,4 @@
-import ProductCard from '@/components/product/product-card'
+import ProductCard from '@/components/product'
 import { getProductsAPI, getProductsWithFiltersAPI } from '@/apis/buyerApis'
 
 import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from '@/utils/constants'

@@ -26,7 +26,7 @@ export const addToCartAPI = createAsyncThunk<
   Cart,
   { productId: string; quantity: number }
 >('cart/addToCartAPI', async (data) => {
-  const response = await authorizedAxiosInstance.post('/cart/add`', data)
+  const response = await authorizedAxiosInstance.post('/cart/add', data)
   return response.data
 })
 

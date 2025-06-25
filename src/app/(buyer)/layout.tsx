@@ -1,13 +1,24 @@
 import ClientBuyerLayout from './client-layout'
 import Footer from '@/components/footer/footer'
 import BuyerHeader from '@/components/header/buyer-header/buyer-header'
+import WithLoadingProvider from '@/components/providers/WithLoadingProvider'
+import WithPersistProvider from '@/components/providers/WithPersistProvider'
 
-export default async function BuyerLayout({ children }: { children: React.ReactNode }) {
+export default async function BuyerLayout({
+  children
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <div className='font-nunitoSans relative max-h-full'>
-      <BuyerHeader />
-      <ClientBuyerLayout>{children}</ClientBuyerLayout>
-      <Footer />
-    </div>
+    <WithLoadingProvider>
+      <div className='font-nunitoSans relative max-h-full'>
+        <WithPersistProvider>
+          <BuyerHeader />
+        </WithPersistProvider>
+
+        <ClientBuyerLayout>{children}</ClientBuyerLayout>
+        <Footer />
+      </div>
+    </WithLoadingProvider>
   )
 }

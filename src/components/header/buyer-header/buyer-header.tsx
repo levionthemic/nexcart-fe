@@ -204,7 +204,7 @@ export default function BuyerHeader() {
                   </div>
                 </SheetTrigger>
                 <SheetContent side={'right'}>
-                  <SheetHeader className='my-3'>
+                  <SheetHeader className='my-2'>
                     <SheetTitle>
                       Giỏ hàng của bạn{' '}
                       <span className='text-sm text-gray-700'>
@@ -215,14 +215,15 @@ export default function BuyerHeader() {
                       Sơ lược các sản phẩm trong giỏ hàng.
                     </SheetDescription>
                   </SheetHeader>
-                  <div className='py-4 max-h-[89%] overflow-auto'>
+                  <div className='p-4 max-h-[89%] overflow-auto space-y-6'>
                     {currentCart?.fullProducts?.map((product, index) => (
-                      <div key={index} className='flex items-center gap-2 my-6'>
+                      <div key={index} className='flex items-center gap-2'>
                         <Image
                           src={product?.avatar}
                           alt=''
                           width={40}
                           height={40}
+                          className='rounded-md'
                         />
                         <div className='flex flex-col gap-1'>
                           <TooltipProvider>

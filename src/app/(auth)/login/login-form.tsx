@@ -31,7 +31,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/redux/store'
-import { loginUserAPI } from '@/redux/user/userSlice'
+import { loginUserAPI, setUser } from '@/redux/user/userSlice'
 import { asyncHandler } from '@/utils/asyncHandler'
 
 export default function LoginForm() {
@@ -65,7 +65,11 @@ export default function LoginForm() {
     )
 
     if (res) {
-      if (res.payload.role === Role.Buyer) router.push('/')
+      const userData = await fetch('/api/me', { credentials: 'include' }).then(
+        (res) => res.json()
+      )
+      dispatch(setUser(userData))
+      if (userData.role === Role.Buyer) router.push('/')
       else router.push('/seller')
       toast.success('Đăng nhập thành công!')
     }

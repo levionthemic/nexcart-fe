@@ -1,7 +1,6 @@
 'use client'
 
-import ProductCard from '@/components/product/product-card'
-
+import ProductCard from '@/components/product'
 import {
   Carousel,
   CarouselContent,

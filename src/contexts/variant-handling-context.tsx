@@ -20,12 +20,12 @@ type VariantHandlingContextType = {
 
 const VariantHandlingContext = createContext<VariantHandlingContextType | undefined>(undefined)
 
-type TypeIdProviderProps = {
+type VariantHandlingProviderProps = {
   children: ReactNode,
   initialProductEndPrice: number
 }
 
-export const TypeIdProvider = ({ children, initialProductEndPrice = 0 }: TypeIdProviderProps) => {
+export const VariantHandlingProvider = ({ children, initialProductEndPrice = 0 }: VariantHandlingProviderProps) => {
   const [typeId, setTypeId] = useState<string>('')
   const [productEndPrice, setProductEndPrice] = useState<number>(initialProductEndPrice)
   const [discount, setDiscount] = useState<number>(0)

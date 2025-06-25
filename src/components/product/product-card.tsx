@@ -49,13 +49,13 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import Rating from 'react-rating'
 
-interface ProductCardPropTypes {
+export interface ProductCardPropTypes {
   product?: Product
   loading: boolean
   key?: number | string
 }
 
-export default function ProductCard({
+export default function ClientProductCard({
   product,
   loading
 }: ProductCardPropTypes) {

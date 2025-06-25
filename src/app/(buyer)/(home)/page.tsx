@@ -1,4 +1,4 @@
-import ProductCard from '@/components/product/product-card'
+import ProductCard from '@/components/product'
 import CategoryBar from './category-bar'
 import { getCategoriesAPI, getProductsAPI } from '@/apis/buyerApis'
 
@@ -41,6 +41,8 @@ export default async function HomePage() {
           </SidebarProvider>
           <div className='col-span-4'>
             <Image
+              width={undefined}
+              height={416}
               src={banner}
               alt=''
               className='h-[416px] w-full object-cover rounded-md'

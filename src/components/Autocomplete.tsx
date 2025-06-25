@@ -32,7 +32,8 @@ interface AutocompleteProps {
   getDetails: ({ id, type }: { id: string | number; type: string }) => void
   flag: string
   error: boolean
-  defaultValue: number | string
+  defaultValue: string | number
+  onChange: (value: string | number) => void
 }
 
 export default function Autocomplete({
@@ -42,11 +43,12 @@ export default function Autocomplete({
   getDetails,
   flag,
   error,
-  defaultValue
+  defaultValue,
+  onChange
 }: AutocompleteProps) {
   const id = useId()
   const [open, setOpen] = useState(false)
-  const [value, setValue] = useState(defaultValue)
+  const [value, setValue] = useState<string | number>(defaultValue)
 
   return (
     <div className='*:not-first:mt-2'>
@@ -63,7 +65,9 @@ export default function Autocomplete({
             }`}
           >
             <span className={cn('truncate', !value && 'text-muted-foreground')}>
-              {value ? data?.find((i) => i.value === value)?.label : title}
+              {value
+                ? data?.find((i) => String(i.value) === String(value))?.label
+                : title}
             </span>
             <ChevronDownIcon
               size={16}
@@ -90,16 +94,18 @@ export default function Autocomplete({
                     value={String(i.value)}
                     onSelect={(currentValue) => {
                       getDetails({ id: i.id, type: flag })
-                      setValue(
-                        currentValue === i.label || currentValue === i.value
+                      const newValue =
+                        currentValue === i.label ||
+                        currentValue === String(i.value)
                           ? i.value
                           : ''
-                      )
+                      setValue(String(newValue))
                       setOpen(false)
+                      onChange(newValue)
                     }}
                   >
                     {i.label}
-                    {value === i.value && (
+                    {String(value) === String(i.value) && (
                       <CheckIcon size={16} className='ml-auto' />
                     )}
                   </CommandItem>
