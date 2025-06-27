@@ -13,4 +13,8 @@ export interface User {
   gender: GenderValue
   phone?: string
   status: AccountStatusValue
+
+  // Seller
+  description?: string,
+  foundedDate?: Date
 }

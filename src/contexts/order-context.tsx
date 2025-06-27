@@ -3,7 +3,7 @@
 import { InformationFormSchemaType } from '@/app/(buyer)/checkout/[step]/information'
 import { Address } from '@/types/entities/address'
 import { OrderItem } from '@/types/entities/order'
-import { ShippingMethod } from '@/types/enums/shipping-method'
+import { PaymentMethod, ShippingMethod } from '@/types/enums/checkout'
 import {
   createContext,
   useContext,
@@ -29,8 +29,13 @@ export interface ShippingDataType {
 export type CheckoutInfoType = {
   information?: InformationFormSchemaType & { shortAddress: string }
   shipping?: ShippingDataType[]
-  discountCode?: string[],
+  discountCode?: string[]
   note?: string[]
+
+  payment?: {
+    type: PaymentMethod,
+    detail: Record<string, unknown>
+  }[]
 }
 type OrderContextType = {
   itemList: OrderItem[]
@@ -39,6 +44,8 @@ type OrderContextType = {
   setCheckoutInfo: Dispatch<SetStateAction<CheckoutInfoType | null>>
   clusterOrders: ClusterOrderListItem[]
   setClusterOrders: Dispatch<SetStateAction<ClusterOrderListItem[]>>
+  buyNow: boolean
+  setBuyNow: Dispatch<SetStateAction<boolean>>
 }
 
 const OrderContext = createContext<OrderContextType | undefined>(undefined)
@@ -48,11 +55,16 @@ type OrderProviderProps = {
 }
 
 export const OrderProvider = ({ children }: OrderProviderProps) => {
-  const [itemList, setItemList] = useState<OrderItem[]>(JSON.parse(String(sessionStorage.getItem('itemList'))) || [])
+  const [itemList, setItemList] = useState<OrderItem[]>(
+    JSON.parse(String(sessionStorage.getItem('itemList'))) || []
+  )
   const [checkoutInfo, setCheckoutInfo] = useState<CheckoutInfoType | null>(
     null
   )
   const [clusterOrders, setClusterOrders] = useState<ClusterOrderListItem[]>([])
+  const [buyNow, setBuyNow] = useState(
+    Boolean(JSON.parse(String(sessionStorage.getItem('buyNow'))))
+  )
 
   return (
     <OrderContext.Provider
@@ -62,7 +74,9 @@ export const OrderProvider = ({ children }: OrderProviderProps) => {
         checkoutInfo,
         setCheckoutInfo,
         clusterOrders,
-        setClusterOrders
+        setClusterOrders,
+        buyNow,
+        setBuyNow
       }}
     >
       {children}

@@ -15,7 +15,6 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { Separator } from '@/components/ui/separator'
 
-import { FaRegStar, FaStar } from 'react-icons/fa'
 import { Button } from '../ui/button'
 import { Label } from '../ui/label'
 import {
@@ -47,7 +46,7 @@ import { AppDispatch } from '@/redux/store'
 import { Cart, CartItem, FullProductItem } from '@/types/entities/cart'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import Rating from 'react-rating'
+import { Ratings } from '../ui/ratings'
 
 export interface ProductCardPropTypes {
   product?: Product
@@ -136,18 +135,22 @@ export default function ClientProductCard({
       return
     }
 
-    router.push('/checkout', {
-      state: {
-        selectedRows: [
-          {
-            ...product,
-            type: product?.types.find((t) => t.typeId.toString() === typeId),
-            quantity: quantity
-          }
-        ],
-        buyNow: true
-      }
-    })
+    sessionStorage.setItem(
+      'itemList',
+      JSON.stringify([
+        {
+          productId: String(product?._id),
+          typeId,
+          quantity,
+          _weight: 0,
+          _length: 0,
+          _width: 0,
+          _height: 0
+        }
+      ])
+    )
+    sessionStorage.setItem('buyNow', JSON.stringify(true))
+    router.push('/checkout')
   }
 
   const handleChooseType = () => {
@@ -214,12 +217,11 @@ export default function ClientProductCard({
             <div className='flex items-center justify-between my-2 text-sm text-gray-400'>
               <div className='flex items-center gap-2'>
                 <span>{product?.rating || '0'}</span>
-                <Rating
-                  emptySymbol={<FaRegStar />}
-                  fullSymbol={<FaStar />}
-                  initialRating={product?.rating || 0}
-                  readonly
-                  className='text-[#FBCA04] text-md leading-none'
+                <Ratings
+                  rating={product?.rating || 0}
+                  variant='yellow'
+                  size={15}
+                  // className='text-md leading-none'
                 />
               </div>
 

@@ -31,7 +31,7 @@ import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import { getAddressString } from '@/utils/helpers'
 import { z } from 'zod'
-import { ShippingMethod } from '@/types/enums/shipping-method'
+import { ShippingMethod } from '@/types/enums/checkout'
 import Image from 'next/image'
 import envConfig from '@/config'
 import { Address } from '@/types/entities/address'
@@ -63,8 +63,6 @@ export default function Shipping() {
     itemList
   } = useOrder()
 
-  console.log(checkoutInfo)
-
   const form = useForm<ShippingFormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -76,7 +74,15 @@ export default function Shipping() {
   })
 
   useEffect(() => {
-    clusterOrderAPI(itemList).then((data) => setClusterOrders(data))
+    clusterOrderAPI(itemList).then((data) => {
+      form.reset({
+        buyerAddress: [...Array(data.length)].map(() => '0'),
+        discountCode: [...Array(data.length)].map(() => ''),
+        note: [...Array(data.length)].map(() => ''),
+        shippingMethod: checkoutInfo?.shipping?.map((s) => s.type)
+      })
+      setClusterOrders(data)
+    })
   }, [])
 
   const [shopAddresses, setShopAddresses] = useState<string[]>([])
@@ -198,7 +204,7 @@ export default function Shipping() {
                           </FormLabel>
                           <Select
                             onValueChange={field.onChange}
-                            defaultValue={field.value}
+                            value={field.value}
                           >
                             <SelectTrigger className='w-full'>
                               <SelectValue placeholder='Chọn địa chỉ nhận hàng' />
@@ -219,21 +225,15 @@ export default function Shipping() {
                       )}
                     />
 
-                    <FormField
-                      control={form.control}
-                      name=''
-                      render={() => (
-                        <FormItem>
-                          <FormLabel className='text-mainColor1-600 font-medium text-lg'>
-                            Địa chỉ gửi hàng
-                          </FormLabel>
-                          <FormDescription className='!mt-0'>
-                            Địa chỉ shop hiện có sản phẩm.
-                          </FormDescription>
-                          <div>{shopAddresses[index]}</div>
-                        </FormItem>
-                      )}
-                    />
+                    <FormItem>
+                      <FormLabel className='text-mainColor1-600 font-medium text-lg'>
+                        Địa chỉ gửi hàng
+                      </FormLabel>
+                      <FormDescription className='!mt-0'>
+                        Địa chỉ shop hiện có sản phẩm.
+                      </FormDescription>
+                      <div>{shopAddresses[index]}</div>
+                    </FormItem>
                   </div>
 
                   <div className='grid grid-cols-3 gap-6'>

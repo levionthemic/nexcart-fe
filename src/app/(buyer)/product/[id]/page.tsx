@@ -19,9 +19,9 @@ import ChooseType from './choose-type'
 import ShowAddress from './show-address'
 import ReviewSection from './review-section'
 import QuantityHandling from './quantity-handling'
-import CustomRating from '@/components/custom-rating/custom-rating'
 import { VariantHandlingProvider } from '@/contexts/variant-handling-context'
 import WithPersistProvider from '@/components/providers/WithPersistProvider'
+import { Ratings } from '@/components/ui/ratings'
 
 export default async function ProductDetail({
   params
@@ -87,7 +87,7 @@ export default async function ProductDetail({
 
                     <div className='flex items-center gap-2 mt-2 text-sm'>
                       <span>{product?.rating || 0}</span>
-                      <CustomRating rating={product?.rating || 0} />
+                      <Ratings rating={product?.rating || 0} variant='yellow' />
                       <div
                         style={{ border: '1px solid #ddd', height: '20px' }}
                       ></div>

@@ -5,11 +5,11 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from '@/components/ui/tooltip'
-import { CheckoutInfoType } from '@/contexts/order-context'
+import { CheckoutInfoType, ClusterOrderListItem } from '@/contexts/order-context'
 import Image from 'next/image'
 
 interface RightSidebarProps {
-  clusterOrder: Record<string, any>
+  clusterOrder: ClusterOrderListItem
   checkoutInfo: CheckoutInfoType | null
   index: number
 }
@@ -19,7 +19,7 @@ export default function RightSidebar({
   index
 }: RightSidebarProps) {
   const totalPrice = clusterOrder.itemList?.reduce(
-    (sum: number, item) => sum + item.quantity * item.price,
+    (sum: number, item) => sum + item.quantity * item.price!,
     0
   )
   return (
@@ -33,7 +33,7 @@ export default function RightSidebar({
             key={index}
             className='flex items-center gap-2 my-6 overflow-hidden'
           >
-            <Image src={product?.avatar} alt='' width={40} height={40} />
+            <Image src={product.avatar!} alt='' width={40} height={40} />
             <div className='flex flex-col gap-1'>
               <TooltipProvider>
                 <Tooltip>
@@ -55,7 +55,7 @@ export default function RightSidebar({
                   {product.quantity} sản phẩm
                 </Badge>
                 <span className='text-[0.8rem] text-muted-foreground'>
-                  x {product?.price.toLocaleString('vi-VN')}
+                  x {product.price!.toLocaleString('vi-VN')}
                   <sup>đ</sup>
                 </span>
               </div>
@@ -80,7 +80,7 @@ export default function RightSidebar({
             <span className='font-bold text-red-600'>
               {(
                 checkoutInfo?.shipping?.[index]?.detail?.total || 0
-              )?.toLocaleString('vi-VN')}
+              )?.toLocaleString()}
               <sup>đ</sup>
             </span>
           </div>
@@ -113,7 +113,7 @@ export default function RightSidebar({
           </div>
           <div className='text-red-600 text-right text-xl font-bold'>
             {(
-              totalPrice + (checkoutInfo?.shipping?.[index]?.detail?.total || 0)
+              totalPrice + (checkoutInfo?.shipping?.[index]?.detail?.total as number || 0)
             ).toLocaleString('vi-VN')}
             <sup>đ</sup>
           </div>

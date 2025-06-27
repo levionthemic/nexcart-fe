@@ -5,9 +5,9 @@ import Image from 'next/image'
 import UserHeader from '../_components/header'
 import ProfileLeftForm from './left-form'
 import ProfileRightForm from './right-form'
-import CustomRating from '@/components/custom-rating/custom-rating'
 import UserInfo from './user-info'
 import WithPersistProvider from '@/components/providers/WithPersistProvider'
+import { Ratings } from '@/components/ui/ratings'
 
 export default function UserProfile() {
   return (
@@ -72,7 +72,7 @@ export default function UserProfile() {
                       </span>
                       <div className='flex items-center gap-2 text-xs text-muted-foreground'>
                         <span>{4.5}</span>
-                        <CustomRating rating={4.5} />
+                        <Ratings rating={4.5} variant='yellow' />
                       </div>
                     </div>
                   </div>
@@ -93,7 +93,7 @@ export default function UserProfile() {
                       </span>
                       <div className='flex items-center gap-2 text-xs text-muted-foreground'>
                         <span>{4.5}</span>
-                        <CustomRating rating={4.5} />
+                        <Ratings rating={4.5} variant='yellow' />
                       </div>
                     </div>
                   </div>
@@ -114,7 +114,7 @@ export default function UserProfile() {
                       </span>
                       <div className='flex items-center gap-2 text-xs text-muted-foreground'>
                         <span>{4.5}</span>
-                        <CustomRating rating={4.5} />
+                        <Ratings rating={4.5} variant='yellow' />
                       </div>
                     </div>
                   </div>
@@ -135,7 +135,7 @@ export default function UserProfile() {
                       </span>
                       <div className='flex items-center gap-2 text-xs text-muted-foreground'>
                         <span>{4.5}</span>
-                        <CustomRating rating={4.5} />
+                        <Ratings rating={4.5} variant='yellow' />
                       </div>
                     </div>
                   </div>

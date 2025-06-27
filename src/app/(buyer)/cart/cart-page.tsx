@@ -57,19 +57,19 @@ import { Cart, CartItem, FullProductItem } from '@/types/entities/cart'
 import { Product } from '@/types/entities/product'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { useOrder } from '@/contexts/order-context'
 import { OrderItem } from '@/types/entities/order'
 
 export default function ClientCartPage() {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const cart = useSelector(selectCurrentCart)
+
+  
   const currentUser = useSelector(selectCurrentUser)
-
-  const { setItemList } = useOrder()
-
+  
   const changesRef = useRef(new Map())
   const timerRef = useRef<NodeJS.Timeout | null>(null)
+
 
   const updateQuantity = () => {
     const updates = Array.from(changesRef.current.values())
@@ -107,7 +107,7 @@ export default function ClientCartPage() {
 
       timerRef.current = setTimeout(() => {
         updateQuantity()
-      }, 1000) 
+      }, 1000)
     }
   }
 
@@ -407,8 +407,7 @@ export default function ClientCartPage() {
       return
     }
 
-    
-    const itemList: OrderItem[] = selectedRows.map(item => ({
+    const itemList: OrderItem[] = selectedRows.map((item) => ({
       productId: item._id,
       typeId: item.type.typeId,
       quantity: item.quantity || 1,
@@ -417,7 +416,7 @@ export default function ClientCartPage() {
       _width: 0,
       _height: 0
     }))
-    
+
     sessionStorage.setItem('itemList', JSON.stringify(itemList))
     router.push('/checkout')
   }
@@ -482,7 +481,12 @@ export default function ClientCartPage() {
                               <div className='flex items-center gap-2'>
                                 <Store />
                                 <span>
-                                  {row.groupingColumnId}: {row.groupingValue}{' '}
+                                  {row.groupingColumnId}:{' '}
+                                  {
+                                    row.getGroupingValue(
+                                      row.groupingColumnId!
+                                    ) as string
+                                  }{' '}
                                   <b>({row.subRows.length} sản phẩm)</b>
                                 </span>
                               </div>
@@ -597,4 +601,3 @@ export default function ClientCartPage() {
     </div>
   )
 }
-

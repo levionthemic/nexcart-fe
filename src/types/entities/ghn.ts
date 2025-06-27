@@ -15,3 +15,9 @@ export interface GhnWard {
   WardName: string
   DistrictID: number
 }
+
+export interface GhnResponse<T> {
+  code: number,
+  message: string,
+  data: T
+}

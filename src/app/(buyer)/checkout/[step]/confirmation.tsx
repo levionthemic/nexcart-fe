@@ -10,20 +10,27 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from '@/components/ui/tooltip'
+import { ClusterOrderListItem, useOrder } from '@/contexts/order-context'
+import { ShippingMethod } from '@/types/enums/checkout'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
-export default function Confirmation({
-  checkoutInfo,
-  setStep,
-  clusterOrders,
-  handleCheckout
-}) {
-  const totalPrice = (clusterOrder) => {
+export default function Confirmation() {
+  const { clusterOrders, checkoutInfo } = useOrder()
+
+  const router = useRouter()
+
+  const totalPrice = (clusterOrder: ClusterOrderListItem) => {
     return clusterOrder.itemList?.reduce(
-      (sum, item) => sum + item.quantity * item.price,
+      (sum, item) => sum + item.quantity * item.price!,
       0
     )
   }
+
+  const handleCheckout = () => {
+
+  }
+    
   return (
     <>
       <div className='my-6 border border-b-[#ddd] rounded-md p-4'>
@@ -38,17 +45,17 @@ export default function Confirmation({
         </p>
         <div className='flex items-center justify-between mx-20 mb-2'>
           <span className='text-sm text-gray-400'>Tên người nhận hàng:</span>
-          <span className='font-semibold'>{checkoutInfo?.name}</span>
+          <span className='font-semibold'>{checkoutInfo?.information?.name}</span>
         </div>
 
         <div className='flex items-center justify-between mx-20 mb-2'>
           <span className='text-sm text-gray-400'>Địa chỉ nhận hàng:</span>
-          <span className='font-medium'>{checkoutInfo?.shortAddress}</span>
+          <span className='font-medium'>{checkoutInfo?.information?.shortAddress}</span>
         </div>
 
         <div className='flex items-center justify-between mx-20 mb-4'>
           <span className='text-sm text-gray-400'>Số điện thoại liên hệ:</span>
-          <span className='font-medium'>{checkoutInfo?.phone}</span>
+          <span className='font-medium'>{checkoutInfo?.information?.phone}</span>
         </div>
       </div>
       {clusterOrders?.map((clusterOrder, index) => (
@@ -65,7 +72,7 @@ export default function Confirmation({
                 <div className='font-semibold text-mainColor1-600 flex items-center gap-4'>
                   <Image
                     src={
-                      checkoutInfo?.shipping[index].type === 'ghn'
+                      checkoutInfo?.shipping?.[index].type === ShippingMethod.GHN
                         ? ghnLogo
                         : ghtkLogo
                     }
@@ -73,9 +80,9 @@ export default function Confirmation({
                     width={20}
                     height={20}
                   />
-                  {checkoutInfo?.shipping[index].type === 'ghn' &&
+                  {checkoutInfo?.shipping?.[index].type === ShippingMethod.GHN &&
                     'Giao hàng nhanh'}
-                  {checkoutInfo?.shipping[index].type === 'ghtk' &&
+                  {checkoutInfo?.shipping?.[index].type === ShippingMethod.GHTK &&
                     'Giao hàng tiết kiệm'}
                 </div>
               </div>
@@ -99,7 +106,7 @@ export default function Confirmation({
                     className='flex items-center gap-4 my-4 overflow-hidden'
                   >
                     <Image
-                      src={product?.avatar}
+                      src={product.avatar!}
                       alt=''
                       width={80}
                       height={80}
@@ -128,7 +135,7 @@ export default function Confirmation({
                           {product.quantity} sản phẩm
                         </Badge>
                         <span className='text-muted-foreground'>
-                          x {product?.price.toLocaleString('vi-VN')}
+                          x {product?.price!.toLocaleString('vi-VN')}
                           <sup>đ</sup>
                         </span>
                       </div>
@@ -156,7 +163,7 @@ export default function Confirmation({
                     <span className='font-bold text-red-600'>
                       {(
                         checkoutInfo?.shipping?.[index]?.detail?.total || 0
-                      )?.toLocaleString('vi-VN')}
+                      )?.toLocaleString()}
                       <sup>đ</sup>
                     </span>
                   </div>
@@ -190,7 +197,7 @@ export default function Confirmation({
                   <div className='text-red-600 text-right text-xl font-bold'>
                     {(
                       totalPrice(clusterOrder) +
-                      (checkoutInfo?.shipping?.[index]?.detail?.total || 0)
+                      (checkoutInfo?.shipping?.[index]?.detail?.total as number || 0)
                     ).toLocaleString('vi-VN')}
                     <sup>đ</sup>
                   </div>
@@ -204,7 +211,7 @@ export default function Confirmation({
         <Button
           type='submit'
           className='border bg-white text-mainColor1-600  border-mainColor1-600 hover:bg-white text-md font-semibold rounded-lg hover:drop-shadow-xl'
-          onClick={() => setStep(3)}
+          onClick={() => router.back()}
         >
           Quay lại
         </Button>
@@ -219,4 +226,3 @@ export default function Confirmation({
     </>
   )
 }
-

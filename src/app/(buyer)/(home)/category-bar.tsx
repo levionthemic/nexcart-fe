@@ -26,17 +26,21 @@ export default function CategoryBar({
         {categories?.map((item) => (
           <Collapsible key={item._id} className='w-full group/collapsible'>
             {/* <SidebarMenuItem> */}
-              <CollapsibleTrigger className='w-full'>
-                <SidebarMenuButton className='flex items-center justify-between w-full'>
+            <CollapsibleTrigger className='w-full'>
+              <SidebarMenuButton
+                asChild
+              >
+                <div className='flex items-center justify-between w-full'>
                   {item.name}
                   <ChevronDown className='ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180' />
-                </SidebarMenuButton>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <SidebarMenuSub>
-                  <SidebarMenuSubItem>SubMenuItem</SidebarMenuSubItem>
-                </SidebarMenuSub>
-              </CollapsibleContent>
+                </div>
+              </SidebarMenuButton>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarMenuSub>
+                <SidebarMenuSubItem>SubMenuItem</SidebarMenuSubItem>
+              </SidebarMenuSub>
+            </CollapsibleContent>
             {/* </SidebarMenuItem> */}
           </Collapsible>
         ))}

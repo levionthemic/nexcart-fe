@@ -1,8 +1,9 @@
 import React from 'react'
 import Information from './information'
 import WithPersistProvider from '@/components/providers/WithPersistProvider'
-import { OrderProvider } from '@/contexts/order-context'
 import Shipping from './shipping'
+import Payment from './payment'
+import Confirmation from './confirmation'
 
 export default async function CheckoutStepPage({
   params
@@ -16,22 +17,8 @@ export default async function CheckoutStepPage({
     <WithPersistProvider>
       {step == 1 && <Information />}
       {step == 2 && <Shipping />}
-      {step == 3 && (
-        <Payment
-          clusterOrders={clusterOrders}
-          setCheckoutInfo={setCheckoutInfo}
-          setStep={setStep}
-          checkoutInfo={checkoutInfo}
-        />
-      )}
-      {step == 4 && (
-        <Confirmation
-          clusterOrders={clusterOrders}
-          setStep={setStep}
-          checkoutInfo={checkoutInfo}
-          handleCheckout={handleCheckout}
-        />
-      )}
+      {step == 3 && <Payment />}
+      {step == 4 && <Confirmation />}
     </WithPersistProvider>
   )
 }

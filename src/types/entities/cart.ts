@@ -12,6 +12,7 @@ export interface FullProductItem extends Product {
   avatar: string
   name: string
   type: ProductType
+  subRows?: FullProductItem[]
 }
 
 export interface Cart {

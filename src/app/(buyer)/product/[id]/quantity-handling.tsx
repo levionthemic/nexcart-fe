@@ -18,13 +18,12 @@ import { MdAddShoppingCart } from 'react-icons/md'
 import { RiSubtractFill } from 'react-icons/ri'
 import { useDispatch, useSelector } from 'react-redux'
 import ReviewRate from './_components/review-rate'
-import Rating from 'react-rating'
-import { FaRegStar, FaStar } from 'react-icons/fa'
 import { selectCurrentUser } from '@/redux/user/userSlice'
 import { toast } from 'sonner'
 import { Cart, CartItem, FullProductItem } from '@/types/entities/cart'
 import { cloneDeep } from 'lodash'
 import { useVariantHandling } from '@/contexts/variant-handling-context'
+import { Ratings } from '@/components/ui/ratings'
 
 export default function QuantityHandling({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1)
@@ -98,18 +97,22 @@ export default function QuantityHandling({ product }: { product: Product }) {
       return
     }
 
-    router.push('/checkout', {
-      state: {
-        selectedRows: [
-          {
-            ...product,
-            type: product?.types.find((t) => t.typeId.toString() === typeId),
-            quantity: quantity
-          }
-        ],
-        buyNow: true
-      }
-    })
+    sessionStorage.setItem(
+      'itemList',
+      JSON.stringify([
+        {
+          productId: product._id,
+          typeId,
+          quantity: quantity,
+          _weight: 0,
+          _length: 0,
+          _width: 0,
+          _height: 0
+        }
+      ])
+    )
+    sessionStorage.setItem('buyNow', JSON.stringify(true))
+    router.push('/checkout')
   }
   return (
     <div className='sticky left-0 top-36 h-fit'>
@@ -198,13 +201,7 @@ export default function QuantityHandling({ product }: { product: Product }) {
             <span className='text-3xl font-semibold'>
               {product?.rating || 0}
             </span>
-            <Rating
-              emptySymbol={<FaRegStar />}
-              fullSymbol={<FaStar />}
-              initialRating={product?.rating || 0}
-              readonly
-              className='text-[#FBCA04] text-4xl leading-none flex-1'
-            />
+            <Ratings rating={product?.rating || 0} variant='yellow' size={35} />
           </div>
           <span className='text-sm text-gray-400'>
             ({product.reviews.map((review) => review.comments).flat(1)?.length}{' '}

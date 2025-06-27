@@ -1,5 +1,16 @@
 /* eslint-disable no-useless-catch */
+import http from '@/lib/http'
+import { Brand } from '@/types/entities/brand'
+import { Category } from '@/types/entities/category'
+import { Product } from '@/types/entities/product'
 import authorizedAxiosInstance from '@/utils/authorizedAxios'
+
+export type getProductsApiResponse = {
+  products: Product[]
+  totalProducts: number
+  categories: Category[]
+  brands: Brand[]
+}
 
 /**
  * Dashboard APIs
@@ -19,7 +30,7 @@ export const getLatestOrdersAPI = async () => {
 export const getBestSoldProductsAPI = async () => {
   try {
     const response = await authorizedAxiosInstance.get(
-      '/products/seller/get-all?q[sold]=-1'
+      '/product/seller/get-all?q[sold]=-1'
     )
     return response.data
   } catch (error) {
@@ -37,9 +48,10 @@ export const getBestSoldProductsAPI = async () => {
  * @author taiki and levi
  */
 export const getProductsAPI = async () => {
-  const response = await authorizedAxiosInstance.get('/products/seller/get-all')
-  return response.data
+  const response = await http.get<getProductsApiResponse>('/product/seller/get-all')
+  return response.payload
 }
+
 
 /**
  * Order APIs

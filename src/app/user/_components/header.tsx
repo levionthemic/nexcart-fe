@@ -37,7 +37,7 @@ export default function UserHeader() {
 
   return (
     <div className='flex items-center justify-between my-10'>
-      <Link href='/buyer'>
+      <Link href='/'>
         <House className='cursor-pointer text-mainColor1-800' />
       </Link>
       <CiSearch className='text-2xl font-bold cursor-pointer text-mainColor1-800' />

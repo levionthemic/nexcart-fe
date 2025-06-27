@@ -7,8 +7,7 @@ import { toast } from 'sonner'
 import { useSearchParams } from 'next/navigation'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import Rating from 'react-rating'
-import { FaRegCommentDots, FaRegStar, FaRegThumbsUp, FaStar } from 'react-icons/fa'
+import { FaRegCommentDots, FaRegThumbsUp } from 'react-icons/fa'
 import { COMMENTS } from '@/utils/constants'
 import { IoShareSocialOutline } from 'react-icons/io5'
 import { Separator } from '@/components/ui/separator'
@@ -17,6 +16,7 @@ import { Product } from '@/types/entities/product'
 import { useSelector } from 'react-redux'
 import { selectCurrentUser } from '@/redux/user/userSlice'
 import { socketIoInstance } from '@/app/socket'
+import { Ratings } from '@/components/ui/ratings'
 
 export default function ReviewSection({ product }: { product: Product }) {
   const sectionRef = useRef<HTMLDivElement>(null)
@@ -173,12 +173,9 @@ export default function ReviewSection({ product }: { product: Product }) {
                   </div>
                   <div className='flex-1'>
                     <div className='flex items-center gap-4'>
-                      <Rating
-                        emptySymbol={<FaRegStar />}
-                        fullSymbol={<FaStar />}
-                        initialRating={comment?.rating || 0}
-                        readonly
-                        className='text-[#FBCA04] text-xl leading-none'
+                      <Ratings
+                        rating={comment?.rating || 0}
+                        variant='yellow'
                       />
                       <span className='text-lg font-semibold leading-none'>
                         {COMMENTS[comment?.rating - 1]}

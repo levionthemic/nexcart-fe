@@ -39,6 +39,8 @@ authorizedAxiosInstance.interceptors.response.use(
       axiosReduxStore.dispatch(logoutUserAPI())
     }
 
+    console.log(error)
+
     const originalRequests = error.config
     if (error?.response?.status === 410 && originalRequests) {
       if (!refreshTokenPromise) {

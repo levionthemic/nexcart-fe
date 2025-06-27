@@ -203,7 +203,6 @@ export default function Information() {
     const shortAddress = `${buyerAddress.address}, ${wardName}, ${districtName}, ${provinceName}`
 
     const updatedCheckoutInfo = { information: { ...data, shortAddress: shortAddress } }
-    console.log(updatedCheckoutInfo)
 
     setCheckoutInfo(updatedCheckoutInfo)
     router.push('/checkout/2')
