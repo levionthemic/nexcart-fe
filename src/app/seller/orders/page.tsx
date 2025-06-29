@@ -1,3 +1,4 @@
+'use client'
 import { Banknote, CircleX, NotepadText, Truck } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import CountUp from 'react-countup'

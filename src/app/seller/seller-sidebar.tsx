@@ -33,35 +33,12 @@ import { LuSettings } from 'react-icons/lu'
 import { IoMdHelpCircleOutline } from 'react-icons/io'
 import { LuLogOut } from 'react-icons/lu'
 import { Separator } from '@/components/ui/separator'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
-} from '@/components/ui/alert-dialog'
-import { useDispatch } from 'react-redux'
-import { toast } from 'sonner'
-import { logoutUserAPI } from '@/redux/user/userSlice'
-import { clearCart } from '@/redux/cart/cartSlice'
 import { usePathname, useRouter } from 'next/navigation'
-import { AppDispatch } from '@/redux/store'
 import Link from 'next/link'
+import LogoutComponent from '@/components/logout/logout'
 
 export default function SellerSidebar() {
   const router = useRouter()
-  const dispatch = useDispatch<AppDispatch>()
-
-  const handleLogout = async () => {
-    dispatch(clearCart())
-    toast.promise(dispatch(logoutUserAPI()), {
-      loading: 'Đang đăng xuất...'
-    })
-  }
 
   const { open } = useSidebar()
 
@@ -128,7 +105,7 @@ export default function SellerSidebar() {
                       asChild
                       className='text-white hover:bg-white/15 hover:text-white hover:rounded-lg'
                     >
-                      <Link href='/seller/store/list-store'>
+                      <Link href='/seller/store/storelist'>
                         Danh sách cửa hàng
                       </Link>
                     </SidebarMenuButton>
@@ -209,11 +186,11 @@ export default function SellerSidebar() {
 
           <SidebarMenuItem>
             <SidebarMenuButton
-              isActive={pathname === '/seller/comment'}
+              isActive={pathname === '/seller/comments'}
               className='text-white hover:bg-white/15 hover:text-white hover:rounded-lg'
               asChild
             >
-              <Link href='/seller/comment'>
+              <Link href='/seller/comments'>
                 <MessageCircleWarning />
                 <span>Quản lý đánh giá, bình luận</span>
               </Link>
@@ -253,8 +230,8 @@ export default function SellerSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
+              <LogoutComponent
+                icon={
                   <SidebarMenuItem>
                     <SidebarMenuButton
                       className='text-white hover:bg-white/15 hover:text-white hover:rounded-lg'
@@ -266,25 +243,8 @@ export default function SellerSidebar() {
                       </div>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Bạn có chắc chắn muốn đăng xuất?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Bạn sẽ cần phải đăng nhập lại trước khi truy cập vào hệ
-                      thống.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Hủy</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleLogout}>
-                      Đăng xuất
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+                }
+              />
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

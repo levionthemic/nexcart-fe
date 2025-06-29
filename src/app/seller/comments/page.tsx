@@ -1,3 +1,5 @@
+'use client'
+
 import { useState } from 'react'
 import {
   Table,
@@ -9,8 +11,7 @@ import {
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import Rating from 'react-rating'
-import { FaRegStar, FaReply, FaStar } from 'react-icons/fa'
+import { FaReply } from 'react-icons/fa'
 import { TbMessageReport } from 'react-icons/tb'
 import {
   Dialog,
@@ -35,6 +36,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import PageHeader from '../_components/page-header'
 import { BarChartComponent } from './_components/bar-chart'
 import { MultiLineChartComponent } from './_components/multiline-chart'
+import { Ratings } from '@/components/ui/ratings'
 
 const mockComments = [
   {
@@ -151,19 +153,12 @@ export default function Comments() {
                     {item.commenterName}
                   </TableCell>
                   <TableCell>
-                    {formatter.format(date)}{' '}
                     {new Date(item.commentAt).toLocaleTimeString('vi-VN')}
                   </TableCell>
                   <TableCell>
                     <div className='flex items-center gap-2'>
                       <span>{item.starCount} </span>
-                      <Rating
-                        emptySymbol={<FaRegStar />}
-                        fullSymbol={<FaStar />}
-                        initialRating={item.starCount || 0}
-                        readonly
-                        className='text-[#FBCA04] text-md leading-none'
-                      />
+                      <Ratings rating={item.starCount || 0} variant='yellow' />
                     </div>
                   </TableCell>
                   <TableCell>{item.commentContent}</TableCell>

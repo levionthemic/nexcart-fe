@@ -48,10 +48,12 @@ export const getBestSoldProductsAPI = async () => {
  * @author taiki and levi
  */
 export const getProductsAPI = async () => {
-  const response = await http.get<getProductsApiResponse>('/product/seller/get-all')
+  const response = await http.get<getProductsApiResponse>(
+    '/product/seller/get-all',
+    { credentials: 'include' }
+  )
   return response.payload
 }
-
 
 /**
  * Order APIs

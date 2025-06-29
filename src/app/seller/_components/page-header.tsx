@@ -25,7 +25,7 @@ export default function PageHeader({ links, title }: PageHeaderProps) {
         <Breadcrumb>
           <BreadcrumbList className='text-sm'>
             {links.map(({ link, label }, index) => (
-              <div key={index}>
+              <div key={index} className='flex items-center gap-2'>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
                     <Link href={link}>{label}</Link>

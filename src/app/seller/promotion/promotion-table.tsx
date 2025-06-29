@@ -200,6 +200,8 @@ export default function PromotionTable() {
       const res = await fetch(
         'https://res.cloudinary.com/dlzlfasou/raw/upload/users-01_fertyx.json'
       )
+      if (!res.ok)
+        return
       const data = await res.json()
       setData(data)
     }

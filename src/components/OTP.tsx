@@ -24,10 +24,10 @@ export default function OTP({
   email,
   trigger
 }: {
-  open: boolean
-  setOpen: (open: boolean) => void | undefined
-  email: string,
-  trigger: React.ReactNode
+  open?: boolean
+  setOpen?: (open: boolean) => void | undefined
+  email?: string,
+  trigger?: React.ReactNode
 }) {
   const [value, setValue] = useState<string>('')
   const [token, setToken] = useState<string>('')
@@ -51,7 +51,7 @@ export default function OTP({
     const toastId = toast.loading('Đang xác nhận...')
 
     const [res] = await asyncHandler(
-      verifyOtpAPI({ otpCode: value, email: email })
+      verifyOtpAPI({ otpCode: value, email: String(email) })
     )
 
     toast.dismiss(toastId)
