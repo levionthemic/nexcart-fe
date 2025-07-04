@@ -25,6 +25,12 @@ import UploadImage from '@/components/UploadImage'
 import { FIELD_REQUIRED_MESSAGE } from '@/utils/validators'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Category } from '@/types/entities/category'
+import { Brand } from '@/types/entities/brand'
+import { useEffect, useState } from 'react'
+import { getShopsAPI } from '@/apis/sellerApis'
+import { Shop } from '@/types/entities/shop'
+import { v4 as uuidv4 } from 'uuid'
 
 const formSchema = z.object({
   name: z
@@ -36,7 +42,7 @@ const formSchema = z.object({
   brandId: z
     .string({ required_error: FIELD_REQUIRED_MESSAGE })
     .min(1, { message: FIELD_REQUIRED_MESSAGE }),
-  typeFeatures: z
+  types: z
     .array(
       z.object({
         typeId: z
@@ -45,8 +51,8 @@ const formSchema = z.object({
         typeName: z
           .string({ required_error: FIELD_REQUIRED_MESSAGE })
           .min(1, { message: FIELD_REQUIRED_MESSAGE }),
-        discount: z.number({ required_error: FIELD_REQUIRED_MESSAGE }),
-        price: z.number({ message: FIELD_REQUIRED_MESSAGE })
+        discount: z.coerce.number({ message: FIELD_REQUIRED_MESSAGE }).int(),
+        price: z.coerce.number({ message: FIELD_REQUIRED_MESSAGE }).int()
       })
     )
     .min(1, { message: FIELD_REQUIRED_MESSAGE }),
@@ -59,7 +65,7 @@ const formSchema = z.object({
         typeId: z
           .string({ required_error: FIELD_REQUIRED_MESSAGE })
           .min(1, { message: FIELD_REQUIRED_MESSAGE }),
-        stock: z.number({ required_error: FIELD_REQUIRED_MESSAGE })
+        stock: z.coerce.number({ message: FIELD_REQUIRED_MESSAGE }).int()
       })
     )
     .min(1, { message: FIELD_REQUIRED_MESSAGE }),
@@ -74,28 +80,52 @@ const formSchema = z.object({
         .string({ required_error: FIELD_REQUIRED_MESSAGE })
         .min(1, { message: FIELD_REQUIRED_MESSAGE })
     })
-  )
+  ),
+  width: z.coerce.number({ message: FIELD_REQUIRED_MESSAGE }).int(),
+  length: z.coerce.number({ message: FIELD_REQUIRED_MESSAGE }).int(),
+  height: z.coerce.number({ message: FIELD_REQUIRED_MESSAGE }).int(),
+  weight: z.coerce.number({ message: FIELD_REQUIRED_MESSAGE }).int()
 })
 
 export type CreateProductFormSchemaType = z.infer<typeof formSchema>
 
-export default function CreateProductForm() {
+export type CreateProductFormPropTypes = {
+  categories: Category[]
+  brands: Brand[]
+}
+
+export default function CreateProductForm({
+  categories,
+  brands
+}: CreateProductFormPropTypes) {
+  const [shops, setShops] = useState<Shop[]>([])
+  useEffect(() => {
+    getShopsAPI().then((data) => setShops(data))
+  }, [])
+
   const form = useForm<CreateProductFormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
       categoryId: '',
       brandId: '',
-      typeFeatures: [{ typeId: '', typeName: '', discount: 0, price: 0 }],
-      shopTypes: [{ shopId: '', typeId: '', stock: 0 }],
+      types: [
+        {
+          typeId: uuidv4(),
+          typeName: '',
+          discount: undefined,
+          price: undefined
+        }
+      ],
+      shopTypes: [{ shopId: '', typeId: '', stock: undefined }],
       features: [{ field: '', content: '' }],
       description: ''
     }
   })
 
-  const formFieldArrayForTypeFeatures = useFieldArray({
+  const formFieldArrayForTypes = useFieldArray({
     control: form.control,
-    name: 'typeFeatures'
+    name: 'types'
   })
 
   const formFieldArrayForFeatures = useFieldArray({
@@ -114,12 +144,12 @@ export default function CreateProductForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleAddProduct)}>
+      <form onSubmit={form.handleSubmit(handleAddProduct)} className='space-y-4!'>
         <FormField
           control={form.control}
           name='name'
           render={({ field }) => (
-            <FormItem className='grid grid-cols-3 mb-2'>
+            <FormItem className='grid grid-cols-3 gap-2 mb-2'>
               <div className=''>
                 <FormLabel>
                   Tên sản phẩm<span className='text-destructive'>*</span>
@@ -150,7 +180,9 @@ export default function CreateProductForm() {
           render={({ field }) => (
             <FormItem className='grid grid-cols-3 mb-2'>
               <div className=''>
-                <FormLabel>Danh mục sản phẩm</FormLabel>
+                <FormLabel>
+                  Danh mục sản phẩm<span className='text-destructive'>*</span>
+                </FormLabel>
                 <FormDescription>Chọn danh mục sản phẩm</FormDescription>
               </div>
 
@@ -165,9 +197,11 @@ export default function CreateProductForm() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value='m@example.com'>m@example.com</SelectItem>
-                    <SelectItem value='m@google.com'>m@google.com</SelectItem>
-                    <SelectItem value='m@support.com'>m@support.com</SelectItem>
+                    {categories.map((c) => (
+                      <SelectItem key={c.id} value={c.id}>
+                        {c.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                   <FormMessage className='mt-2' />
                 </Select>
@@ -182,7 +216,10 @@ export default function CreateProductForm() {
           render={({ field }) => (
             <FormItem className='grid grid-cols-3 mb-2'>
               <div className=''>
-                <FormLabel>Thương hiệu sản phẩm</FormLabel>
+                <FormLabel>
+                  Thương hiệu sản phẩm
+                  <span className='text-destructive'>*</span>
+                </FormLabel>
                 <FormDescription>Chọn thương hiệu sản phẩm</FormDescription>
               </div>
 
@@ -197,9 +234,11 @@ export default function CreateProductForm() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value='m@example.com'>m@example.com</SelectItem>
-                    <SelectItem value='m@google.com'>m@google.com</SelectItem>
-                    <SelectItem value='m@support.com'>m@support.com</SelectItem>
+                    {brands.map((b) => (
+                      <SelectItem key={b.id} value={b.id}>
+                        {b.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage className='mt-2' />
@@ -216,7 +255,7 @@ export default function CreateProductForm() {
               <div className=''>
                 <FormLabel>Đặc điểm sản phẩm</FormLabel>
                 <FormDescription>
-                  Thêm các đặc điểm sản phẩm theo cặp. Nếu không có, vui lòng
+                  Thêm các đặc điểm sản phẩm theo cặp. <br />Nếu không có, vui lòng
                   bấm &quot;Xóa&quot;.
                 </FormDescription>
               </div>
@@ -267,7 +306,7 @@ export default function CreateProductForm() {
                     })
                   }
                   className={clsx({
-                    'mt-2': formFieldArrayForFeatures.fields.length > 0
+                    'mt-1': formFieldArrayForFeatures.fields.length > 0
                   })}
                 >
                   Thêm
@@ -280,26 +319,158 @@ export default function CreateProductForm() {
 
         <FormField
           control={form.control}
-          name='typeFeatures'
+          name='weight'
+          render={({ field }) => (
+            <FormItem className='grid grid-cols-3 mb-2'>
+              <div className=''>
+                <FormLabel>
+                  Cân nặng của sản phẩm
+                  <span className='text-destructive'>*</span>
+                </FormLabel>
+                <FormDescription className=''>
+                  Cung cấp cho việc tính toán phí vận chuyển. <br/>Tính bằng kg.
+                </FormDescription>
+              </div>
+              <div className='col-span-2'>
+                <FormControl>
+                  <Input
+                    type='number'
+                    placeholder='Cân nặng (kg)'
+                    className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] w-1/2 ${
+                      !!form.formState.errors.weight && 'border-red-500'
+                    }`}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className='mt-2' />
+              </div>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name='width'
+          render={({ field }) => (
+            <FormItem className='grid grid-cols-3 mb-2'>
+              <div className=''>
+                <FormLabel>
+                  Kích thước chiều rộng của sản phẩm
+                  <span className='text-destructive'>*</span>
+                </FormLabel>
+                <FormDescription className=''>
+                  Cung cấp cho việc tính toán phí vận chuyển. <br />Tính bằng cm.
+                </FormDescription>
+              </div>
+              <div className='col-span-2'>
+                <FormControl>
+                  <Input
+                    type='number'
+                    placeholder='Chiều rộng (cm)'
+                    className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] w-1/2 ${
+                      !!form.formState.errors.width && 'border-red-500'
+                    }`}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className='mt-2' />
+              </div>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name='length'
+          render={({ field }) => (
+            <FormItem className='grid grid-cols-3 mb-2'>
+              <div className=''>
+                <FormLabel>
+                  Kích thước chiều dài của sản phẩm
+                  <span className='text-destructive'>*</span>
+                </FormLabel>
+                <FormDescription className=''>
+                  Cung cấp cho việc tính toán phí vận chuyển. <br />Tính bằng cm.
+                </FormDescription>
+              </div>
+              <div className='col-span-2'>
+                <FormControl>
+                  <Input
+                    type='number'
+                    placeholder='Chiều dài (cm)'
+                    className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] w-1/2 ${
+                      !!form.formState.errors.length && 'border-red-500'
+                    }`}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className='mt-2' />
+              </div>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name='height'
+          render={({ field }) => (
+            <FormItem className='grid grid-cols-3 mb-2'>
+              <div className=''>
+                <FormLabel>
+                  Kích thước chiều cao của sản phẩm
+                  <span className='text-destructive'>*</span>
+                </FormLabel>
+                <FormDescription className=''>
+                  Cung cấp cho việc tính toán phí vận chuyển. <br />Tính bằng cm.
+                </FormDescription>
+              </div>
+              <div className='col-span-2'>
+                <FormControl>
+                  <Input
+                    type='number'
+                    placeholder='Chiều cao (cm)'
+                    className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] w-1/2 ${
+                      !!form.formState.errors.height && 'border-red-500'
+                    }`}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className='mt-2' />
+              </div>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name='types'
           render={() => (
             <FormItem className='grid grid-cols-3 mb-2'>
               <div className=''>
-                <FormLabel>Thông tin loại sản phẩm</FormLabel>
+                <FormLabel>
+                  Thông tin loại sản phẩm
+                  <span className='text-destructive'>*</span>
+                </FormLabel>
                 <FormDescription>
-                  Thêm các loại sản phẩm với các trường tương ứng
+                  Thêm các loại sản phẩm với các trường tương ứng.
+                  <br />Ô đầu tiên là mã loại tự sinh.
                 </FormDescription>
               </div>
 
               <div className='col-span-2'>
-                {formFieldArrayForTypeFeatures.fields.map((field, index) => (
+                {formFieldArrayForTypes.fields.map((field, index) => (
                   <div key={field.id} className='flex gap-2 items-start mb-2'>
                     <FormField
                       control={form.control}
-                      name={`typeFeatures.${index}.typeId`}
+                      name={`types.${index}.typeId`}
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
-                            <Input placeholder='Mã loại...' {...field} />
+                            <Input
+                              placeholder='Mã loại...'
+                              {...field}
+                              disabled
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -307,7 +478,7 @@ export default function CreateProductForm() {
                     />
                     <FormField
                       control={form.control}
-                      name={`typeFeatures.${index}.typeName`}
+                      name={`types.${index}.typeName`}
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
@@ -319,11 +490,15 @@ export default function CreateProductForm() {
                     />
                     <FormField
                       control={form.control}
-                      name={`typeFeatures.${index}.discount` as const}
+                      name={`types.${index}.discount` as const}
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
-                            <Input placeholder='Giảm giá...' {...field} />
+                            <Input
+                              type='number'
+                              placeholder='Giảm giá...'
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -331,11 +506,15 @@ export default function CreateProductForm() {
                     />
                     <FormField
                       control={form.control}
-                      name={`typeFeatures.${index}.price`}
+                      name={`types.${index}.price`}
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
-                            <Input placeholder='Đơn giá...' {...field} />
+                            <Input
+                              type='number'
+                              placeholder='Đơn giá...'
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -344,9 +523,7 @@ export default function CreateProductForm() {
                     <Button
                       variant='destructive'
                       type='button'
-                      onClick={() =>
-                        formFieldArrayForTypeFeatures.remove(index)
-                      }
+                      onClick={() => formFieldArrayForTypes.remove(index)}
                     >
                       Xóa
                     </Button>
@@ -356,7 +533,7 @@ export default function CreateProductForm() {
                 <Button
                   type='button'
                   onClick={() =>
-                    formFieldArrayForTypeFeatures.append({
+                    formFieldArrayForTypes.append({
                       typeId: '',
                       typeName: '',
                       discount: 0,
@@ -364,7 +541,7 @@ export default function CreateProductForm() {
                     })
                   }
                   className={clsx({
-                    'mt-2': formFieldArrayForTypeFeatures.fields.length > 0
+                    'mt-1': formFieldArrayForTypes.fields.length > 0
                   })}
                 >
                   Thêm
@@ -381,7 +558,10 @@ export default function CreateProductForm() {
           render={() => (
             <FormItem className='grid grid-cols-3 mb-2'>
               <div className=''>
-                <FormLabel>Quản lý loại sản phẩm trong từng shop</FormLabel>
+                <FormLabel>
+                  Quản lý loại sản phẩm trong từng shop
+                  <span className='text-destructive'>*</span>
+                </FormLabel>
                 <FormDescription>
                   Thêm các loại sản phẩm vào các shop với số lượng tương ứng
                 </FormDescription>
@@ -405,15 +585,11 @@ export default function CreateProductForm() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value='m@example.com'>
-                                m@example.com
-                              </SelectItem>
-                              <SelectItem value='m@google.com'>
-                                m@google.com
-                              </SelectItem>
-                              <SelectItem value='m@support.com'>
-                                m@support.com
-                              </SelectItem>
+                              {shops.map((shop, index) => (
+                                <SelectItem key={shop.id} value={shop.id}>
+                                  Cửa hàng {index + 1}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
 
@@ -436,15 +612,14 @@ export default function CreateProductForm() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value='m@example.com'>
-                                m@example.com
-                              </SelectItem>
-                              <SelectItem value='m@google.com'>
-                                m@google.com
-                              </SelectItem>
-                              <SelectItem value='m@support.com'>
-                                m@support.com
-                              </SelectItem>
+                              {form.watch('types').map((type) => (
+                                <SelectItem
+                                  key={type.typeId}
+                                  value={type.typeName || 'Chưa có loại'}
+                                >
+                                  {type.typeName || 'Chưa có loại'}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
 
@@ -488,7 +663,7 @@ export default function CreateProductForm() {
                     })
                   }
                   className={clsx({
-                    'mt-2': formFieldArrayForShopTypes.fields.length > 0
+                    'mt-1': formFieldArrayForShopTypes.fields.length > 0
                   })}
                 >
                   Thêm

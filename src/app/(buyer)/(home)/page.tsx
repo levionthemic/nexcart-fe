@@ -1,6 +1,6 @@
 import ProductCard from '@/components/product'
 import CategoryBar from './category-bar'
-import { getCategoriesAPI, getProductsAPI } from '@/apis/buyerApis'
+import { getProductsAPI } from '@/apis/buyerApis'
 
 import { FaShippingFast } from 'react-icons/fa'
 import { MdSupportAgent } from 'react-icons/md'
@@ -17,6 +17,7 @@ import Image from 'next/image'
 import CountDown from './countdown'
 import CarouselProducts from './carousel-products'
 import CarouselCategories from './carousel-categories'
+import { getCategoriesAPI } from '@/apis/commonApis'
 
 export default async function HomePage() {
   const productsData = await getProductsAPI()

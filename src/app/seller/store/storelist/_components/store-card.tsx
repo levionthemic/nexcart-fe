@@ -3,34 +3,42 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Package, DollarSign, CalendarDays } from 'lucide-react'
+import {
+  Package,
+  CalendarDays,
+  MapPinned,
+  PhoneCallIcon
+} from 'lucide-react'
 import Image, { StaticImageData } from 'next/image'
-import { AccountStatus } from '@/types/enums/account'
+import dayjs from 'dayjs'
+import { ShopStatus } from '@/types/enums/shop-status'
 
 const statusColor = {
-  active: 'bg-green-100 text-green-700',
-  inactive: 'bg-gray-100 text-gray-700',
-  pending: 'bg-yellow-100 text-yellow-700'
+  ACTIVE: 'bg-green-100 text-green-700',
+  INACTIVE: 'bg-gray-100 text-gray-700',
+  PENDING: 'bg-yellow-100 text-yellow-700'
 }
 
 interface StoreCardProps {
+  shortAddress: string
+  phone: string
+  status: ShopStatus
   logoUrl: string | StaticImageData
   name: string
-  status: AccountStatus
-  createdAt: string
+  createdAt: Date
   productCount: number
-  revenue: number
   onView: () => void
   onEdit: () => void
 }
 
 export default function StoreCard({
+  shortAddress,
+  phone,
   logoUrl,
   name,
   status,
   createdAt,
   productCount,
-  revenue,
   onView,
   onEdit
 }: StoreCardProps) {
@@ -45,38 +53,42 @@ export default function StoreCard({
               alt={name}
               width={48}
               height={48}
-              className='rounded-lg object-cover border'
+              className='rounded-lg object-cover border w-full h-full aspect-square'
             />
             <div>
-              <h2 className='text-lg font-semibold'>{name}</h2>
-              <p className='text-sm text-muted-foreground flex items-center gap-1'>
+              <h2 className='text-lg font-semibold mb-1'>{name}</h2>
+              <p className='text-sm text-muted-foreground flex items-center gap-2'>
                 <CalendarDays className='w-4 h-4' />
-                {createdAt}
+                <span className='leading-0'>
+                  {dayjs(createdAt).format('DD/MM/YYYY')}
+                </span>
               </p>
             </div>
           </div>
 
           <Badge className={statusColor[status]}>
-            {status === 'active'
+            {status === ShopStatus.ACTIVE
               ? 'Đang hoạt động'
-              : status === 'inactive'
+              : status === ShopStatus.INACTIVE
               ? 'Tạm dừng'
               : 'Chờ duyệt'}
           </Badge>
         </div>
 
         {/* Info */}
+        <div className='flex items-center gap-2 text-muted-foreground text-sm px-1'>
+          <MapPinned size={16} className='w-4' />
+          <div>{shortAddress}</div>
+        </div>
+
         <div className='flex items-center justify-between text-sm text-muted-foreground px-1'>
-          <div className='flex items-center gap-1'>
+          <div className='flex items-center gap-2'>
             <Package className='w-4 h-4' />
             <span>{productCount} sản phẩm</span>
           </div>
-          <div className='flex items-center gap-1'>
-            <DollarSign className='w-4 h-4' />
-            <span>
-              {revenue.toLocaleString()}
-              <sup>đ</sup>
-            </span>
+          <div className='flex items-center gap-2'>
+            <PhoneCallIcon size={16} className='w-4' />
+            <div>{phone}</div>
           </div>
         </div>
 

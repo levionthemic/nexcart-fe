@@ -1,8 +1,10 @@
 /* eslint-disable no-useless-catch */
+import { AddShopFormSchemaType } from '@/app/seller/store/storelist/_components/add-shop'
 import http from '@/lib/http'
 import { Brand } from '@/types/entities/brand'
 import { Category } from '@/types/entities/category'
 import { Product } from '@/types/entities/product'
+import { Shop } from '@/types/entities/shop'
 import authorizedAxiosInstance from '@/utils/authorizedAxios'
 
 export type getProductsApiResponse = {
@@ -42,6 +44,18 @@ export const getBestSoldProductsAPI = async () => {
  * Store APIs
  * @author taiki and levi
  */
+
+export const getShopsAPI = async () => {
+  const response = await http.get<Shop[]>('/shop', { credentials: 'include' })
+  return response.payload
+}
+
+export const addNewShopAPI = async (data: AddShopFormSchemaType) => {
+  const response = await http.post('/shop/add', data, {
+    credentials: 'include'
+  })
+  return response
+}
 
 /**
  * Products APIs

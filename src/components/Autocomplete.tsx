@@ -51,7 +51,7 @@ export default function Autocomplete({
   const [value, setValue] = useState<string | number>(defaultValue)
 
   return (
-    <div className='*:not-first:mt-2'>
+    <div className='*:not-first:mt-0'>
       <Label htmlFor={id}>{label}</Label>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>

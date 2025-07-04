@@ -1,5 +1,4 @@
 'use client'
-
 import { ArrowRightIcon, SearchIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -7,9 +6,30 @@ import banner from '@/assets/banner.jpg'
 import PageHeader from '../../_components/page-header'
 import OverviewStats from './_components/overview-stats'
 import StoreCard from './_components/store-card'
-import { AccountStatus } from '@/types/enums/account'
+import AddShopDialog from './_components/add-shop'
+import { getShopsAPI } from '@/apis/sellerApis'
+import { useEffect, useState } from 'react'
+import { Shop } from '@/types/entities/shop'
+import { getAddressString } from '@/utils/helpers'
 
 export default function StoreList() {
+  const [shops, setShops] = useState<Shop[]>([])
+
+  useEffect(() => {
+    getShopsAPI().then(async (data) => {
+      const shopsResult = []
+      for (const d of data) {
+        const shortAddress = await getAddressString({
+          province: d.provinceId,
+          district: d.districtId,
+          ward: d.wardCode,
+          address: d.address
+        })
+        shopsResult.push({ ...d, shortAddress: shortAddress })
+      }
+      setShops(shopsResult)
+    })
+  }, [])
   return (
     <div className='px-6 py-4'>
       <PageHeader
@@ -53,21 +73,22 @@ export default function StoreList() {
           </button>
         </div>
 
-        <Button>+ Đăng kí cửa hàng mới</Button>
+        <AddShopDialog trigger={<Button>+ Đăng kí cửa hàng mới</Button>} />
       </div>
 
       {/* List Cards */}
-      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-        <StoreCard
-          logoUrl={banner}
-          name='Cửa hàng thời trang'
-          status={AccountStatus.ACTIVE}
-          createdAt='15/03/2025'
-          productCount={48}
-          revenue={32500000}
-          onView={() => console.log('Xem chi tiết')}
-          onEdit={() => console.log('Chỉnh sửa')}
-        />
+      <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
+        {shops.map((shop, index) => (
+          <StoreCard
+            {...shop}
+            key={shop.id}
+            logoUrl={banner}
+            name={`Cửa hàng ${index + 1}`}
+            productCount={48}
+            onView={() => console.log('Xem chi tiết')}
+            onEdit={() => console.log('Chỉnh sửa')}
+          />
+        ))}
       </div>
     </div>
   )

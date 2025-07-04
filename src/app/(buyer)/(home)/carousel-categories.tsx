@@ -1,6 +1,6 @@
 'use client'
 
-import ProductCard from "@/components/product/product-card"
+import ProductCard from "@/components/product"
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
 import { Category } from "@/types/entities/category"
 import Autoplay from "embla-carousel-autoplay"

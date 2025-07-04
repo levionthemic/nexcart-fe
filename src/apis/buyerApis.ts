@@ -46,15 +46,6 @@ export const updateProductDetailAPI = async (
 }
 
 /**
- * Categories APIs
- * @author levi
- */
-export const getCategoriesAPI = async () => {
-  const response = await http.get<Category[]>('/category')
-  return response.payload
-}
-
-/**
  * Review APIs
  * @author levi
  */
