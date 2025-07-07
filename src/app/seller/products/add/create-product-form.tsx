@@ -28,9 +28,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Category } from '@/types/entities/category'
 import { Brand } from '@/types/entities/brand'
 import { useEffect, useState } from 'react'
-import { getShopsAPI } from '@/apis/sellerApis'
+import { createProductAPI, getShopsAPI } from '@/apis/sellerApis'
 import { Shop } from '@/types/entities/shop'
 import { v4 as uuidv4 } from 'uuid'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 const formSchema = z.object({
   name: z
@@ -103,6 +105,8 @@ export default function CreateProductForm({
     getShopsAPI().then((data) => setShops(data))
   }, [])
 
+  const router = useRouter()
+
   const form = useForm<CreateProductFormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -139,12 +143,22 @@ export default function CreateProductForm({
   })
 
   const handleAddProduct = (data: CreateProductFormSchemaType) => {
-    console.log(data)
+    toast.promise(createProductAPI(data), {
+      loading: 'Đang tạo sản phẩm...',
+      success: () => {
+        router.back()
+        return 'Tạo sản phẩm thành công!'
+      },
+      error: 'Đã có lỗi!'
+    })
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleAddProduct)} className='space-y-4!'>
+      <form
+        onSubmit={form.handleSubmit(handleAddProduct)}
+        className='space-y-4!'
+      >
         <FormField
           control={form.control}
           name='name'
@@ -255,8 +269,8 @@ export default function CreateProductForm({
               <div className=''>
                 <FormLabel>Đặc điểm sản phẩm</FormLabel>
                 <FormDescription>
-                  Thêm các đặc điểm sản phẩm theo cặp. <br />Nếu không có, vui lòng
-                  bấm &quot;Xóa&quot;.
+                  Thêm các đặc điểm sản phẩm theo cặp. <br />
+                  Nếu không có, vui lòng bấm &quot;Xóa&quot;.
                 </FormDescription>
               </div>
 
@@ -328,7 +342,8 @@ export default function CreateProductForm({
                   <span className='text-destructive'>*</span>
                 </FormLabel>
                 <FormDescription className=''>
-                  Cung cấp cho việc tính toán phí vận chuyển. <br/>Tính bằng kg.
+                  Cung cấp cho việc tính toán phí vận chuyển. <br />
+                  Tính bằng kg.
                 </FormDescription>
               </div>
               <div className='col-span-2'>
@@ -359,7 +374,8 @@ export default function CreateProductForm({
                   <span className='text-destructive'>*</span>
                 </FormLabel>
                 <FormDescription className=''>
-                  Cung cấp cho việc tính toán phí vận chuyển. <br />Tính bằng cm.
+                  Cung cấp cho việc tính toán phí vận chuyển. <br />
+                  Tính bằng cm.
                 </FormDescription>
               </div>
               <div className='col-span-2'>
@@ -390,7 +406,8 @@ export default function CreateProductForm({
                   <span className='text-destructive'>*</span>
                 </FormLabel>
                 <FormDescription className=''>
-                  Cung cấp cho việc tính toán phí vận chuyển. <br />Tính bằng cm.
+                  Cung cấp cho việc tính toán phí vận chuyển. <br />
+                  Tính bằng cm.
                 </FormDescription>
               </div>
               <div className='col-span-2'>
@@ -421,7 +438,8 @@ export default function CreateProductForm({
                   <span className='text-destructive'>*</span>
                 </FormLabel>
                 <FormDescription className=''>
-                  Cung cấp cho việc tính toán phí vận chuyển. <br />Tính bằng cm.
+                  Cung cấp cho việc tính toán phí vận chuyển. <br />
+                  Tính bằng cm.
                 </FormDescription>
               </div>
               <div className='col-span-2'>
@@ -615,7 +633,7 @@ export default function CreateProductForm({
                               {form.watch('types').map((type) => (
                                 <SelectItem
                                   key={type.typeId}
-                                  value={type.typeName || 'Chưa có loại'}
+                                  value={type.typeId || 'Chưa có loại'}
                                 >
                                   {type.typeName || 'Chưa có loại'}
                                 </SelectItem>

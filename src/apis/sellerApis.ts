@@ -1,4 +1,5 @@
 /* eslint-disable no-useless-catch */
+import { CreateProductFormSchemaType } from '@/app/seller/products/add/create-product-form'
 import { AddShopFormSchemaType } from '@/app/seller/store/storelist/_components/add-shop'
 import http from '@/lib/http'
 import { Brand } from '@/types/entities/brand'
@@ -66,6 +67,13 @@ export const getProductsAPI = async () => {
     '/product/seller/get-all',
     { credentials: 'include' }
   )
+  return response.payload
+}
+
+export const createProductAPI = async (data: CreateProductFormSchemaType) => {
+  const response = await http.post('/product/create', data, {
+    credentials: 'include'
+  })
   return response.payload
 }
 
