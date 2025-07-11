@@ -343,7 +343,7 @@ export default function CreateProductForm({
                 </FormLabel>
                 <FormDescription className=''>
                   Cung cấp cho việc tính toán phí vận chuyển. <br />
-                  Tính bằng kg.
+                  Tính bằng gram.
                 </FormDescription>
               </div>
               <div className='col-span-2'>

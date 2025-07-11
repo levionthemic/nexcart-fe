@@ -11,3 +11,5 @@ export const COMMENTS = [
   'Hài lòng',
   'Cực kì hài lòng'
 ]
+
+export const DEFAULT_IMAGE_URL = "https://res.cloudinary.com/dnzytzmek/image/upload/v1752140613/empty_c2urfw.jpg"

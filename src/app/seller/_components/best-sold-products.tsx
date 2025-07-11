@@ -15,7 +15,7 @@ export default function BestSoldProducts() {
   return (
     <ul className='space-y-2'>
       {bestSoldProducts?.slice(0, 8)?.map((product) => (
-        <li key={product?._id} className='flex items-center gap-4'>
+        <li key={product?.id} className='flex items-center gap-4'>
           <div className='flex items-center gap-3 flex-1'>
             <Image
               src={product?.avatar}
@@ -27,7 +27,7 @@ export default function BestSoldProducts() {
             <div className='flex flex-col'>
               <span className='line-clamp-1'>{product?.name}</span>
               <span className='text-sm text-muted-foreground'>
-                {product?.avgPrice.toLocaleString('vi-vn')}
+                {product?.averagePrice.toLocaleString('vi-vn')}
                 <sup>đ</sup>
               </span>
             </div>

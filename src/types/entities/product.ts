@@ -16,7 +16,7 @@ export interface Product {
   type: ProductType
   sellerId: string
   seller: User
-  avgPrice: number
+  averagePrice: number
   rating: number
   sold: number
   reviews: Review[]

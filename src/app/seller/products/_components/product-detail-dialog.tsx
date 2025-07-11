@@ -57,7 +57,7 @@ function ProductDetailDialog({ product }: { product: Product }) {
             <strong>Danh mục:</strong> {product.category.name}
           </p>
           <p>
-            <strong>Giá trung bình:</strong> {product.avgPrice.toLocaleString()}{' '}
+            <strong>Giá trung bình:</strong> {product.averagePrice.toLocaleString()}{' '}
             đ
           </p>
           <p>

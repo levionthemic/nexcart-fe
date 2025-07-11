@@ -83,6 +83,7 @@ import { useRouter } from 'next/navigation'
 import { Product } from '@/types/entities/product'
 import ProductDetailDialog from './product-detail-dialog'
 import { getProductsAPI } from '@/apis/sellerApis'
+import { DEFAULT_IMAGE_URL } from '@/utils/constants'
 
 // Custom filter function for multi-column searching
 const multiColumnFilterFn = (row, columnId, filterValue) => {
@@ -129,7 +130,7 @@ const columns: ColumnDef<Product>[] = [
     accessorKey: 'avatar',
     cell: ({ row }) => (
       <Image
-        src={row.getValue('avatar')}
+        src={row.getValue('avatar') || DEFAULT_IMAGE_URL}
         alt=''
         width={40}
         height={40}
@@ -171,12 +172,12 @@ const columns: ColumnDef<Product>[] = [
     enableSorting: false
   },
   {
-    id: 'avgPrice',
+    id: 'averagePrice',
     header: 'Giá trung bình',
-    accessorKey: 'avgPrice',
+    accessorKey: 'averagePrice',
     cell: ({ row }) => (
       <span className='font-bold'>
-        {row.getValue('avgPrice').toLocaleString('vi-VN')}
+        {Number(row.getValue('averagePrice')).toLocaleString('vi-vn')}
         <sup>đ</sup>
       </span>
     ),
@@ -186,7 +187,7 @@ const columns: ColumnDef<Product>[] = [
     id: 'rating',
     header: 'Đánh giá',
     accessorKey: 'rating',
-    size: 60
+    size: 65
   },
   {
     id: 'sold',
@@ -209,14 +210,15 @@ const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => (
       <span>{new Date(row.getValue('updatedAt')).toLocaleString('vi-vn')}</span>
     ),
-    accessorKey: 'updatedAt'
+    accessorKey: 'updatedAt',
+    size: 100
   },
   {
-    id: '_deleted',
+    id: 'isDeleted',
     header: 'Trạng thái',
-    accessorKey: '_deleted',
+    accessorKey: 'isDeleted',
     cell: ({ row }) => (
-      <Badge>{row.getValue('_deleted') ? 'Đã xóa' : 'Bình thường'}</Badge>
+      <Badge>{row.getValue('isDeleted') ? 'Đã xóa' : 'Bình thường'}</Badge>
     ),
     size: 85,
     enableResizing: false,
@@ -226,7 +228,7 @@ const columns: ColumnDef<Product>[] = [
     id: 'actions',
     header: <div className='text-center'>Thao tác</div>,
     cell: ({ row }) => <RowActions row={row} />,
-    size: 70,
+    size: 85,
     enableResizing: false,
     enableHiding: false,
     enableSorting: false
@@ -291,7 +293,7 @@ export default function ProductTable() {
 
   // Get unique status values
   const uniqueStatusValues = useMemo(() => {
-    const statusColumn = table.getColumn('_deleted')
+    const statusColumn = table.getColumn('isDeleted')
 
     if (!statusColumn) return []
 
@@ -302,18 +304,18 @@ export default function ProductTable() {
 
   // Get counts for each status
   const statusCounts = useMemo(() => {
-    const statusColumn = table.getColumn('_deleted')
+    const statusColumn = table.getColumn('isDeleted')
     if (!statusColumn) return new Map()
     return statusColumn.getFacetedUniqueValues()
   }, [table])
 
   const selectedStatuses = useMemo(() => {
-    const filterValue = table.getColumn('_deleted')?.getFilterValue()
+    const filterValue = table.getColumn('isDeleted')?.getFilterValue()
     return filterValue ?? []
   }, [table])
 
   const handleStatusChange = (checked, value) => {
-    const filterValue = table.getColumn('_deleted')?.getFilterValue()
+    const filterValue = table.getColumn('isDeleted')?.getFilterValue()
     const newFilterValue = filterValue ? [...filterValue] : []
 
     if (checked) {
@@ -600,7 +602,7 @@ export default function ProductTable() {
                             onMouseDown: header.getResizeHandler(),
                             onTouchStart: header.getResizeHandler(),
                             className:
-                              'absolute top-0 h-full w-4 cursor-col-resize user-select-none touch-none -right-2 z-10 flex justify-center before:absolute before:w-px before:inset-y-0 before:!bg-gray-800 before:translate-x-px'
+                              'absolute top-0 h-full w-4 cursor-col-resize user-select-none touch-none -right-2 z-10 flex justify-center before:absolute before:w-px before:inset-y-0 before:!bg-gray-100 before:translate-x-px'
                           }}
                         />
                       )}
@@ -765,10 +767,10 @@ function RowActions({ row }) {
       <Button
         size='icon'
         variant='ghost'
-        className='shadow-none hover:bg-amber-100 hover:text-amber-500'
+        className='shadow-none hover:bg-amber-100 hover:text-amber-500 p-1'
         aria-label='Edit item'
       >
-        <Pencil size={16} aria-hidden='true' />
+        <Pencil size={10} aria-hidden='true' />
       </Button>
 
       <Button
@@ -777,7 +779,7 @@ function RowActions({ row }) {
         className='shadow-none hover:bg-red-100 hover:text-red-500'
         aria-label='Delete item'
       >
-        <Trash size={16} aria-hidden='true' />
+        <Trash size={10} aria-hidden='true' />
       </Button>
 
       <ProductDetailDialog product={row.original} />
