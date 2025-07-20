@@ -1,5 +1,4 @@
 import ProductCard from '@/components/product'
-import { getProductsAPI, getProductsWithFiltersAPI } from '@/apis/buyerApis'
 
 import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from '@/utils/constants'
 import PaginationComponent from '@/components/pagination/pagination'
@@ -7,7 +6,8 @@ import PaginationComponent from '@/components/pagination/pagination'
 import { Category } from '@/types/entities/category'
 import { Brand } from '@/types/entities/brand'
 import ProductFilterForm, { SearchObjectType } from './filter-form'
-import { Product } from '@/types/entities/product'
+import { ProductListItem } from '@/types/entities/product'
+import { getProductsWithFiltersApi } from '@/apis/product.api'
 
 export default async function ProductList({
   searchParams
@@ -36,7 +36,7 @@ export default async function ProductList({
     page: page
   }
 
-  let products: Product[] = [],
+  let products: ProductListItem[] = [],
     totalProducts = 1,
     categories: Category[] = [],
     brands: Brand[] = []
@@ -57,18 +57,18 @@ export default async function ProductList({
     const searchPath = Object.entries(searchObject)
       .map(([key, value]) => `${key}=${value}`)
       .join('&')
-    const data = await getProductsWithFiltersAPI(`?${searchPath}`)
-    products = data.products
-    totalProducts = data.totalProducts
+    const data = await getProductsWithFiltersApi(`?${searchPath}`)
+    products = data?.products || []
+    totalProducts = data?.meta.total || 0
   } else {
     const searchPath = Object.entries(searchObject)
       .map(([key, value]) => `${key}=${value}`)
       .join('&')
-    const data = await getProductsAPI(`?${searchPath}`)
-    products = data.products
-    totalProducts = data.totalProducts
-    categories = data.categories
-    brands = data.brands
+    const data = await getProductsWithFiltersApi(`?${searchPath}`)
+    products = data?.products || []
+    totalProducts = data?.meta.total || 0
+    categories = data?.categories || []
+    brands = data?.brands || []
   }
 
   return (
@@ -88,7 +88,7 @@ export default async function ProductList({
           <div>
             <div className='flex items-end justify-between mb-4'>
               <span className='text-xl font-medium text-mainColor2-800'>
-                Kết quả tìm kiếm cho &quot;{keyword}&quot;
+                {keyword ? 'Kết quả tìm kiếm cho &quot;{keyword}&quot;' : 'Tất cả sản phẩm' }
               </span>
               <span>Trang {page}</span>
             </div>

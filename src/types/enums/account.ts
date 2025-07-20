@@ -1,11 +1,14 @@
 export enum AccountStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive'
+  ACTIVE = 'ACTIVE',
+  BANNED = 'BANNED',
+  PENDING_VERIFICATION = 'PENDING_VERIFICATION',
+  DEACTIVATED = 'DEACTIVATED'
 }
-export type AccountStatusValue = (typeof AccountStatus)[keyof typeof AccountStatus]
+export type AccountStatusValue =
+  (typeof AccountStatus)[keyof typeof AccountStatus]
 
 export enum Gender {
-  MALE = 'male',
-  FEMALE = 'female'
+  MALE = 'MALE',
+  FEMALE = 'FEMALE'
 }
 export type GenderValue = (typeof Gender)[keyof typeof Gender]

@@ -14,7 +14,7 @@ import {
 import { OTPInput } from 'input-otp'
 import React, { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
-import { verifyOtpAPI } from '@/apis/authApis'
+import { verifyOtpAPI } from '@/apis/auth.api'
 import { asyncHandler } from '@/utils/asyncHandler'
 import { useRouter } from 'next/navigation'
 

@@ -9,9 +9,9 @@ import {
   setCart
 } from '@/redux/cart/cartSlice'
 import { AppDispatch } from '@/redux/store'
-import { Product, ProductType } from '@/types/entities/product'
+import { Product } from '@/types/entities/product'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { IoMdAdd } from 'react-icons/io'
 import { IoBagCheckOutline } from 'react-icons/io5'
 import { MdAddShoppingCart } from 'react-icons/md'
@@ -20,7 +20,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import ReviewRate from './_components/review-rate'
 import { selectCurrentUser } from '@/redux/user/userSlice'
 import { toast } from 'sonner'
-import { Cart, CartItem, FullProductItem } from '@/types/entities/cart'
 import { cloneDeep } from 'lodash'
 import { useVariantHandling } from '@/contexts/variant-handling-context'
 import { Ratings } from '@/components/ui/ratings'
@@ -35,38 +34,42 @@ export default function QuantityHandling({ product }: { product: Product }) {
 
   const router = useRouter()
 
+  const calculateTotalStock = useMemo(() => {
+    return product.shopProductTypes.reduce((sum, item) => sum + item.stock, 0)
+  }, [])
+
   const handleAddToCart = () => {
     if (!typeId) {
       toast.error('Bạn chưa chọn loại sản phẩm!', { position: 'top-right' })
       return
     }
-    const data = { productId: product._id, typeId, quantity } as CartItem
+
+    // Have to handle use case cart of non-login users
     if (!currentUser) {
-      const itemList = cloneDeep(currentCart?.itemList) || []
-      const fullProducts = cloneDeep(currentCart?.fullProducts) || []
+      const cartItems = cloneDeep(currentCart?.cartItems) || []
 
       let isExistedItem = false
-      itemList.forEach((item) => {
+      cartItems.forEach((item) => {
         if (
           !isExistedItem &&
-          item.productId.toString() === data.productId &&
-          item.typeId.toString() === data.typeId
+          item.product.id === product.id &&
+          item.product.type.id === typeId
         ) {
           item.quantity += quantity
           isExistedItem = true
         }
       })
       if (!isExistedItem) {
-        itemList.push(data)
-        const newProduct = cloneDeep(product) as FullProductItem
-        newProduct.type = newProduct.types.find(
-          (t) => t.typeId.toString() === data.typeId
-        ) as ProductType
-        newProduct.sellerId = newProduct.seller._id
-        fullProducts.push(newProduct)
+        const type = product.types.find((t) => t.id === typeId)!
+        const shopProductType = product.shopProductTypes.find((pt) => pt.typeId === type.id)!
+        cartItems.push({
+          product: { ...product, type, shopProductType},
+          quantity
+        })
       }
 
-      const newCart = { itemList, fullProducts } as Cart
+      const newCart = cloneDeep(currentCart)!
+      newCart.cartItems = cartItems
 
       dispatch(setCart(newCart))
       toast.success('Thêm vào giỏ hàng thành công!')
@@ -74,7 +77,12 @@ export default function QuantityHandling({ product }: { product: Product }) {
     }
 
     toast.promise(
-      dispatch(addToCartAPI(data))
+      dispatch(addToCartAPI({
+        cartId: String(currentCart?.id),
+        productId: product.id,
+        typeId,
+        quantity
+      }))
         .unwrap()
         .then(() => dispatch(fetchCurrentCartAPI())),
       {
@@ -101,7 +109,7 @@ export default function QuantityHandling({ product }: { product: Product }) {
       'itemList',
       JSON.stringify([
         {
-          productId: product._id,
+          productId: product.id,
           typeId,
           quantity: quantity,
           _weight: 0,
@@ -114,6 +122,7 @@ export default function QuantityHandling({ product }: { product: Product }) {
     sessionStorage.setItem('buyNow', JSON.stringify(true))
     router.push('/checkout')
   }
+
   return (
     <div className='sticky left-0 top-36 h-fit'>
       <div className='p-4 mb-6 bg-white rounded-lg'>
@@ -129,7 +138,7 @@ export default function QuantityHandling({ product }: { product: Product }) {
         <div className='flex items-center justify-between text-sm'>
           <span className='text-gray-500'>Số lượng còn lại:</span>
           <span>
-            {product?.types.find((t) => t.typeId.toString() === typeId)
+            {product?.shopProductTypes.find((t) => t.typeId === typeId)
               ?.stock || 0}
           </span>
         </div>
@@ -154,9 +163,9 @@ export default function QuantityHandling({ product }: { product: Product }) {
             <IoMdAdd
               onClick={() =>
                 setQuantity(
-                  quantity < (product?.quantityInStock || 1000)
+                  quantity < (calculateTotalStock || 1000)
                     ? quantity + 1
-                    : product?.quantityInStock || 1000
+                    : calculateTotalStock || 1000
                 )
               }
               className='text-xl rounded-md cursor-pointer text-mainColor1-800 hover:bg-mainColor2-800/40'
@@ -204,13 +213,13 @@ export default function QuantityHandling({ product }: { product: Product }) {
             <Ratings rating={product?.rating || 0} variant='yellow' size={35} />
           </div>
           <span className='text-sm text-gray-400'>
-            ({product.reviews.map((review) => review.comments).flat(1)?.length}{' '}
+            ({product.reviews?.map((review) => review.comments).flat(1)?.length}{' '}
             đánh giá)
           </span>
         </div>
 
         <ReviewRate
-          comments={product.reviews.map((review) => review.comments).flat(1)}
+          comments={product.reviews?.map((review) => review.comments).flat(1)}
         />
       </div>
     </div>

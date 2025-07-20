@@ -6,14 +6,13 @@ export interface ReviewData {
   medias?: string[]
   createdAt: Date
   updatedAt?: Date
-  _deleted?: boolean
+  isDeleted?: boolean
 }
 
 export interface Review {
-  _id?: string
+  id?: string
   productId: string
-  page: number
-  count: number
+
   comments: ReviewData[]
 
   createdAt?: Date

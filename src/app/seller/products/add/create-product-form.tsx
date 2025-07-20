@@ -28,11 +28,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Category } from '@/types/entities/category'
 import { Brand } from '@/types/entities/brand'
 import { useEffect, useState } from 'react'
-import { createProductAPI, getShopsAPI } from '@/apis/sellerApis'
 import { Shop } from '@/types/entities/shop'
 import { v4 as uuidv4 } from 'uuid'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import { getShopsApi } from '@/apis/shop.api'
+import { createProductApi } from '@/apis/product.api'
 
 const formSchema = z.object({
   name: z
@@ -102,7 +103,7 @@ export default function CreateProductForm({
 }: CreateProductFormPropTypes) {
   const [shops, setShops] = useState<Shop[]>([])
   useEffect(() => {
-    getShopsAPI().then((data) => setShops(data))
+    getShopsApi().then((data) => setShops(data || []))
   }, [])
 
   const router = useRouter()
@@ -143,7 +144,7 @@ export default function CreateProductForm({
   })
 
   const handleAddProduct = (data: CreateProductFormSchemaType) => {
-    toast.promise(createProductAPI(data), {
+    toast.promise(createProductApi(data), {
       loading: 'Đang tạo sản phẩm...',
       success: () => {
         router.back()
@@ -552,7 +553,7 @@ export default function CreateProductForm({
                   type='button'
                   onClick={() =>
                     formFieldArrayForTypes.append({
-                      typeId: '',
+                      typeId: uuidv4(),
                       typeName: '',
                       discount: 0,
                       price: 0

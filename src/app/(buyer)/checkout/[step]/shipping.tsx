@@ -38,7 +38,7 @@ import { Address } from '@/types/entities/address'
 import RightSidebar from './_components/right-sidebar'
 import { ShippingDataType, useOrder } from '@/contexts/order-context'
 import { useRouter } from 'next/navigation'
-import { clusterOrderAPI } from '@/apis/buyerApis'
+import { clusterOrdersApi } from '@/apis/order.api'
 
 const formSchema = z.object({
   buyerAddress: z.array(z.string({ required_error: FIELD_REQUIRED_MESSAGE })),
@@ -48,7 +48,6 @@ const formSchema = z.object({
     .min(1, { message: FIELD_REQUIRED_MESSAGE }),
   note: z.array(z.string())
 })
-
 export type ShippingFormSchemaType = z.infer<typeof formSchema>
 
 export default function Shipping() {
@@ -60,7 +59,7 @@ export default function Shipping() {
     setClusterOrders,
     checkoutInfo,
     setCheckoutInfo,
-    itemList
+    orderItems
   } = useOrder()
 
   const form = useForm<ShippingFormSchemaType>({
@@ -74,14 +73,21 @@ export default function Shipping() {
   })
 
   useEffect(() => {
-    clusterOrderAPI(itemList).then((data) => {
-      form.reset({
-        buyerAddress: [...Array(data.length)].map(() => '0'),
-        discountCode: [...Array(data.length)].map(() => ''),
-        note: [...Array(data.length)].map(() => ''),
-        shippingMethod: checkoutInfo?.shipping?.map((s) => s.type)
-      })
-      setClusterOrders(data)
+    const body = orderItems.map((orderItem) => ({
+      productId: orderItem.product.id,
+      typeId: orderItem.product.type.id,
+      quantity: orderItem.quantity
+    }))
+    clusterOrdersApi({ orderItems: body }).then((data) => {
+      if (data) {
+        form.reset({
+          buyerAddress: [...Array(data.length)].map(() => '0'),
+          discountCode: [...Array(data.length)].map(() => ''),
+          note: [...Array(data.length)].map(() => ''),
+          shippingMethod: checkoutInfo?.shipping?.map((s) => s.type)
+        })
+        setClusterOrders(data)
+      }
     })
   }, [])
 
@@ -93,9 +99,11 @@ export default function Shipping() {
     }
 
     Promise.all(
-      clusterOrders.map((clusterOrder) =>
-        getAddressStringResult(clusterOrder.shopAddress)
-      )
+      clusterOrders.map((clusterOrder) => {
+        const { provinceId, districtId, wardCode, address } = clusterOrder.shop
+        const shopAddress = { provinceId, districtId, wardCode, address }
+        return getAddressStringResult(shopAddress)
+      })
     ).then((res) => setShopAddresses(res))
   }, [clusterOrders])
 
@@ -114,16 +122,16 @@ export default function Shipping() {
           },
           body: JSON.stringify({
             service_type_id: 2,
-            from_district_id: clusterOrder?.shopAddress.district,
-            from_ward_code: clusterOrder?.shopAddress.ward,
-            to_district_id: checkoutInfo?.information?.buyerAddress.district,
-            to_ward_code: checkoutInfo?.information?.buyerAddress.ward,
+            from_district_id: clusterOrder?.shop?.districtId,
+            from_ward_code: clusterOrder?.shop.wardCode,
+            to_district_id: checkoutInfo?.information?.buyerAddress.districtId,
+            to_ward_code: checkoutInfo?.information?.buyerAddress.wardCode,
             weight: 3000,
             insurance_value: 0,
             coupon: null,
-            items: clusterOrder.itemList.map((p) => ({
-              name: p.productName,
-              quantity: p.quantity
+            items: clusterOrder.orderItems.map((item) => ({
+              name: item.product.name,
+              quantity: item.quantity
             }))
           })
         }
@@ -145,8 +153,8 @@ export default function Shipping() {
       setShippingData(shippingDataResult)
     }
   }, [
-    checkoutInfo?.information?.buyerAddress.district,
-    checkoutInfo?.information?.buyerAddress.ward,
+    checkoutInfo?.information?.buyerAddress.districtId,
+    checkoutInfo?.information?.buyerAddress.wardCode,
     clusterOrders
   ])
 
@@ -172,7 +180,7 @@ export default function Shipping() {
 
   const handleBack = () => {
     const oldCheckoutInfo = cloneDeep(checkoutInfo)!
-    delete oldCheckoutInfo.shipping
+    if (oldCheckoutInfo?.shipping) delete oldCheckoutInfo.shipping
     setCheckoutInfo(oldCheckoutInfo)
     router.back()
   }
@@ -184,7 +192,7 @@ export default function Shipping() {
         chính sách của chúng tôi!
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleUpdateShipping)}>
+        <form onSubmit={form.handleSubmit(handleUpdateShipping)} className='space-y-20'>
           {clusterOrders.map((clusterOrder, index) => (
             <div key={index} className='grid grid-cols-12 gap-12'>
               <div className='border-[2px] rounded-md p-4 col-span-9'>

@@ -19,7 +19,7 @@ export async function middleware(request: NextRequest) {
 
     const role = payload.role
     const pathname = request.nextUrl.pathname
-    if (pathname.startsWith('/seller') && role !== Role.Seller)
+    if (pathname.startsWith('/seller') && role !== Role.SELLER)
       return NextResponse.redirect(new URL('/403', request.url))
 
     return NextResponse.next()

@@ -1,4 +1,3 @@
-import { getProductDetailsAPI, getProductsAPI } from '@/apis/buyerApis'
 import { Button } from '@/components/ui/button'
 
 import {
@@ -11,7 +10,7 @@ import {
 } from '@/components/ui/breadcrumb'
 import { Separator } from '@/components/ui/separator'
 
-import { DEFAULT_ITEMS_PER_PAGE } from '@/utils/constants'
+import { DEFAULT_IMAGE_URL, DEFAULT_ITEMS_PER_PAGE } from '@/utils/constants'
 import ProductCard from '@/components/product'
 
 import Image from 'next/image'
@@ -22,6 +21,7 @@ import QuantityHandling from './quantity-handling'
 import { VariantHandlingProvider } from '@/contexts/variant-handling-context'
 import WithPersistProvider from '@/components/providers/WithPersistProvider'
 import { Ratings } from '@/components/ui/ratings'
+import { getProductDetailsApi, getProductsApi } from '@/apis/product.api'
 
 export default async function ProductDetail({
   params
@@ -30,16 +30,8 @@ export default async function ProductDetail({
 }) {
   const awaitParams = await params
   const productId = awaitParams.id
-  const product = await getProductDetailsAPI(String(productId))
-  const recommendedProducts = (await getProductsAPI()).products
-
-  // const handlePaginate = (page: number) => {
-  //   sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  //   setTimeout(() => {
-  //     window.scrollBy({ top: -120, behavior: 'smooth' })
-  //   }, 500)
-  //   setPage(page)
-  // }
+  const product = await getProductDetailsApi(String(productId))
+  const recommendedProducts = (await getProductsApi())?.data
 
   return (
     <div className='bg-[#F5F5FA] py-4'>
@@ -47,11 +39,11 @@ export default async function ProductDetail({
         <Breadcrumb className='mb-4'>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href='/buyer'>Trang chủ</BreadcrumbLink>
+              <BreadcrumbLink href='/'>Trang chủ</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href='#'>Sản phẩm</BreadcrumbLink>
+              <BreadcrumbLink href='/product'>Sản phẩm</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
@@ -60,7 +52,9 @@ export default async function ProductDetail({
           </BreadcrumbList>
         </Breadcrumb>
 
-        <VariantHandlingProvider initialProductEndPrice={product.avgPrice}>
+        <VariantHandlingProvider
+          initialProductEndPrice={Number(product?.averagePrice)}
+        >
           <div className='relative grid grid-cols-4 gap-6'>
             <div className='col-span-3'>
               <div className='relative grid grid-cols-3 gap-6 mb-6 h-fit'>
@@ -69,8 +63,8 @@ export default async function ProductDetail({
                     <Image
                       width={350}
                       height={350}
-                      src={product?.avatar}
-                      alt={product?.name}
+                      src={product?.avatar || DEFAULT_IMAGE_URL}
+                      alt={String(product?.name)}
                       className='scale-105 object-cover'
                     />
                   </div>
@@ -94,7 +88,7 @@ export default async function ProductDetail({
                       <div>Đã bán: {product?.sold || '0'}</div>
                     </div>
 
-                    <ChooseType product={product} />
+                    {product && <ChooseType product={product} />}
                   </div>
 
                   <div className='p-4 mb-6 bg-white rounded-lg'>
@@ -132,21 +126,27 @@ export default async function ProductDetail({
                       Mô tả sản phẩm
                     </div>
                     <div
-                      dangerouslySetInnerHTML={{ __html: product?.description }}
+                      dangerouslySetInnerHTML={{
+                        __html: String(product?.description)
+                      }}
                       style={{ textAlign: 'justify' }}
                     />
                   </div>
                 </div>
               </div>
 
-              <WithPersistProvider>
-                <ReviewSection product={product} />
-              </WithPersistProvider>
+              {product && (
+                <WithPersistProvider>
+                  <ReviewSection product={product} />
+                </WithPersistProvider>
+              )}
             </div>
 
-            <WithPersistProvider>
-              <QuantityHandling product={product} />
-            </WithPersistProvider>
+            {product && (
+              <WithPersistProvider>
+                <QuantityHandling product={product} />
+              </WithPersistProvider>
+            )}
           </div>
         </VariantHandlingProvider>
 
@@ -168,18 +168,18 @@ export default async function ProductDetail({
           <Separator className='my-4 h-[2px]' />
 
           <div className='list-recommended-products grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2.5'>
-            {recommendedProducts.length > 0
+            {recommendedProducts && recommendedProducts.length > 0
               ? recommendedProducts
                   .slice(0, DEFAULT_ITEMS_PER_PAGE)
                   .map((product) => (
                     <ProductCard
                       product={product}
-                      key={product._id}
+                      key={product.id}
                       loading={false}
                     />
                   ))
               : [...Array(40)].map((_, index) => (
-                  <ProductCard loading={true} key={index} />
+                  <ProductCard product={null} loading={true} key={index} />
                 ))}
           </div>
         </div>

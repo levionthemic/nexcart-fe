@@ -15,12 +15,16 @@ export default function ShowAddress() {
   const currentUser = useSelector(selectCurrentUser)
   useEffect(() => {
     startLoading()
-    if (currentUser?.buyerAddress) {
-      getAddressString(currentUser?.buyerAddress?.[0] as Address)
-        .then((result) => setAddress(result))
-        .finally(() => endLoading())
+    if (currentUser?.buyer?.addresses) {
+      const defaultAddress = currentUser?.buyer?.addresses.find(
+        (address: Address) => address.isDefault
+      )
+      if (defaultAddress)
+        getAddressString(defaultAddress)
+          .then((result) => setAddress(result))
+          .finally(() => endLoading())
     } else endLoading()
-  }, [currentUser?.buyerAddress])
+  }, [currentUser?.buyer?.addresses])
 
   return <p className='text-sm'>Giao đến: {address}</p>
 }

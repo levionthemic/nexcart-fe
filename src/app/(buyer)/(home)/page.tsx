@@ -1,6 +1,5 @@
 import ProductCard from '@/components/product'
 import CategoryBar from './category-bar'
-import { getProductsAPI } from '@/apis/buyerApis'
 
 import { FaShippingFast } from 'react-icons/fa'
 import { MdSupportAgent } from 'react-icons/md'
@@ -17,18 +16,15 @@ import Image from 'next/image'
 import CountDown from './countdown'
 import CarouselProducts from './carousel-products'
 import CarouselCategories from './carousel-categories'
-import { getCategoriesAPI } from '@/apis/commonApis'
+import { getProductsApi } from '@/apis/product.api'
+import { getCategoriesApi } from '@/apis/category.api'
 
 export default async function HomePage() {
-  const productsData = await getProductsAPI()
-  const bestSellingProducts = productsData.products
-  const recommendedProducts = productsData.products
+  const productsData = await getProductsApi()
+  const bestSellingProducts = productsData?.data || []
+  const recommendedProducts = productsData?.data || []
   
-  const categories = await getCategoriesAPI()
-
-  // const handleClickCategory = (categoryId: string): void => {
-  //   //
-  // }
+  const categories = await getCategoriesApi() || []
 
   return (
     <div className='bg-[#F5F5FA]'>
@@ -36,7 +32,7 @@ export default async function HomePage() {
         <div className='grid grid-cols-5 gap-4'>
           <SidebarProvider className='col-span-1 px-3 py-4 bg-white rounded-lg min-h-96'>
             <CategoryBar
-              categories={categories}
+              categories={categories || []}
               // onClickCategory={handleClickCategory}
             />
           </SidebarProvider>
@@ -193,7 +189,7 @@ export default async function HomePage() {
                   .map((product) => (
                     <ProductCard
                       product={product}
-                      key={product._id}
+                      key={product.id}
                       loading={false}
                     />
                   ))

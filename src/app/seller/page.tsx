@@ -10,7 +10,6 @@ import {
   TrendingUp
 } from 'lucide-react'
 import CountUp from 'react-countup'
-import logo from '@/assets/ghn-logo.png'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 
@@ -19,6 +18,7 @@ import PieChartComponent from './_components/pie-chart'
 import Timer from './_components/timer'
 import BestSoldProducts from './_components/best-sold-products'
 import LatestOrders from './_components/latest-orders'
+import { DEFAULT_IMAGE_URL } from '@/utils/constants'
 
 export default function Dashboard() {
   return (
@@ -176,7 +176,7 @@ export default function Dashboard() {
             <li className='flex items-center gap-4'>
               <div className='flex items-center gap-3 flex-1'>
                 <Avatar>
-                  <AvatarImage src={logo} />
+                  <AvatarImage src={DEFAULT_IMAGE_URL} />
                   <AvatarFallback>LV</AvatarFallback>
                 </Avatar>
                 <div className='flex flex-col'>
@@ -193,7 +193,7 @@ export default function Dashboard() {
             <li className='flex items-center gap-4 mt-4'>
               <div className='flex items-center gap-3 flex-1'>
                 <Avatar>
-                  <AvatarImage src={logo} />
+                  <AvatarImage src={DEFAULT_IMAGE_URL} />
                   <AvatarFallback>LV</AvatarFallback>
                 </Avatar>
                 <div className='flex flex-col'>
@@ -210,7 +210,7 @@ export default function Dashboard() {
             <li className='flex items-center gap-4 mt-4'>
               <div className='flex items-center gap-3 flex-1'>
                 <Avatar>
-                  <AvatarImage src={logo} />
+                  <AvatarImage src={DEFAULT_IMAGE_URL} />
                   <AvatarFallback>LV</AvatarFallback>
                 </Avatar>
                 <div className='flex flex-col'>
@@ -227,7 +227,7 @@ export default function Dashboard() {
             <li className='flex items-center gap-4 mt-4'>
               <div className='flex items-center gap-3 flex-1'>
                 <Avatar>
-                  <AvatarImage src={logo} />
+                  <AvatarImage src={DEFAULT_IMAGE_URL} />
                   <AvatarFallback>LV</AvatarFallback>
                 </Avatar>
                 <div className='flex flex-col'>

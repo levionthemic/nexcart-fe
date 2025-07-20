@@ -41,15 +41,15 @@ import {
 } from '@/redux/cart/cartSlice'
 import { selectCurrentUser } from '@/redux/user/userSlice'
 import { cloneDeep } from 'lodash'
-import { Product, ProductType } from '@/types/entities/product'
+import { ProductListItem } from '@/types/entities/product'
 import { AppDispatch } from '@/redux/store'
-import { Cart, CartItem, FullProductItem } from '@/types/entities/cart'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { Ratings } from '../ui/ratings'
+import { DEFAULT_IMAGE_URL } from '@/utils/constants'
 
 export interface ProductCardPropTypes {
-  product?: Product
+  product: ProductListItem | null
   loading: boolean
   key?: number | string
 }
@@ -73,48 +73,49 @@ export default function ClientProductCard({
       toast.error('Bạn chưa chọn loại sản phẩm!', { position: 'top-right' })
       return
     }
-    const data = { productId: product?._id, typeId, quantity } as CartItem
 
     if (!currentUser) {
-      const itemList = cloneDeep(currentCart?.itemList) || []
-      const fullProducts = cloneDeep(currentCart?.fullProducts) || []
+      const cartItems = cloneDeep(currentCart?.cartItems) || []
 
       let isExistedItem = false
-      itemList.forEach((item) => {
+      cartItems.forEach((item) => {
         if (
           !isExistedItem &&
-          item.productId.toString() === data.productId &&
-          item.typeId.toString() === data.typeId
+          item.product.id === product?.id &&
+          item.type.id === typeId
         ) {
           item.quantity += quantity
           isExistedItem = true
         }
       })
-      if (!isExistedItem) {
-        itemList.push(data)
-        const newProduct: FullProductItem = cloneDeep(product) as Product
-        newProduct.type = newProduct.types.find(
-          (t) => t.typeId.toString() === data.typeId
-        ) as ProductType
-        newProduct.sellerId = newProduct.seller._id
-        fullProducts.push(newProduct)
+      if (!isExistedItem && product) {
+        const type = product.types.find((t) => t.id === typeId)!
+        cartItems.push({
+          product,
+          type,
+          quantity
+        })
       }
 
-      const newCart = { itemList, fullProducts } as Cart
+      const newCart = cloneDeep(currentCart)!
+      newCart.cartItems = cartItems
 
       dispatch(setCart(newCart))
-      setIsAddToCart(false)
       toast.success('Thêm vào giỏ hàng thành công!')
       return
     }
 
     toast.promise(
-      dispatch(addToCartAPI(data))
+      dispatch(
+        addToCartAPI({
+          cartId: String(currentCart?.id),
+          productId: product!.id,
+          typeId,
+          quantity
+        })
+      )
         .unwrap()
-        .then(() => {
-          dispatch(fetchCurrentCartAPI())
-          setIsAddToCart(false)
-        }),
+        .then(() => dispatch(fetchCurrentCartAPI())),
       {
         loading: 'Đang thêm vào giỏ hàng...',
         success: 'Thêm vào giỏ hàng thành công!'
@@ -139,7 +140,7 @@ export default function ClientProductCard({
       'itemList',
       JSON.stringify([
         {
-          productId: String(product?._id),
+          productId: String(product?.id),
           typeId,
           quantity,
           _weight: 0,
@@ -179,15 +180,15 @@ export default function ClientProductCard({
     >
       <CardContent
         className='p-2'
-        onClick={() => router.push(`/product/${product?._id}`)}
+        onClick={() => router.push(`/product/${product?.id}`)}
       >
         {loading ? (
           <Skeleton className='w-full aspect-square' />
         ) : (
           <Image
+            src={product?.avatar || DEFAULT_IMAGE_URL}
             height={300}
             width={300}
-            src={String(product?.avatar)}
             alt=''
             className='object-contain w-full aspect-square'
           />
@@ -196,7 +197,7 @@ export default function ClientProductCard({
 
       <CardHeader
         className='px-4'
-        onClick={() => router.push(`/product/${product?._id}`)}
+        onClick={() => router.push(`/product/${product?.id}`)}
       >
         {loading ? (
           <Skeleton className='h-[32px]' />
@@ -211,7 +212,7 @@ export default function ClientProductCard({
         ) : (
           <CardDescription>
             <div className='text-lg font-bold text-[#ff4d4f] mb-1 text-justify'>
-              {product?.avgPrice.toLocaleString()}
+              {product?.averagePrice.toLocaleString()}
               <sup>đ</sup>
             </div>
             <div className='flex items-center justify-between my-2 text-sm text-gray-400'>
@@ -265,7 +266,7 @@ export default function ClientProductCard({
                   <Image
                     width={112}
                     height={112}
-                    src={String(product?.avatar)}
+                    src={product?.avatar || DEFAULT_IMAGE_URL}
                     alt=''
                     className='object-contain w-full aspect-square'
                   />
@@ -274,8 +275,8 @@ export default function ClientProductCard({
                   <div>{product?.name}</div>
                   <div className='text-[#f90606] font-bold text-2xl'>
                     {(
-                      product?.types.find((t) => t.typeId.toString() === typeId)
-                        ?.price || product?.avgPrice
+                      product?.types.find((t) => t.id === typeId)?.price ||
+                      product?.averagePrice
                     )?.toLocaleString()}
                     <sup>đ</sup>
                   </div>
@@ -299,12 +300,12 @@ export default function ClientProductCard({
                         onClick={() =>
                           setQuantity(
                             quantity <
-                              (product?.types.find(
-                                (t) => t.typeId.toString() === typeId
+                              (product?.shopProductTypes.find(
+                                (t) => t.typeId === typeId
                               )?.stock || 1000)
                               ? quantity + 1
-                              : product?.types.find(
-                                  (t) => t.typeId.toString() === typeId
+                              : product?.shopProductTypes.find(
+                                  (t) => t.typeId === typeId
                                 )?.stock || 1000
                           )
                         }
@@ -314,8 +315,8 @@ export default function ClientProductCard({
 
                     <div className='text-sm text-gray-500'>
                       Còn lại:{' '}
-                      {product?.types.find(
-                        (t) => t.typeId.toString() === typeId
+                      {product?.shopProductTypes.find(
+                        (t) => t.typeId === typeId
                       )?.stock || '(Chọn loại để hiện số lượng)'}
                     </div>
                   </div>
@@ -329,21 +330,21 @@ export default function ClientProductCard({
                 >
                   {product?.types?.map((type) => (
                     <div
-                      key={type.typeId}
+                      key={type.id}
                       className='border-input has-data-[state=checked]:border-ring has-data-[state=checked]:bg-accent relative flex flex-col gap-4 border px-4 py-3 outline-none first:rounded-t-md last:rounded-b-md has-data-[state=checked]:z-10'
                     >
                       <div className='flex items-center justify-between'>
                         <div className='flex items-center gap-2'>
                           <RadioGroupItem
-                            id={type.typeId}
-                            value={type.typeId}
+                            id={type.id}
+                            value={type.id}
                             className='after:absolute after:inset-0'
                           />
                           <Label
                             className='inline-flex items-start'
-                            htmlFor={type.typeId}
+                            htmlFor={type.id}
                           >
-                            {type.typeName}
+                            {type.name}
                           </Label>
                         </div>
                       </div>

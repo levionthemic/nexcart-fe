@@ -1,15 +1,16 @@
 'use client'
 
-import { getBestSoldProductsAPI } from '@/apis/sellerApis'
-import { Product } from '@/types/entities/product'
+import { getProductsApi } from '@/apis/product.api'
+import { ProductListItem } from '@/types/entities/product'
+import { DEFAULT_IMAGE_URL } from '@/utils/constants'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 
 export default function BestSoldProducts() {
-  const [bestSoldProducts, setBestSoldProducts] = useState<Product[]>([])
+  const [bestSoldProducts, setBestSoldProducts] = useState<ProductListItem[]>([])
 
   useEffect(() => {
-    getBestSoldProductsAPI().then(data => setBestSoldProducts(data?.products))
+    getProductsApi().then(data => setBestSoldProducts(data?.data || []))
   }, [])
 
   return (
@@ -18,7 +19,7 @@ export default function BestSoldProducts() {
         <li key={product?.id} className='flex items-center gap-4'>
           <div className='flex items-center gap-3 flex-1'>
             <Image
-              src={product?.avatar}
+              src={product?.avatar || DEFAULT_IMAGE_URL}
               alt='Ảnh'
               width={40}
               height={40}

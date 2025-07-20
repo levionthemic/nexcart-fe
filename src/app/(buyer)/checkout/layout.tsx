@@ -2,41 +2,6 @@ import { OrderProvider } from '@/contexts/order-context'
 import TimelineComponent from './[step]/_components/timeline-component'
 
 export default function CheckoutLayout({ children }: { children: React.ReactNode }) {
-  // useEffect(() => {
-  //   const handleBeforeUnload = (event) => {
-  //     event.preventDefault()
-  //     localStorage.removeItem('checkoutInfo')
-  //     event.returnValue = ''
-  //   }
-
-  //   window.addEventListener('beforeunload', handleBeforeUnload)
-
-  //   return () => {
-  //     window.removeEventListener('beforeunload', handleBeforeUnload)
-  //   }
-  // }, [])
-
-  // useEffect(() => {
-  //   if (checkoutInfo) {
-  //     localStorage.setItem('checkoutInfo', JSON.stringify(checkoutInfo))
-  //   }
-  // }, [checkoutInfo])
-
-  // useEffect(() => {
-  //   const data = {
-  //     itemList: listCheckoutProducts.map((prod) => ({
-  //       productId: prod?._id,
-  //       typeId: prod.type.typeId,
-  //       quantity: prod.quantity
-  //     }))
-  //   }
-  //   clusterOrderAPI(data).then((data) => setClusterOrders(data))
-  // }, [listCheckoutProducts])
-
-  // useEffect(() => {
-  //   window.scrollTo(0, 0)
-  // }, [step])
-
   // const handleCheckout = () => {
   //   const checkoutData = clusterOrders?.map((clusterOrder, index) => {
   //     const buyerInfo = {
@@ -76,7 +41,6 @@ export default function CheckoutLayout({ children }: { children: React.ReactNode
   //     }
   //   )
   // }
-
   const timelineItems = [
     {
       id: 1,

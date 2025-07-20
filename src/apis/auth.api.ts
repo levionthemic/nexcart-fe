@@ -1,7 +1,7 @@
-
 import { TokenResponse } from '@react-oauth/google'
 import { RoleValue } from '@/types/enums/role'
 import authorizedAxiosInstance from '@/utils/authorizedAxios'
+import http from '@/lib/http'
 
 /**
  * Auth APIs
@@ -46,8 +46,9 @@ export const verifyUserAPI = async (data: {
 }
 
 export const refreshTokenAPI = async () => {
-  const response = await authorizedAxiosInstance.get('/auth/refresh-token')
-  return response.data
+  await http.get('/auth/refresh-token', {
+    credentials: 'include'
+  })
 }
 
 export const forgotPasswordAPI = async (data: { email: string }) => {

@@ -60,14 +60,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
-import { getProductsAPI } from '@/apis/buyerApis'
 import { useDebounceFn } from '@/hooks/use-debounce'
 import { useLoading } from '@/contexts/LoadingContext'
 import { AppDispatch } from '@/redux/store'
 import Image from 'next/image'
 import MenuBar from './menu-bar'
-import { Product } from '@/types/entities/product'
+import { ProductListItem } from '@/types/entities/product'
 import { useRouter } from 'next/navigation'
+import { getProductsWithFiltersApi } from '@/apis/product.api'
+import { DEFAULT_IMAGE_URL } from '@/utils/constants'
 
 export default function BuyerHeader() {
   const router = useRouter()
@@ -85,7 +86,12 @@ export default function BuyerHeader() {
       startLoading()
       if (currentCart && !currentCart.buyerId) {
         Promise.all(
-          currentCart?.itemList.map((item) => dispatch(addToCartAPI(item)))
+          currentCart?.cartItems.map((item) => dispatch(addToCartAPI({
+            productId: item.product.id,
+            typeId: item.product.type.id,
+            cartId: currentCart.id,
+            quantity: item.quantity
+          })))
         )
           .then(() => dispatch(fetchCurrentCartAPI()))
           .finally(() => endLoading())
@@ -116,7 +122,7 @@ export default function BuyerHeader() {
   }
 
   const [open, setOpen] = useState(false)
-  const [searchProducts, setSearchProducts] = useState<Product[]>([])
+  const [searchProducts, setSearchProducts] = useState<ProductListItem[]>([])
   const [loading, setLoading] = useState(false)
 
   const [showBackgroundOverlay, setShowBackgroundOverlay] = useState(false)
@@ -143,7 +149,7 @@ export default function BuyerHeader() {
         return
       }
       const searchPath = `?q[name]=${keyword}`
-      getProductsAPI(searchPath)
+      getProductsWithFiltersApi(searchPath)
         .then((data) => {
           setSearchProducts(data?.products || [])
         })
@@ -199,7 +205,7 @@ export default function BuyerHeader() {
                   <div className='relative cursor-pointer hover:scale-105 hover:ease-out hover:duration-300 transition-transform'>
                     <LuShoppingCart className='text-mainColor1-600 text-xl' />
                     <Badge className='w-2 h-2 rounded-full p-2 text-center absolute -top-3 -right-3 bg-mainColor1-600'>
-                      {currentCart?.itemList?.length || 0}
+                      {currentCart?.cartItems?.length || 0}
                     </Badge>
                   </div>
                 </SheetTrigger>
@@ -208,7 +214,7 @@ export default function BuyerHeader() {
                     <SheetTitle>
                       Giỏ hàng của bạn{' '}
                       <span className='text-sm text-gray-700'>
-                        ({currentCart?.itemList.length || 0})
+                        ({currentCart?.cartItems.length || 0})
                       </span>
                     </SheetTitle>
                     <SheetDescription className='!m-0'>
@@ -216,10 +222,10 @@ export default function BuyerHeader() {
                     </SheetDescription>
                   </SheetHeader>
                   <div className='p-4 max-h-[89%] overflow-auto space-y-6'>
-                    {currentCart?.fullProducts?.map((product, index) => (
+                    {currentCart?.cartItems?.map(({ product, quantity }, index) => (
                       <div key={index} className='flex items-center gap-2'>
                         <Image
-                          src={product?.avatar}
+                          src={product.avatar || DEFAULT_IMAGE_URL}
                           alt=''
                           width={40}
                           height={40}
@@ -239,14 +245,14 @@ export default function BuyerHeader() {
                             </Tooltip>
                           </TooltipProvider>
                           <p className='line-clamp-1 text-xs text-gray-400 mb-0.5'>
-                            Loại: {product?.type?.typeName}
+                            Loại: {product.type?.name}
                           </p>
                           <div className='flex flex-col lg:flex-row lg:items-center lg:gap-4'>
                             <Badge className='bg-mainColor2-800/90'>
-                              {currentCart.itemList[index].quantity} sản phẩm
+                              {quantity} sản phẩm
                             </Badge>
                             <span className='text-[0.8rem] text-muted-foreground'>
-                              x {product?.type?.price.toLocaleString('vi-VN')}
+                              x {product.type?.price.toLocaleString('vi-VN')}
                               <sup>đ</sup>
                             </span>
                           </div>
@@ -360,14 +366,14 @@ export default function BuyerHeader() {
             {!loading && searchProducts.length
               ? searchProducts.map((prod) => (
                   <div
-                    key={prod._id}
+                    key={prod.id}
                     className='flex items-center gap-4 hover:bg-gray-100 px-1 rounded-sm my-1 cursor-pointer py-2'
                     onMouseDown={() => {
-                      router.push(`/product/${prod._id}`)
+                      router.push(`/product/${prod.id}`)
                     }}
                   >
                     <div>
-                      <Image src={prod?.avatar} alt='' width={40} height={40} />
+                      <Image src={prod?.avatar || DEFAULT_IMAGE_URL} alt='' width={40} height={40} />
                     </div>
                     <div>
                       <span className='text-sm'>{prod?.name}</span>

@@ -46,7 +46,7 @@ export default function UserSidebar() {
   ]
   return (
     <Sidebar className='px-4 pb-4 bg-white border-none'>
-      <SidebarHeader className='p-0'>
+      <SidebarHeader className='p-0 bg-white'>
         <span
           className='my-10 text-4xl font-medium transition-transform cursor-pointer text-mainColor1-600 hover:scale-105 hover:duration-500'
           onClick={() => router.push('/')}
@@ -55,7 +55,7 @@ export default function UserSidebar() {
         </span>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className='bg-white'>
         <SidebarGroup className='p-0'>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -77,7 +77,7 @@ export default function UserSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className='p-0'>
+      <SidebarFooter className='p-0 bg-white'>
         <div className='p-4 bg-mainColor1-100/30 rounded-xl'>
           <div className='mb-4 text-lg font-medium text-mainColor1-800'>
             Có Sản phẩm trong giỏ hàng của bạn

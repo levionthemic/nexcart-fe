@@ -1,22 +1,19 @@
-import { Product, ProductType } from './product'
+import { ProductBase, ProductType, ShopProductType } from './product'
+import { Seller } from './user'
 
-export interface CartItem {
-  productId: string
-  typeId: string
-  quantity: number
-}
-
-export interface FullProductItem extends Product {
-  _id: string
-  sellerId: string
-  avatar: string
-  name: string
+export type CartProductItem = Pick<ProductBase, 'id' | 'name' | 'avatar'> & {
+  seller: Seller,
   type: ProductType
-  subRows?: FullProductItem[]
+  shopProductType: ShopProductType
+}
+export interface CartItem {
+  product: CartProductItem
+  quantity: number
+  subRows?: CartItem[]
 }
 
 export interface Cart {
+  id: string
   buyerId: string
-  itemList: CartItem[]
-  fullProducts: FullProductItem[]
+  cartItems: CartItem[]
 }

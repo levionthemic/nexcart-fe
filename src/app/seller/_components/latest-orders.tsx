@@ -8,18 +8,18 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { getLatestOrdersAPI } from '@/apis/sellerApis'
 import { Order } from '@/types/entities/order'
 import React, { useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { OrderStatus } from '@/types/enums/order-status'
 import dayjs from 'dayjs'
+import { getOrdersApi } from '@/apis/order.api'
 
 export default function LatestOrders() {
   const [latestOrders, setLatestOrders] = useState<Order[]>([])
   useEffect(() => {
-    getLatestOrdersAPI().then((data) => setLatestOrders(data))
+    getOrdersApi().then((data) => setLatestOrders(data || []))
   }, [])
   return (
     <Table>

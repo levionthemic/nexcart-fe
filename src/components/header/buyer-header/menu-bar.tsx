@@ -19,7 +19,7 @@ export default function MenuBar() {
               <Link href={'/'}>Trang chủ</Link>
             </li>
             <li className='py-2 px-4 hover:text-mainColor1-400 hover:bg-white cursor-pointer transition-all hover:ease-in-out hover:duration-300'>
-              Sản phẩm
+              <Link href={'/product'}>Sản phẩm</Link>
             </li>
             <li className='py-2 px-4 hover:text-mainColor1-400 hover:bg-white cursor-pointer transition-all hover:ease-in-out hover:duration-300'>
               Giới thiệu

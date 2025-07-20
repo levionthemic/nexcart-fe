@@ -1,6 +1,7 @@
 export interface Address {
-  province: number
-  district: number
-  ward: string
+  provinceId: number
+  districtId: number
+  wardCode: string
   address: string
+  isDefault?: boolean
 }

@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 
 import { toast } from 'sonner'
-import { registerUserAPI } from '@/apis/authApis'
+import { registerUserAPI } from '@/apis/auth.api'
 import { FaGoogle } from 'react-icons/fa'
 import { TokenResponse, useGoogleLogin } from '@react-oauth/google'
 import { Role, RoleValue } from '@/types/enums/role'
@@ -34,7 +34,7 @@ function RegisterForm() {
       email: '',
       password: '',
       confirmPassword: '',
-      role: Role.Buyer
+      role: Role.BUYER
     }
   })
 
@@ -50,7 +50,7 @@ function RegisterForm() {
       loading: 'Đang đăng ký...',
       success: (user) => {
         if (!user.error) {
-          router.push(`/login?registeredEmail=${user.email}`)
+          router.push(`/login?registeredEmail=${user.data.email}`)
           return 'Đăng ký thành công!'
         }
         throw user
@@ -167,7 +167,7 @@ function RegisterForm() {
                     <FormItem className='flex items-center space-x-3 space-y-0 hover:bg-mainColor2-800/50 px-4 py-3 rounded-md hover:transition-all hover:ease-in-out hover:duration-400 cursor-pointer has-[button[data-state=checked]]:bg-mainColor2-800/50'>
                       <FormControl>
                         <RadioGroupItem
-                          value={Role.Buyer}
+                          value={Role.BUYER}
                           className='bg-white border-white'
                         />
                       </FormControl>
@@ -178,7 +178,7 @@ function RegisterForm() {
                     <FormItem className='flex items-center space-x-3 space-y-0 hover:bg-mainColor2-800/50 px-4 py-3 rounded-md hover:transition-all hover:ease-in-out hover:duration-400 cursor-pointer has-[button[data-state=checked]]:bg-mainColor2-800/50'>
                       <FormControl>
                         <RadioGroupItem
-                          value={Role.Seller}
+                          value={Role.SELLER}
                           className='bg-white border-white'
                         />
                       </FormControl>
@@ -202,7 +202,7 @@ function RegisterForm() {
         </form>
       </Form>
 
-      {form.getValues('role') === Role.Buyer && (
+      {form.getValues('role') === Role.BUYER && (
         <div className='flex items-center justify-center gap-6 mt-6 text-sm text-white'>
           <span>hoặc đăng ký bằng: </span>
           <div className='flex items-center justify-between gap-2'>

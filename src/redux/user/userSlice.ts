@@ -56,7 +56,7 @@ export const updateUserAPI = createAsyncThunk<User, FormData | UpdatePayload>(
       (data as UpdatePayload).role || (data as FormData).get('role')?.toString()
 
     let response
-    if (role === Role.Buyer) {
+    if (role === Role.BUYER) {
       if (data instanceof FormData) {
         data.delete('role')
       } else {
@@ -66,7 +66,7 @@ export const updateUserAPI = createAsyncThunk<User, FormData | UpdatePayload>(
         '/buyer/profile/update',
         data
       )
-    } else if (role === Role.Seller) {
+    } else if (role === Role.SELLER) {
       if (data instanceof FormData) {
         data.delete('role')
       } else {

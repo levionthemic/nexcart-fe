@@ -80,10 +80,10 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { useLoading } from '@/contexts/LoadingContext'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { Product } from '@/types/entities/product'
-import ProductDetailDialog from './product-detail-dialog'
-import { getProductsAPI } from '@/apis/sellerApis'
+import { ProductListItem } from '@/types/entities/product'
+// import ProductDetailDialog from './product-detail-dialog'
 import { DEFAULT_IMAGE_URL } from '@/utils/constants'
+import { getProductsApi } from '@/apis/product.api'
 
 // Custom filter function for multi-column searching
 const multiColumnFilterFn = (row, columnId, filterValue) => {
@@ -99,7 +99,7 @@ const statusFilterFn = (row, columnId, filterValue) => {
   return filterValue.includes(status)
 }
 
-const columns: ColumnDef<Product>[] = [
+const columns: ColumnDef<ProductListItem>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -238,10 +238,10 @@ const columns: ColumnDef<Product>[] = [
 export default function ProductTable() {
   const router = useRouter()
   const id = useId()
-  const [data, setData] = useState<Product[]>([])
+  const [data, setData] = useState<ProductListItem[]>([])
 
   useEffect(() => {
-    getProductsAPI().then((data) => setData(data?.products))
+    getProductsApi().then((data) => setData(data?.data || []))
   }, [])
 
   const { isDataLoading } = useLoading()
@@ -263,7 +263,7 @@ export default function ProductTable() {
   const handleDeleteRows = () => {
     const selectedRows = table.getSelectedRowModel().rows
     const updatedData = data.filter(
-      (item) => !selectedRows.some((row) => row.original._id === item._id)
+      (item) => !selectedRows.some((row) => row.original.id === item.id)
     )
     setData(updatedData)
     table.resetRowSelection()
@@ -782,7 +782,7 @@ function RowActions({ row }) {
         <Trash size={10} aria-hidden='true' />
       </Button>
 
-      <ProductDetailDialog product={row.original} />
+      {/* <ProductDetailDialog product={row.original} /> */}
     </div>
   )
 }

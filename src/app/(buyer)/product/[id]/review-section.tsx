@@ -1,10 +1,9 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import ReviewModal from './_components/review-modal'
-import { addCommentAPI } from '@/apis/buyerApis'
-import { toast } from 'sonner'
-import { useSearchParams } from 'next/navigation'
+// import { toast } from 'sonner'
+// import { useSearchParams } from 'next/navigation'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { FaRegCommentDots, FaRegThumbsUp } from 'react-icons/fa'
@@ -13,39 +12,40 @@ import { IoShareSocialOutline } from 'react-icons/io5'
 import { Separator } from '@/components/ui/separator'
 import PaginationComponent from '@/components/pagination/pagination'
 import { Product } from '@/types/entities/product'
-import { useSelector } from 'react-redux'
-import { selectCurrentUser } from '@/redux/user/userSlice'
-import { socketIoInstance } from '@/app/socket'
+// import { useSelector } from 'react-redux'
+// import { selectCurrentUser } from '@/redux/user/userSlice'
 import { Ratings } from '@/components/ui/ratings'
 
 export default function ReviewSection({ product }: { product: Product }) {
   const sectionRef = useRef<HTMLDivElement>(null)
-  const [page, setPage] = useState(1)
+  const [page] = useState(1)
 
-  const [isTyping, setIsTyping] = useState<boolean>(false)
-  const [typingUsers, setTypingUsers] = useState<string[]>([])
+  // const [isTyping, setIsTyping] = useState<boolean>(false)
+  const [typingUsers] = useState<string[]>([])
 
-  const searchParams = useSearchParams()
-  const productId = searchParams.get('productId')
+  // const searchParams = useSearchParams()
+  // const productId = searchParams.get('productId')
 
-  const currentUser = useSelector(selectCurrentUser)
+  // const currentUser = useSelector(selectCurrentUser)
 
   const onSubmitReview = (data: { rating: number; content: string }) => {
     const reviewData = {
-      productId: product?._id,
+      productId: product.id,
       ...data,
       medias: []
     }
 
-    toast.promise(addCommentAPI(reviewData), {
-      loading: 'Đang gửi đánh giá...',
-      success: (res) => {
-        if (!res.error) {
-          return 'Đánh giá thành công!'
-        }
-        throw res
-      }
-    })
+    console.log(reviewData)
+
+    // toast.promise(addCommentAPI(reviewData), {
+    //   loading: 'Đang gửi đánh giá...',
+    //   success: (res) => {
+    //     if (!res.error) {
+    //       return 'Đánh giá thành công!'
+    //     }
+    //     throw res
+    //   }
+    // })
   }
 
   const updateStartTyping = () => {
@@ -132,7 +132,7 @@ export default function ReviewSection({ product }: { product: Product }) {
               Chưa có đánh giá!
             </span>
           )}
-          {product?.reviews[page - 1]?.comments.map(
+          {product?.reviews?.[page - 1]?.comments.map(
             (comment, index: number) => (
               <div key={index}>
                 <div className='flex items-center gap-8 mb-4'>
@@ -202,7 +202,7 @@ export default function ReviewSection({ product }: { product: Product }) {
         </div>
         <PaginationComponent
           currentPage={page}
-          totalPages={product?.reviews.length}
+          totalPages={product.reviews?.length}
         />
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { refreshTokenAPI } from '@/apis/auth.api'
 import envConfig from '@/config'
 
 type CustomOptions = RequestInit & {
@@ -6,15 +7,28 @@ type CustomOptions = RequestInit & {
 
 class HttpError extends Error {
   status: number
-  payload: any
-  constructor({ status, payload }: { status: number; payload: any }) {
+  message: string
+  constructor(apiResponse: ApiResponse) {
     super('Http Error')
-    this.status = status
-    this.payload = payload
+    this.status = apiResponse.statusCode
+    this.message = apiResponse.message
   }
 }
 
-const request = async <Response>(
+export interface ApiResponse<T = unknown> {
+  statusCode: number
+  message: string
+  data?: T
+}
+
+let apiPendingRequests: ((
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+  url: string,
+  options?: CustomOptions
+) => unknown)[] = []
+let isRefreshing = false
+
+const request = async <T>(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',
   url: string,
   options?: CustomOptions
@@ -37,39 +51,63 @@ const request = async <Response>(
     method
   })
 
-  const payload: Response = await res.json()
-  const data = {
-    status: res.status,
-    payload
-  }
-  if (!res.ok) throw new HttpError(data)
+  const apiResponse: ApiResponse<T> = await res.json()
 
-  return data
+  // Refresh token
+  if (apiResponse.statusCode === 410) {
+    if (!isRefreshing) {
+      isRefreshing = true
+      refreshTokenAPI()
+        .then(() => {
+          // Call the holding requests respectively.
+          apiPendingRequests.forEach((cb) => cb(method, url, options))
+          apiPendingRequests = []
+        })
+        .catch((error) => {
+          apiPendingRequests = []
+          throw error
+        })
+        .finally(() => (isRefreshing = false))
+    }
+
+    // If is refreshing, the incoming request will be held and pushed to queue. Return Promise for that waiting purpose.
+    return new Promise<ApiResponse<T>>((resolve, reject) => {
+      apiPendingRequests.push(async (method, url, options) => {
+        try {
+          const retryResponse = await request<T>(method, url, options)
+          resolve(retryResponse)
+        } catch (error) {
+          reject(error)
+        }
+      })
+    })
+  }
+
+  if (!res.ok) throw new HttpError(apiResponse)
+
+  return apiResponse
 }
 
 const http = {
-  get<Response>(url: string, options?: Omit<CustomOptions, 'body'> | undefined) {
-    return request<Response>('GET', url, options)
+  get<T>(url: string, options?: Omit<CustomOptions, 'body'> | undefined) {
+    return request<T>('GET', url, options)
   },
-  post<Response>(
+  post<T>(
     url: string,
-    body: any,
-    options: Omit<CustomOptions, 'body'> | undefined
+    body: BodyInit,
+    options?: Omit<CustomOptions, 'body'> | undefined
   ) {
-    return request<Response>('POST', url, { ...options, body })
+    return request<T>('POST', url, { ...options, body })
   },
-  put<Response>(
+  put<T>(
     url: string,
-    body: any,
-    options: Omit<CustomOptions, 'body'> | undefined
+    body: BodyInit,
+    options?: Omit<CustomOptions, 'body'> | undefined
   ) {
-    return request<Response>('GET', url, { ...options, body })
+    return request<T>('PUT', url, { ...options, body })
   },
-  delete<Response>(
-    url: string,
-    options: Omit<CustomOptions, 'body'> | undefined
-  ) {
-    return request<Response>('GET', url, options)
+  delete<T>(url: string, options?: Omit<CustomOptions, 'body'> | undefined) {
+    return request<T>('DELETE', url, options)
   }
 }
 

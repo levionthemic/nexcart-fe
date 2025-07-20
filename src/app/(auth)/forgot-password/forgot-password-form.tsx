@@ -14,7 +14,7 @@ import { Input } from '@/components/ui/input'
 import OTP from '@/components/OTP'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { forgotPasswordAPI } from '@/apis/authApis'
+import { forgotPasswordAPI } from '@/apis/auth.api'
 import { asyncHandler } from '@/utils/asyncHandler'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {

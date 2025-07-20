@@ -6,22 +6,22 @@ import {
   CarouselContent,
   CarouselItem
 } from '@/components/ui/carousel'
-import { Product } from '@/types/entities/product'
+import { ProductListItem } from '@/types/entities/product'
 import Autoplay from 'embla-carousel-autoplay'
 
 export default function CarouselProducts({
   bestSellingProducts
 }: {
-  bestSellingProducts: Product[]
+  bestSellingProducts: ProductListItem[]
 }) {
   return (
     <Carousel plugins={[Autoplay({ playOnInit: true, delay: 3000 })]}>
       <CarouselContent>
         {bestSellingProducts.length > 0
-          ? bestSellingProducts.map((product: Product) => (
+          ? bestSellingProducts.map((product: ProductListItem) => (
               <CarouselItem
                 className='basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:basis-1/6'
-                key={product._id}
+                key={product.id}
               >
                 <ProductCard product={product} loading={false} />
               </CarouselItem>

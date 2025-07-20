@@ -3,6 +3,7 @@
 import ProductCard from "@/components/product"
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
 import { Category } from "@/types/entities/category"
+import { DEFAULT_IMAGE_URL } from "@/utils/constants"
 import Autoplay from "embla-carousel-autoplay"
 import Image from "next/image"
 
@@ -14,13 +15,13 @@ export default function CarouselCategories({ categories }: { categories: Categor
           ? categories.map((category: Category) => (
               <CarouselItem
                 className='basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/6'
-                key={category._id}
+                key={category.id}
               >
                 <div className='border border-mainColor2-100 rounded-md flex flex-col items-center p-1 cursor-pointer hover:border-[3px] hover:shadow-md'>
                   <Image
                     width={96}
                     height={96}
-                    src={category.avatar}
+                    src={category.avatar || DEFAULT_IMAGE_URL}
                     alt=''
                     className='object-cover mb-1'
                   />

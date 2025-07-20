@@ -9,6 +9,7 @@ import {
   FormLabel
 } from '@/components/ui/form'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Ratings } from '@/components/ui/ratings'
 import {
   Select,
   SelectContent,
@@ -21,8 +22,6 @@ import { Category } from '@/types/entities/category'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { FaRegStar, FaStar } from 'react-icons/fa'
-import Rating from 'react-rating'
 
 interface FilterFormData {
   filterByRate: string
@@ -160,13 +159,7 @@ export default function ProductFilterForm({
                       <RadioGroupItem value={'5'} className='bg-white' />
                     </FormControl>
                     <FormLabel className='font-normal cursor-pointer flex items-center gap-1.5'>
-                      <Rating
-                        emptySymbol={<FaRegStar />}
-                        fullSymbol={<FaStar />}
-                        initialRating={5}
-                        readonly
-                        className='text-[#FBCA04] text-md leading-none'
-                      />
+                      <Ratings rating={5} variant='yellow' size={13} />
                       <span>từ 5 sao</span>
                     </FormLabel>
                   </FormItem>
@@ -176,13 +169,7 @@ export default function ProductFilterForm({
                       <RadioGroupItem value={'4'} className='bg-white' />
                     </FormControl>
                     <FormLabel className='font-normal cursor-pointer flex items-center gap-1.5'>
-                      <Rating
-                        emptySymbol={<FaRegStar />}
-                        fullSymbol={<FaStar />}
-                        initialRating={4}
-                        readonly
-                        className='text-[#FBCA04] text-md leading-none'
-                      />
+                      <Ratings rating={4} variant='yellow' size={13} />
                       <span>từ 4 sao</span>
                     </FormLabel>
                   </FormItem>
@@ -192,13 +179,7 @@ export default function ProductFilterForm({
                       <RadioGroupItem value={'3'} className='bg-white' />
                     </FormControl>
                     <FormLabel className='font-normal cursor-pointer flex items-center gap-1.5'>
-                      <Rating
-                        emptySymbol={<FaRegStar />}
-                        fullSymbol={<FaStar />}
-                        initialRating={3}
-                        readonly
-                        className='text-[#FBCA04] text-md leading-none'
-                      />
+                      <Ratings rating={3} variant='yellow' size={13} />
                       <span>từ 3 sao</span>
                     </FormLabel>
                   </FormItem>
@@ -294,8 +275,8 @@ export default function ProductFilterForm({
                 <SelectContent>
                   {categories?.map((category: Category) => (
                     <SelectItem
-                      key={category?._id}
-                      value={String(category?._id)}
+                      key={category?.id}
+                      value={category.id}
                     >
                       {category?.name}
                     </SelectItem>
@@ -320,7 +301,7 @@ export default function ProductFilterForm({
                 </FormControl>
                 <SelectContent>
                   {brands?.map((brand) => (
-                    <SelectItem key={brand?._id} value={brand?._id}>
+                    <SelectItem key={brand.id} value={brand.id}>
                       {brand?.name}
                     </SelectItem>
                   ))}

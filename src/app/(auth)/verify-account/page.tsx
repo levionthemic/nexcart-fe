@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { verifyUserAPI } from '@/apis/authApis'
+import { verifyUserAPI } from '@/apis/auth.api'
 import Loader from '@/components/loader/loader'
 import { RoleValue } from '@/types/enums/role'
 import { useRouter, useSearchParams } from 'next/navigation'

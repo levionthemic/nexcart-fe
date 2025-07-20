@@ -18,9 +18,9 @@ export default function ChooseType({ product }: { product: Product }) {
 
   useEffect(() => {
     if (typeId) {
-      const type = product?.types.find((type) => type.typeId === typeId)
-      setProductEndPrice(type?.price as number)
-      setDiscount(type?.discount as number)
+      const type = product?.types.find((type) => type.id === typeId)
+      setProductEndPrice(Number(type?.price))
+      setDiscount(Number(type?.discount))
     }
   }, [product?.types, typeId])
 
@@ -53,21 +53,21 @@ export default function ChooseType({ product }: { product: Product }) {
           >
             {product?.types?.map((type) => (
               <div
-                key={type.typeId}
+                key={type.id}
                 className='border-input has-[button[data-state=checked]]:border-mainColor1-200 has-[button[data-state=checked]]:bg-mainColor1-100/20 relative flex flex-col gap-4 border px-4 py-3 outline-none first:rounded-t-md last:rounded-b-md has-[button[data-state=checked]]:z-10'
               >
                 <div className='flex items-center justify-between'>
                   <div className='flex items-center gap-2'>
                     <RadioGroupItem
-                      id={type.typeId}
-                      value={type.typeId}
+                      id={type.id}
+                      value={type.id}
                       className='after:absolute after:inset-0'
                     />
                     <Label
                       className='inline-flex items-start'
-                      htmlFor={type.typeId}
+                      htmlFor={type.id}
                     >
-                      {type.typeName}
+                      {type.name}
                     </Label>
                   </div>
                 </div>

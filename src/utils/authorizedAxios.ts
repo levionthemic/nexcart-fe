@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { toast } from 'sonner'
-import { refreshTokenAPI } from '@/apis/authApis'
+import { refreshTokenAPI } from '@/apis/auth.api'
 import { logoutUserAPI } from '@/redux/user/userSlice'
 import { API_ROOT } from '@/utils/constants'
 import { clearCart } from '@/redux/cart/cartSlice'

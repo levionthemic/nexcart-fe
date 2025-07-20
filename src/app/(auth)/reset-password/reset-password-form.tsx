@@ -15,7 +15,7 @@ import { ArrowLeft } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 
 import { toast } from 'sonner'
-import { resetPasswordAPI } from '@/apis/authApis'
+import { resetPasswordAPI } from '@/apis/auth.api'
 import { asyncHandler } from '@/utils/asyncHandler'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {

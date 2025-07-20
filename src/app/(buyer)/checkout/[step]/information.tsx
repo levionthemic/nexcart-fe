@@ -25,10 +25,14 @@ import {
   PHONE_NUMBER_RULE_MESSAGE
 } from '@/utils/validators'
 import { z } from 'zod'
-import envConfig from '@/config'
 import { GhnDistrict, GhnProvince, GhnWard } from '@/types/entities/ghn'
 import { useOrder } from '@/contexts/order-context'
 import { useRouter } from 'next/navigation'
+import {
+  getListDistrictsByProvinceIdApi,
+  getListProvincesApi,
+  getListWardsByDistrictIdApi
+} from '@/apis/ghn.api'
 
 const formSchema = z.object({
   name: z
@@ -43,9 +47,9 @@ const formSchema = z.object({
     .min(1, { message: FIELD_REQUIRED_MESSAGE })
     .regex(PHONE_NUMBER_RULE, { message: PHONE_NUMBER_RULE_MESSAGE }),
   buyerAddress: z.object({
-    province: z.number({ message: FIELD_REQUIRED_MESSAGE }),
-    district: z.number({ message: FIELD_REQUIRED_MESSAGE }),
-    ward: z
+    provinceId: z.number({ message: FIELD_REQUIRED_MESSAGE }),
+    districtId: z.number({ message: FIELD_REQUIRED_MESSAGE }),
+    wardCode: z
       .string({ required_error: FIELD_REQUIRED_MESSAGE })
       .min(1, { message: FIELD_REQUIRED_MESSAGE }),
     address: z
@@ -66,17 +70,21 @@ export default function Information() {
 
   const { checkoutInfo, setCheckoutInfo } = useOrder()
 
+  const defaultBuyerAddress = currentUser?.buyer?.addresses?.find(
+    (a) => a.isDefault
+  )
+
   const [provinceId, setProvinceId] = useState(
-    checkoutInfo?.information?.buyerAddress.province ||
-      currentUser?.buyerAddress?.[0].province
+    checkoutInfo?.information?.buyerAddress.provinceId ||
+      defaultBuyerAddress?.provinceId
   )
   const [districtId, setDistrictId] = useState(
-    checkoutInfo?.information?.buyerAddress.district ||
-      currentUser?.buyerAddress?.[0].district
+    checkoutInfo?.information?.buyerAddress.districtId ||
+      defaultBuyerAddress?.districtId
   )
   const [wardId, setWardId] = useState(
-    checkoutInfo?.information?.buyerAddress.ward ||
-      currentUser?.buyerAddress?.[0].ward
+    checkoutInfo?.information?.buyerAddress.wardCode ||
+      defaultBuyerAddress?.wardCode
   )
 
   useEffect(() => {
@@ -97,7 +105,7 @@ export default function Information() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       buyerAddress: checkoutInfo?.information?.buyerAddress ||
-        currentUser?.buyerAddress?.[0] || {
+        defaultBuyerAddress || {
           address: ''
         },
       email: checkoutInfo?.information?.email || currentUser?.email || '',
@@ -107,68 +115,35 @@ export default function Information() {
   })
 
   useEffect(() => {
-    fetch(
-      'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/province',
-      {
-        headers: { token: envConfig.NEXT_PUBLIC_GHN_TOKEN_API }
+    getListProvincesApi().then((data) => {
+      if (data) {
+        setListProvinces(data)
       }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setListProvinces(data.data)
-      })
+    })
   }, [])
 
   useEffect(() => {
     setListWards([])
     if (provinceId) {
-      fetch(
-        'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/district',
-        {
-          method: 'POST',
-          headers: {
-            token: envConfig.NEXT_PUBLIC_GHN_TOKEN_API,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            province_id: provinceId
-          })
-        }
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.data?.length) setListDistricts(data.data)
-        })
+      getListDistrictsByProvinceIdApi(provinceId).then((data) => {
+        if (data && data.length) setListDistricts(data)
+      })
     }
   }, [provinceId])
 
   useEffect(() => {
     if (districtId) {
-      fetch(
-        'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id',
-        {
-          method: 'POST',
-          headers: {
-            token: envConfig.NEXT_PUBLIC_GHN_TOKEN_API,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            district_id: districtId
-          })
-        }
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.data?.length) setListWards(data.data)
-        })
+      getListWardsByDistrictIdApi(districtId).then((data) => {
+        if (data && data.length) setListWards(data)
+      })
     }
   }, [districtId])
 
   useEffect(() => {
     form.setValue('buyerAddress', {
-      province: Number(provinceId),
-      district: Number(districtId),
-      ward: String(wardId),
+      provinceId: Number(provinceId),
+      districtId: Number(districtId),
+      wardCode: String(wardId),
       address: form.watch('buyerAddress.address')
     })
   }, [
@@ -191,18 +166,20 @@ export default function Information() {
     const buyerAddress = data.buyerAddress
 
     const wardName = listWards.find(
-      (i) => i.WardCode === buyerAddress.ward
+      (i) => i.WardCode === buyerAddress.wardCode
     )?.WardName
     const districtName = listDistricts.find(
-      (i) => i.DistrictID === buyerAddress.district
+      (i) => i.DistrictID === buyerAddress.districtId
     )?.DistrictName
     const provinceName = listProvinces.find(
-      (i) => i.ProvinceID === buyerAddress.province
+      (i) => i.ProvinceID === buyerAddress.provinceId
     )?.ProvinceName
 
     const shortAddress = `${buyerAddress.address}, ${wardName}, ${districtName}, ${provinceName}`
 
-    const updatedCheckoutInfo = { information: { ...data, shortAddress: shortAddress } }
+    const updatedCheckoutInfo = {
+      information: { ...data, shortAddress: shortAddress }
+    }
 
     setCheckoutInfo(updatedCheckoutInfo)
     router.push('/checkout/2')
@@ -303,7 +280,7 @@ export default function Information() {
                     <div className='grid grid-cols-3 gap-10 mb-4'>
                       <FormField
                         control={form.control}
-                        name='buyerAddress.province'
+                        name='buyerAddress.provinceId'
                         render={({ field }) => (
                           <FormItem>
                             <FormControl>
@@ -317,7 +294,7 @@ export default function Information() {
                                 getDetails={getDetails}
                                 flag={'province'}
                                 error={
-                                  !!form.formState.errors.buyerAddress?.province
+                                  !!form.formState.errors.buyerAddress?.provinceId
                                 }
                                 defaultValue={field.value}
                                 onChange={field.onChange}
@@ -330,7 +307,7 @@ export default function Information() {
 
                       <FormField
                         control={form.control}
-                        name='buyerAddress.district'
+                        name='buyerAddress.districtId'
                         render={({ field }) => (
                           <FormItem>
                             <FormControl>
@@ -344,7 +321,7 @@ export default function Information() {
                                 getDetails={getDetails}
                                 flag={'district'}
                                 error={
-                                  !!form.formState.errors.buyerAddress?.district
+                                  !!form.formState.errors.buyerAddress?.districtId
                                 }
                                 defaultValue={field.value}
                                 onChange={field.onChange}
@@ -357,7 +334,7 @@ export default function Information() {
 
                       <FormField
                         control={form.control}
-                        name='buyerAddress.ward'
+                        name='buyerAddress.wardCode'
                         render={({ field }) => (
                           <FormItem>
                             <FormControl>
@@ -371,7 +348,7 @@ export default function Information() {
                                 getDetails={getDetails}
                                 flag={'ward'}
                                 error={
-                                  !!form.formState.errors.buyerAddress?.ward
+                                  !!form.formState.errors.buyerAddress?.wardCode
                                 }
                                 defaultValue={field.value}
                                 onChange={field.onChange}
@@ -389,7 +366,7 @@ export default function Information() {
                         <FormItem>
                           <FormControl>
                             <Input
-                              placeholder='Vd: 123 đường ABC, phường X, quận Y, TPHCM'
+                              placeholder='Vd: 123 đường ABC'
                               className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-xl focus:outline-none focus:border-[2px] border border-mainColor1-100/50 ${
                                 !!form.formState.errors.buyerAddress?.address &&
                                 'border-red-500'

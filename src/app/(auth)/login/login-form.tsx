@@ -42,7 +42,7 @@ export default function LoginForm() {
     defaultValues: {
       email: '',
       password: '',
-      role: Role.Buyer
+      role: Role.BUYER
     }
   })
 
@@ -69,7 +69,7 @@ export default function LoginForm() {
         (res) => res.json()
       )
       dispatch(setUser(userData))
-      if (userData.role === Role.Buyer) router.push('/')
+      if (userData.role === Role.BUYER) router.push('/')
       else router.push('/seller')
       toast.success('Đăng nhập thành công!')
     }
@@ -201,7 +201,7 @@ export default function LoginForm() {
                     <FormItem className='flex items-center space-x-3 space-y-0 hover:bg-mainColor2-800/50 px-4 py-3 rounded-md hover:transition-all hover:ease-in-out hover:duration-400 cursor-pointer has-[button[data-state=checked]]:bg-mainColor2-800/50'>
                       <FormControl>
                         <RadioGroupItem
-                          value={Role.Buyer}
+                          value={Role.BUYER}
                           className='bg-white border-white'
                         />
                       </FormControl>
@@ -212,7 +212,7 @@ export default function LoginForm() {
                     <FormItem className='flex items-center space-x-3 space-y-0 hover:bg-mainColor2-800/50 px-4 py-3 rounded-md hover:transition-all hover:ease-in-out hover:duration-400 cursor-pointer has-[button[data-state=checked]]:bg-mainColor2-800/50'>
                       <FormControl>
                         <RadioGroupItem
-                          value={Role.Seller}
+                          value={Role.SELLER}
                           className='bg-white border-white'
                         />
                       </FormControl>

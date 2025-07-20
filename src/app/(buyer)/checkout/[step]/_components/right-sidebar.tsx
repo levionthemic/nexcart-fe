@@ -5,7 +5,10 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from '@/components/ui/tooltip'
-import { CheckoutInfoType, ClusterOrderListItem } from '@/contexts/order-context'
+import {
+  CheckoutInfoType,
+  ClusterOrderListItem
+} from '@/contexts/order-context'
 import Image from 'next/image'
 
 interface RightSidebarProps {
@@ -18,8 +21,8 @@ export default function RightSidebar({
   checkoutInfo,
   index
 }: RightSidebarProps) {
-  const totalPrice = clusterOrder.itemList?.reduce(
-    (sum: number, item) => sum + item.quantity * item.price!,
+  const totalPrice = clusterOrder.orderItems?.reduce(
+    (sum: number, item) => sum + item.quantity * item.product.type.price!,
     0
   )
   return (
@@ -28,7 +31,7 @@ export default function RightSidebar({
         <div className='text-md text-mainColor1-800 font-medium'>
           Danh sách sản phẩm
         </div>
-        {clusterOrder.itemList?.map((product, index) => (
+        {clusterOrder.orderItems?.map(({ product, quantity }, index) => (
           <div
             key={index}
             className='flex items-center gap-2 my-6 overflow-hidden'
@@ -39,23 +42,23 @@ export default function RightSidebar({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span className='text-sm line-clamp-1 text-mainColor2-800 leading-none'>
-                      {product?.productName}
+                      {product?.name}
                     </span>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>{product?.productName}</p>
+                    <p>{product?.name}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
               <p className='line-clamp-1 text-xs text-gray-400 mb-0.5'>
-                Loại: {product.typeName}
+                Loại: {product.type.name}
               </p>
               <div className='flex flex-col lg:flex-row lg:items-center lg:gap-4'>
                 <Badge className='bg-mainColor2-800/90'>
-                  {product.quantity} sản phẩm
+                  {quantity} sản phẩm
                 </Badge>
                 <span className='text-[0.8rem] text-muted-foreground'>
-                  x {product.price!.toLocaleString('vi-VN')}
+                  x {product.type.price.toLocaleString('vi-VN')}
                   <sup>đ</sup>
                 </span>
               </div>
@@ -113,7 +116,8 @@ export default function RightSidebar({
           </div>
           <div className='text-red-600 text-right text-xl font-bold'>
             {(
-              totalPrice + (checkoutInfo?.shipping?.[index]?.detail?.total as number || 0)
+              totalPrice +
+              ((checkoutInfo?.shipping?.[index]?.detail?.total as number) || 0)
             ).toLocaleString('vi-VN')}
             <sup>đ</sup>
           </div>

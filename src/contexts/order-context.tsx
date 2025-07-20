@@ -1,8 +1,9 @@
 'use client'
 
 import { InformationFormSchemaType } from '@/app/(buyer)/checkout/[step]/information'
-import { Address } from '@/types/entities/address'
 import { OrderItem } from '@/types/entities/order'
+import { Shop } from '@/types/entities/shop'
+import { Seller } from '@/types/entities/user'
 import { PaymentMethod, ShippingMethod } from '@/types/enums/checkout'
 import {
   createContext,
@@ -14,12 +15,10 @@ import {
 } from 'react'
 
 export interface ClusterOrderListItem {
-  buyerId: string
-  sellerId: string
-  shopId: string
-  orgPrice: number
-  shopAddress: Address
-  itemList: OrderItem[]
+  seller: Seller
+  shop: Shop
+  originalPrice: number
+  orderItems: OrderItem[]
 }
 
 export interface ShippingDataType {
@@ -38,8 +37,8 @@ export type CheckoutInfoType = {
   }[]
 }
 type OrderContextType = {
-  itemList: OrderItem[]
-  setItemList: Dispatch<SetStateAction<OrderItem[]>>
+  orderItems: OrderItem[]
+  setOrderItems: Dispatch<SetStateAction<OrderItem[]>>
   checkoutInfo: CheckoutInfoType | null
   setCheckoutInfo: Dispatch<SetStateAction<CheckoutInfoType | null>>
   clusterOrders: ClusterOrderListItem[]
@@ -55,8 +54,8 @@ type OrderProviderProps = {
 }
 
 export const OrderProvider = ({ children }: OrderProviderProps) => {
-  const [itemList, setItemList] = useState<OrderItem[]>(
-    JSON.parse(String(sessionStorage.getItem('itemList'))) || []
+  const [orderItems, setOrderItems] = useState<OrderItem[]>(
+    JSON.parse(String(sessionStorage.getItem('orderItems'))) || []
   )
   const [checkoutInfo, setCheckoutInfo] = useState<CheckoutInfoType | null>(
     null
@@ -69,8 +68,8 @@ export const OrderProvider = ({ children }: OrderProviderProps) => {
   return (
     <OrderContext.Provider
       value={{
-        itemList,
-        setItemList,
+        orderItems,
+        setOrderItems,
         checkoutInfo,
         setCheckoutInfo,
         clusterOrders,

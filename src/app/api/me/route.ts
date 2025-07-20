@@ -1,4 +1,5 @@
 import http from '@/lib/http'
+import { User } from '@/types/entities/user'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(req: NextRequest) {
@@ -10,7 +11,7 @@ export async function GET(req: NextRequest) {
   if (!accessToken && !sessionId)
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const response = await http.get('/user/profile', {
+  const response = await http.get<User>('/users/profile', {
     headers: {
       cookie: `accessToken=${accessToken};sessionId=${sessionId}`,
       'User-Agent': userAgent,
@@ -18,11 +19,11 @@ export async function GET(req: NextRequest) {
     }
   })
 
-  if (response.status !== 200)
+  if (response.statusCode !== 200)
     return NextResponse.json(
       { error: 'Unauthorized' },
-      { status: response.status }
+      { status: response.statusCode }
     )
 
-  return NextResponse.json(response.payload)
+  return NextResponse.json(response.data)
 }

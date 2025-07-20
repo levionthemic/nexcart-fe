@@ -29,6 +29,7 @@ import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
+import { DEFAULT_IMAGE_URL } from '@/utils/constants'
 
 export default function UserHeader() {
   const currentUser = useSelector(selectCurrentUser)
@@ -49,26 +50,32 @@ export default function UserHeader() {
             <div className='relative transition-transform cursor-pointer hover:scale-105 hover:ease-out hover:duration-300'>
               <BsHandbag className='text-xl text-mainColor1-600' />
               <Badge className='absolute w-2 h-2 p-2 text-center rounded-full -top-3 -right-3 bg-mainColor1-400'>
-                {currentCart?.itemList?.length || 0}
+                {currentCart?.cartItems?.length || 0}
               </Badge>
             </div>
           </SheetTrigger>
-          <SheetContent side={'right'}>
-            <SheetHeader className='my-3'>
+          <SheetContent side={'right'} className='space-y-2'>
+            <SheetHeader className='my-1 pb-1'>
               <SheetTitle>
                 Giỏ hàng của bạn{' '}
                 <span className='text-sm text-gray-700'>
-                  ({currentCart?.itemList.length || 0})
+                  ({currentCart?.cartItems.length || 0})
                 </span>
               </SheetTitle>
               <SheetDescription className='!m-0'>
                 Sơ lược các sản phẩm trong giỏ hàng.
               </SheetDescription>
             </SheetHeader>
-            <div className='py-4 max-h-[89%] overflow-auto'>
-              {currentCart?.fullProducts?.map((product, index) => (
+            <div className='p-4 max-h-[89%] overflow-auto'>
+              {currentCart?.cartItems?.map(({ product, quantity }, index) => (
                 <div key={index} className='flex items-center gap-2 my-6'>
-                  <Image src={product?.avatar} alt='' width={40} height={40} />
+                  <Image
+                    src={product?.avatar || DEFAULT_IMAGE_URL}
+                    alt=''
+                    width={40}
+                    height={40}
+                    className='size-10 rounded'
+                  />
                   <div className='flex flex-col gap-1'>
                     <TooltipProvider>
                       <Tooltip>
@@ -83,11 +90,11 @@ export default function UserHeader() {
                       </Tooltip>
                     </TooltipProvider>
                     <p className='line-clamp-1 text-xs text-gray-400 mb-0.5'>
-                      Loại: {product?.type?.typeName}
+                      Loại: {product?.type?.name}
                     </p>
                     <div className='flex flex-col lg:flex-row lg:items-center lg:gap-4'>
                       <Badge className='bg-mainColor2-800/90'>
-                        {currentCart.itemList[index].quantity} sản phẩm
+                        {quantity} sản phẩm
                       </Badge>
                       <span className='text-[0.8rem] text-muted-foreground'>
                         x {product?.type?.price.toLocaleString('vi-VN')}
@@ -102,7 +109,7 @@ export default function UserHeader() {
               <SheetClose asChild>
                 <Button
                   className='w-full bg-mainColor2-800/90 hover:bg-mainColor2-800 hover:drop-shadow-lg'
-                  onClick={() => router.push('/buyer/cart')}
+                  onClick={() => router.push('/cart')}
                 >
                   Xem giỏ hàng
                 </Button>
