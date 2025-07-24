@@ -6,6 +6,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-section: var(--section);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -15,7 +16,7 @@
   --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--color-mainColor1-800);
+  --color-sidebar: var(--sidebar);
   --color-pending: var(--chart-5);
   --color-packaging: var(--chart-4);
   --color-delivering: var(--chart-3);
@@ -47,16 +48,15 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  /* Custom */
-  --color-mainColor1-100: #9595C9;
-  --color-mainColor1-200: #8786C0;
-  --color-mainColor1-400: #6666AE;
-  --color-mainColor1-600: #464B9F;
-  --color-mainColor1-800: #2F2F89;
+  --color-mainColor1-100: var(--mainColor1-100);
+  --color-mainColor1-200: var(--mainColor1-200);
+  --color-mainColor1-400: var(--mainColor1-400);
+  --color-mainColor1-600: var(--mainColor1-600);
+  --color-mainColor1-800: var(--mainColor1-800);
 
-  --color-mainColor2-100: #CEACD1;
-  --color-mainColor2-300: #C29BC8;
-  --color-mainColor2-800: #854C9D;
+  --color-mainColor2-100: var(--mainColor2-100);
+  --color-mainColor2-300: var(--mainColor2-300);
+  --color-mainColor2-800: var(--mainColor2-800);
 }
 
 :root {
@@ -67,7 +67,7 @@
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
+  --primary: oklch(0.4545 0.1339 277.09);
   --primary-foreground: oklch(0.984 0.003 247.858);
   --secondary: oklch(0.968 0.007 247.896);
   --secondary-foreground: oklch(0.208 0.042 265.755);
@@ -84,7 +84,7 @@
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
+  --sidebar: oklch(0.4545 0.1339 277.09);
   --sidebar-foreground: oklch(0.129 0.042 264.695);
   --sidebar-primary: oklch(0.208 0.042 265.755);
   --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
@@ -92,12 +92,25 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
+
+  /* Custom */
+  --mainColor1-100: #9595c9;
+  --mainColor1-200: #8786c0;
+  --mainColor1-400: #6666ae;
+  --mainColor1-600: #464b9f;
+  --mainColor1-800: #2f2f89;
+
+  --mainColor2-100: #ceacd1;
+  --mainColor2-300: #c29bc8;
+  --mainColor2-800: #854c9d;
 }
 
 .dark {
-  --background: oklch(0.129 0.042 264.695);
+  /* --background: oklch(0.129 0.042 264.695);
+  --background: oklch(0.1822 0 0);
   --foreground: oklch(0.984 0.003 247.858);
   --card: oklch(0.208 0.042 265.755);
+  
   --card-foreground: oklch(0.984 0.003 247.858);
   --popover: oklch(0.208 0.042 265.755);
   --popover-foreground: oklch(0.984 0.003 247.858);
@@ -125,7 +138,73 @@
   --sidebar-accent: oklch(0.279 0.041 260.031);
   --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+  --sidebar-ring: oklch(0.551 0.027 264.364); */
+
+  /* NỀN TỐI */
+  --background: oklch(0.14 0.02 280); /* gần #121222 */
+  --foreground: oklch(0.94 0.02 300); /* tím nhạt sáng, dùng cho text */
+  --section: oklch(0.18 0.03 275); /* gần giống card ở trên */
+
+  /* CARD, POPOVER */
+  --card: oklch(0.18 0.03 275); /* tone hơi tím đậm hơn nền */
+  --card-foreground: oklch(0.94 0.02 300);
+
+  --popover: oklch(0.18 0.03 275);
+  --popover-foreground: oklch(0.94 0.02 300);
+
+  /* PRIMARY - TÍM XANH */
+  --primary: oklch(0.66 0.1 270); /* tương đương mainColor1-400 (#3A3D75) */
+  --primary-foreground: oklch(0.95 0.01 270); /* text trên primary */
+
+  /* SECONDARY - TÍM HỒNG */
+  --secondary: oklch(0.55 0.13 315); /* tương đương mainColor2-300 (#4D385D) */
+  --secondary-foreground: oklch(0.94 0.02 300);
+
+  /* MUTED & ACCENT (giống secondary) */
+  --muted: oklch(0.32 0.06 290);
+  --muted-foreground: oklch(0.75 0.05 280);
+
+  --accent: oklch(0.5 0.1 300);
+  --accent-foreground: oklch(0.95 0.02 310);
+
+  /* DESTRUCTIVE (giữ nguyên hoặc chỉnh về đỏ tím) */
+  --destructive: oklch(0.65 0.2 15); /* đỏ nhẹ trong dark theme */
+  --destructive-foreground: oklch(0.98 0 0);
+
+  /* BORDER & INPUT (nhẹ, không nổi bật) */
+  --border: oklch(0.3 0.01 280);
+  --input: oklch(0.3 0.01 280);
+  --ring: oklch(0.55 0.08 270);
+
+  /* CHARTS */
+  --chart-1: oklch(0.6 0.18 270); /* tím */
+  --chart-2: oklch(0.6 0.15 330); /* hồng */
+  --chart-3: oklch(0.7 0.15 60); /* vàng nhạt */
+  --chart-4: oklch(0.65 0.2 285); /* tím đậm */
+  --chart-5: oklch(0.6 0.15 30); /* cam đỏ */
+
+  /* SIDEBAR (như card) */
+  --sidebar: oklch(0.18 0.03 275);
+  --sidebar-foreground: oklch(0.94 0.02 300);
+
+  --sidebar-primary: oklch(0.6 0.18 270);
+  --sidebar-primary-foreground: oklch(0.94 0.02 300);
+
+  --sidebar-accent: oklch(0.5 0.1 300);
+  --sidebar-accent-foreground: oklch(0.94 0.02 300);
+
+  --sidebar-border: oklch(0.22 0.01 270 / 25%);
+  --sidebar-ring: oklch(0.55 0.08 270);
+
+  --mainColor1-100: #2a2a4a;
+  --mainColor1-200: #2f3059;
+  --mainColor1-400: #3a3d75;
+  --mainColor1-600: #494a91;
+  --mainColor1-800: #6666ae;
+
+  --mainColor2-100: #3a2f44;
+  --mainColor2-300: #4d385d;
+  --mainColor2-800: #6f3a86;
 }
 
 @layer base {
@@ -134,5 +213,33 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Áp dụng cho phần tử có cuộn */
+  .custom-scrollbar {
+    overflow-y: auto;
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #6666ae #121212; /* thumb và track (Firefox) */
+  }
+
+  /* Chrome, Safari, Edge */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #121212; /* track background */
+    border-radius: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #6666ae; /* mainColor1-400 */
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #8786c0; /* mainColor1-200 */
   }
 }

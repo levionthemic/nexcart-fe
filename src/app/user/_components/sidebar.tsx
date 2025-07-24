@@ -45,17 +45,17 @@ export default function UserSidebar() {
     }
   ]
   return (
-    <Sidebar className='px-4 pb-4 bg-white border-none'>
-      <SidebarHeader className='p-0 bg-white'>
+    <Sidebar className='px-4 pb-4 bg-sidebar border-none'>
+      <SidebarHeader className='p-0 bg-sidebar'>
         <span
-          className='my-10 text-4xl font-medium transition-transform cursor-pointer text-mainColor1-600 hover:scale-105 hover:duration-500'
+          className='my-10 text-4xl font-medium transition-transform cursor-pointer text-primary-foreground hover:scale-105 hover:duration-500'
           onClick={() => router.push('/')}
         >
           LEVI
         </span>
       </SidebarHeader>
 
-      <SidebarContent className='bg-white'>
+      <SidebarContent className='bg-sidebar'>
         <SidebarGroup className='p-0'>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -77,9 +77,9 @@ export default function UserSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className='p-0 bg-white'>
+      <SidebarFooter className='p-0 bg-sidebar'>
         <div className='p-4 bg-mainColor1-100/30 rounded-xl'>
-          <div className='mb-4 text-lg font-medium text-mainColor1-800'>
+          <div className='mb-4 text-lg font-medium text-primary-foreground'>
             Có Sản phẩm trong giỏ hàng của bạn
           </div>
           <div className='flex items-center justify-end gap-4'>

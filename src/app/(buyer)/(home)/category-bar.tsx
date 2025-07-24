@@ -17,7 +17,7 @@ export default function CategoryBar({
   categories: Category[]
 }) {
   return (
-    <div className='sticky left-0 flex-1 overflow-y-scroll h-96 max-h-96 top-5 scroll-smooth scroll-pr-1'>
+    <div className='sticky left-0 flex-1 overflow-y-scroll h-96 max-h-96 top-5 scroll-smooth scroll-pr-1 custom-scrollbar'>
       <div className='text-xl font-semibold text-mainColor1-600'>Danh mục:</div>
       <SidebarMenu className='flex flex-col items-start gap-2 mt-2'>
         {categories?.map((item) => (

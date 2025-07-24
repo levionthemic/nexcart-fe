@@ -97,7 +97,7 @@ export default function ReviewSection({ product }: { product: Product }) {
   return (
     <div className=''>
       <div
-        className='relative p-4 mb-6 bg-white rounded-lg h-fit'
+        className='relative p-4 mb-6 bg-white dark:bg-section rounded-lg h-fit'
         ref={sectionRef}
       >
         <div className='flex items-center justify-between'>

@@ -34,7 +34,7 @@ export default async function ProductDetail({
   const recommendedProducts = (await getProductsApi())?.data
 
   return (
-    <div className='bg-[#F5F5FA] py-4'>
+    <div className='bg-[#F5F5FA] dark:bg-background py-4'>
       <div className='container mx-auto'>
         <Breadcrumb className='mb-4'>
           <BreadcrumbList>
@@ -58,7 +58,7 @@ export default async function ProductDetail({
           <div className='relative grid grid-cols-4 gap-6'>
             <div className='col-span-3'>
               <div className='relative grid grid-cols-3 gap-6 mb-6 h-fit'>
-                <div className='sticky left-0 flex items-center justify-center p-4 pb-32 bg-white rounded-lg h-fit top-36'>
+                <div className='sticky left-0 flex items-center justify-center p-4 pb-32 bg-white dark:bg-section rounded-lg h-fit top-36'>
                   <div className='overflow-hidden border rounded-2xl'>
                     <Image
                       width={350}
@@ -71,7 +71,7 @@ export default async function ProductDetail({
                 </div>
 
                 <div className='col-span-2'>
-                  <div className='p-4 mb-6 bg-white rounded-lg'>
+                  <div className='p-4 mb-6 bg-white dark:bg-section rounded-lg'>
                     <span className='inline-flex items-center px-2 py-1 mb-2 text-xs font-medium text-green-700 rounded-md bg-green-50 ring-1 ring-green-600/20 ring-inset'>
                       Còn hàng!
                     </span>
@@ -91,7 +91,7 @@ export default async function ProductDetail({
                     {product && <ChooseType product={product} />}
                   </div>
 
-                  <div className='p-4 mb-6 bg-white rounded-lg'>
+                  <div className='p-4 mb-6 bg-white dark:bg-section rounded-lg'>
                     <div className='mb-1 text-lg font-semibold text-mainColor1-600'>
                       Thông tin vận chuyển
                     </div>
@@ -102,7 +102,7 @@ export default async function ProductDetail({
                     <div>GHTK</div>
                   </div>
 
-                  <div className='p-4 mb-6 bg-white rounded-lg'>
+                  <div className='p-4 mb-6 bg-white dark:bg-section rounded-lg'>
                     <div className='mb-3 text-lg font-semibold text-mainColor1-600'>
                       Thông tin chi tiết
                     </div>
@@ -121,7 +121,7 @@ export default async function ProductDetail({
                     ))}
                   </div>
 
-                  <div className='p-4 bg-white rounded-lg'>
+                  <div className='p-4 bg-white dark:bg-section rounded-lg'>
                     <div className='mb-2 text-lg font-semibold text-mainColor1-800'>
                       Mô tả sản phẩm
                     </div>
@@ -150,7 +150,7 @@ export default async function ProductDetail({
           </div>
         </VariantHandlingProvider>
 
-        <div className='p-4 bg-white rounded-lg'>
+        <div className='p-4 bg-white dark:bg-section rounded-lg'>
           <div className='flex items-center gap-2'>
             <div className='w-3 rounded-sm h-7 bg-mainColor2-800'></div>
             <span className='text-sm font-semibold text-mainColor2-800'>

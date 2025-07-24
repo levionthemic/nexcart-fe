@@ -524,8 +524,8 @@ export default function ClientCartPage() {
             </div>
           )}
         </div>
-        <div className='col-span-1 bg-[#ECEEF6] sticky top-32 rounded-lg left-0 max-h-[80%] min-h-fit'>
-          <div className='p-4 m-4 bg-white rounded-lg'>
+        <div className='col-span-1 bg-[#ECEEF6] dark:bg-section sticky top-32 rounded-lg left-0 max-h-[80%] min-h-fit'>
+          <div className='p-4 m-4 bg-white dark:bg-section brightness-125 rounded-lg'>
             <div className='py-4 text-sm font-semibold tracking-wide text-center uppercase text-mainColor1-600'>
               Tóm tắt
             </div>

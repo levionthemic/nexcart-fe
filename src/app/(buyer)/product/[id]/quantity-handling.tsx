@@ -125,7 +125,7 @@ export default function QuantityHandling({ product }: { product: Product }) {
 
   return (
     <div className='sticky left-0 top-36 h-fit'>
-      <div className='p-4 mb-6 bg-white rounded-lg'>
+      <div className='p-4 mb-6 bg-white dark:bg-section rounded-lg'>
         <div className='mb-2 text-xl font-semibold text-mainColor1-600'>
           Tóm tắt
         </div>
@@ -175,7 +175,7 @@ export default function QuantityHandling({ product }: { product: Product }) {
 
         <div className='my-5'>
           <div className='mb-1 text-mainColor1-800/90'>Tạm tính</div>
-          <div className='text-2xl font-bold tracking-normal text-gray-700'>
+          <div className='text-2xl font-bold tracking-normal text-gray-700 dark:text-foreground'>
             {(productEndPrice * (1 - discount / 100)).toLocaleString()}
             <sup>đ</sup>
           </div>
@@ -192,6 +192,7 @@ export default function QuantityHandling({ product }: { product: Product }) {
           <Button
             className='w-full bg-white border border-mainColor2-800 text-mainColor2-800 hover:bg-mainColor2-800/90 hover:text-white'
             onClick={handleAddToCart}
+            variant='outline'
           >
             <MdAddShoppingCart />
             Thêm vào giỏ hàng
@@ -199,7 +200,7 @@ export default function QuantityHandling({ product }: { product: Product }) {
         </div>
       </div>
 
-      <div className='p-4 mb-6 bg-white rounded-lg'>
+      <div className='p-4 mb-6 bg-white dark:bg-section rounded-lg'>
         <div className='mb-2 text-xl font-semibold text-mainColor1-600'>
           Đánh giá
         </div>

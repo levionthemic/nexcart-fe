@@ -8,10 +8,11 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
+import { ModeToggle } from '../mode-toggle'
 
 export default function Footer() {
   return (
-    <footer className='bg-mainColor1-600/95 text-white pt-12 pb-6'>
+    <footer className='bg-mainColor1-400/95 text-white pt-12 pb-6'>
       <footer className='container mx-auto'>
         <div className='grid grid-cols-5'>
           {/* Customer Support */}
@@ -80,7 +81,7 @@ export default function Footer() {
           {/* Newsletter Subscription */}
           <div className=''>
             <h3 className='text-lg font-medium mb-2'>Đăng ký nhận tin</h3>
-            <form className='flex gap-1 items-center'>
+            <form className='flex gap-1 items-center mb-4'>
               <Input
                 type='email'
                 className='text-white placeholder:text-white/50'
@@ -94,6 +95,10 @@ export default function Footer() {
                 Đăng ký
               </Button>
             </form>
+            <div className='flex items-center gap-4'>
+              <span>Chế độ: </span>
+              <ModeToggle />
+            </div>
           </div>
         </div>
 

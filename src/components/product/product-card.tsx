@@ -82,7 +82,7 @@ export default function ClientProductCard({
         if (
           !isExistedItem &&
           item.product.id === product?.id &&
-          item.type.id === typeId
+          item.product.type.id === typeId
         ) {
           item.quantity += quantity
           isExistedItem = true
@@ -91,8 +91,7 @@ export default function ClientProductCard({
       if (!isExistedItem && product) {
         const type = product.types.find((t) => t.id === typeId)!
         cartItems.push({
-          product,
-          type,
+          product: { ...product, type },
           quantity
         })
       }
@@ -174,12 +173,12 @@ export default function ClientProductCard({
     <Card
       className={clsx({
         'border-none shadow-none': loading,
-        'cursor-pointer border-gray-200 hover:border-[2px] border shadow hover:shadow-xl overflow-hidden':
+        'cursor-pointer border-gray-200 dark:border-border hover:border-[2px] border shadow-accent hover:shadow-xl transition-all ease-in-out hover:duration-300 overflow-hidden':
           !loading
       })}
     >
       <CardContent
-        className='p-2'
+        className='p-0 pb-2'
         onClick={() => router.push(`/product/${product?.id}`)}
       >
         {loading ? (
@@ -190,7 +189,7 @@ export default function ClientProductCard({
             height={300}
             width={300}
             alt=''
-            className='object-contain w-full aspect-square'
+            className='object-cover w-full aspect-square'
           />
         )}
       </CardContent>
@@ -202,7 +201,7 @@ export default function ClientProductCard({
         {loading ? (
           <Skeleton className='h-[32px]' />
         ) : (
-          <CardTitle className='line-clamp-2 min-h-[32px] text-mainColor1-600'>
+          <CardTitle className='line-clamp-2 min-h-[32px] text-mainColor1-600 dark:text-mainColor1-800'>
             {product?.name}
           </CardTitle>
         )}
@@ -232,7 +231,7 @@ export default function ClientProductCard({
         )}
       </CardHeader>
 
-      {!loading && <Separator className='border-gray-200' />}
+      {!loading && <Separator className='border-gray-200 dark:border-border' />}
 
       {loading ? (
         <Skeleton className='h-4 py-2 pl-4' />
@@ -241,7 +240,7 @@ export default function ClientProductCard({
           <DrawerTrigger asChild>
             <CardFooter className='grid grid-cols-2 p-0 text-sm text-center cursor-pointer'>
               <div
-                className='flex items-center justify-center p-2 border-r hover:bg-mainColor2-800 text-mainColor2-800 hover:text-white border-r-gray-200'
+                className='flex items-center justify-center p-2 border-r dark:border-r-border hover:bg-mainColor2-800 text-mainColor2-800 hover:text-white border-r-gray-200'
                 onClick={() => setIsAddToCart(true)}
               >
                 <MdAddShoppingCart className='text-2xl' />

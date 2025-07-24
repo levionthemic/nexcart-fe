@@ -11,8 +11,8 @@ import { Ratings } from '@/components/ui/ratings'
 
 export default function UserProfile() {
   return (
-    <div className='px-4'>
-      <div className='flex items-center bg-white rounded-lg h-[100vh] overflow-auto relative'>
+    <div className='px-4 pr-0'>
+      <div className='flex items-center bg-white dark:bg-background rounded-lg h-[100vh] overflow-auto relative custom-scrollbar'>
         <div className='px-2 h-full w-[75%]'>
           {/* Header */}
           <WithPersistProvider>
@@ -157,13 +157,13 @@ export default function UserProfile() {
         </div>
 
         <div className='flex-1 px-4 flex items-center sticky top-0 right-0 min-h-[100vh]'>
-          <div className='bg-gray-100/80 h-[95vh] rounded-xl flex-1 grid grid-rows-2 py-4'>
+          <div className='bg-gray-100/80 dark:bg-section h-[95vh] rounded-xl flex-1 grid grid-rows-2 py-4'>
             <WithPersistProvider>
               <UserInfo />
             </WithPersistProvider>
-            <div className='grid grid-rows-4 py-2 mx-6 bg-white rounded-xl'>
+            <div className='grid grid-rows-4 py-2 mx-6 bg-white dark:bg-section brightness-125 rounded-xl'>
               <div className='py-2 mx-2'>
-                <div className='bg-[#F7F7FE] w-fit text-center text-xs text-mainColor1-600 px-2 py-1.5 rounded-lg font-medium'>
+                <div className='bg-[#9e9eb3] w-fit text-center text-xs text-mainColor1-600 px-2 py-1.5 rounded-lg font-medium'>
                   Sản phẩm đã xem
                 </div>
                 <div className='flex items-end justify-between mt-1 mb-4'>

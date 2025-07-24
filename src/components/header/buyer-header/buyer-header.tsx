@@ -162,7 +162,7 @@ export default function BuyerHeader() {
 
   return (
     <>
-      <div className='sticky top-0 left-0 bg-white z-50'>
+      <div className='sticky top-0 left-0 bg-background z-50'>
         <div className='container mx-auto pt-6 pb-4'>
           <div className='flex items-center justify-between'>
             <div
@@ -214,7 +214,7 @@ export default function BuyerHeader() {
                     <SheetTitle>
                       Giỏ hàng của bạn{' '}
                       <span className='text-sm text-gray-700'>
-                        ({currentCart?.cartItems.length || 0})
+                        ({currentCart?.cartItems?.length || 0})
                       </span>
                     </SheetTitle>
                     <SheetDescription className='!m-0'>
