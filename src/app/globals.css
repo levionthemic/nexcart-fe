@@ -215,6 +215,10 @@
     @apply bg-background text-foreground;
   }
 
+  body[data-scroll-locked] {
+    margin-right: 0 !important;
+  }
+
   /* Áp dụng cho phần tử có cuộn */
   .custom-scrollbar {
     overflow-y: auto;

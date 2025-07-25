@@ -29,9 +29,9 @@ export default function ClientBuyerLayout({
     return () => clearTimeout(timeout)
   }, [pathname, setPageLoading])
   return (
-    <>
+    <div className='pt-[120px]'>
       <NProgress isAnimating={apiLoadingCount > 0} key={navKey} />
       {children}
-    </>
+    </div>
   )
 }

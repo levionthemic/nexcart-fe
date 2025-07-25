@@ -162,7 +162,7 @@ export default function BuyerHeader() {
 
   return (
     <>
-      <div className='sticky top-0 left-0 bg-background z-50'>
+      <div className='fixed top-0 left-0 bg-background w-full z-50'>
         <div className='container mx-auto pt-6 pb-4'>
           <div className='flex items-center justify-between'>
             <div

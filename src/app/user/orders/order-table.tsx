@@ -77,10 +77,10 @@ import {
 } from 'lucide-react'
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { useLoading } from '@/contexts/LoadingContext'
-import { fetchOrdersAPI } from '@/apis/buyerApis'
 import { getAddressString } from '@/utils/helpers'
 import { Order, OrderItem } from '@/types/entities/order'
 import Image from 'next/image'
+import { getOrdersApi } from '@/apis/order.api'
 
 // Custom filter function for multi-column searching
 const multiColumnFilterFn = (row, columnId, filterValue) => {
@@ -158,7 +158,8 @@ const columns: ColumnDef<Order>[] = [
             <div
               key={item.productId}
               className={`flex items-center gap-2 ${
-                index != row.getValue<OrderItem[]>('itemList').length - 1 && 'mb-2'
+                index != row.getValue<OrderItem[]>('itemList').length - 1 &&
+                'mb-2'
               }`}
             >
               <div>
@@ -267,16 +268,17 @@ export default function OrderTable() {
   const { startLoading, endLoading } = useLoading()
   useEffect(() => {
     startLoading()
-    fetchOrdersAPI()
+    getOrdersApi()
       .then((data) => {
-        Promise.all(
-          data.map(async (d) => {
-            startLoading()
-            d.buyerAddress = await getAddressString(d.buyerAddress)
-            endLoading()
-            return d
-          })
-        ).then((res) => setData(res))
+        if (data)
+          Promise.all(
+            data.map(async (d) => {
+              startLoading()
+              d.buyerAddress = await getAddressString(d.buyerAddress)
+              endLoading()
+              return d
+            })
+          ).then((res) => setData(res))
       })
       .finally(() => endLoading())
   }, [])
@@ -284,7 +286,7 @@ export default function OrderTable() {
   const handleDeleteRows = () => {
     const selectedRows = table.getSelectedRowModel().rows
     const updatedData = data.filter(
-      (item) => !selectedRows.some((row) => row.original._id === item._id)
+      (item) => !selectedRows.some((row) => row.original.id === item.id)
     )
     setData(updatedData)
     table.resetRowSelection()

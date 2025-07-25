@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang='en' suppressHydrationWarning className='custom-scrollbar'>
+    <html lang='en' suppressHydrationWarning className='custom-scrollbar p-0'>
       <body className={roboto.className}>
         <ThemeProvider
           attribute='class'
