@@ -23,7 +23,7 @@ export default function Products() {
       />
 
       <div className='grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8'>
-        <div className='col-span-1 bg-white rounded-lg p-6 flex items-center justify-between'>
+        <div className='col-span-1 bg-card rounded-lg p-6 flex items-center justify-between'>
           <div className=''>
             <span className='font-medium text-sm text-gray-500 mb-2 inline-block'>
               Tổng Sản phẩm trong kho
@@ -42,7 +42,7 @@ export default function Products() {
             <PackageOpen />
           </div>
         </div>
-        <div className='col-span-1 bg-white rounded-lg p-6 flex items-center justify-between'>
+        <div className='col-span-1 bg-card rounded-lg p-6 flex items-center justify-between'>
           <div className=''>
             <span className='font-medium text-sm text-gray-500 mb-2 inline-block'>
               Sản phẩm trong đơn hàng
@@ -61,7 +61,7 @@ export default function Products() {
             <Truck />
           </div>
         </div>
-        <div className='col-span-1 bg-white rounded-lg p-6 flex items-center justify-between'>
+        <div className='col-span-1 bg-card rounded-lg p-6 flex items-center justify-between'>
           <div className=''>
             <span className='font-medium text-sm text-gray-500 mb-2 inline-block'>
               Sản phẩm đã bán
@@ -80,7 +80,7 @@ export default function Products() {
             <Banknote />
           </div>
         </div>
-        <div className='col-span-1 bg-white rounded-lg p-6 flex items-center justify-between'>
+        <div className='col-span-1 bg-card rounded-lg p-6 flex items-center justify-between'>
           <div className=''>
             <span className='font-medium text-sm text-gray-500 mb-2 inline-block'>
               Sản phẩm hoàn trả

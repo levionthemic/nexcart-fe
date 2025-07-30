@@ -24,23 +24,19 @@ import {
 } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
 import { FIELD_REQUIRED_MESSAGE } from '@/utils/validators'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 interface ReviewSubmitData {
-  rating: number,
+  rating: number
   content: string
 }
 
 export default function ReviewModal({
-  onSubmitReview,
-  updateStartTyping,
-  updateStopTyping
+  onSubmitReview
 }: {
   onSubmitReview: (data: ReviewSubmitData) => void
-  updateStartTyping: () => void
-  updateStopTyping: () => void
 }) {
   const formSchema = z.object({
     rating: z.number().min(1, { message: FIELD_REQUIRED_MESSAGE }),
@@ -56,11 +52,6 @@ export default function ReviewModal({
   })
 
   const [open, setOpen] = useState(false)
-
-  useEffect(() => {
-    if (open) updateStartTyping()
-    else updateStopTyping()
-  }, [open])
 
   const handleSubmit = (data: ReviewSubmitData) => {
     setOpen(false)

@@ -134,7 +134,7 @@ const columns: ColumnDef<ProductListItem>[] = [
         alt=''
         width={40}
         height={40}
-        className='border border-gray-300 p-0.5 overflow-hidden rounded-md'
+        className='border border-gray-300 p-0.5 overflow-hidden rounded-md size-10'
       />
     ),
     size: 40,
@@ -335,7 +335,7 @@ export default function ProductTable() {
   return (
     <div className='space-y-1'>
       {/* Filters */}
-      <div className='flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-lg'>
+      <div className='flex flex-wrap items-center justify-between gap-3 bg-section p-3 rounded-lg'>
         <div className='font-semibold text-mainColor1-600'>
           Danh sách sản phẩm
         </div>
@@ -523,7 +523,7 @@ export default function ProductTable() {
       </div>
 
       {/* Table */}
-      <div className='bg-white overflow-hidden border rounded-lg font-lexend font-light'>
+      <div className='bg-section overflow-hidden border rounded-lg font-lexend font-light'>
         <Table
           className='table-fixed'
           // style={{

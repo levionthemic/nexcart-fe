@@ -88,7 +88,7 @@ export default function GeneralTab() {
   }
 
   return (
-    <div className='bg-white rounded-lg p-4'>
+    <div className='bg-section rounded-lg p-4'>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleUpdateStoreGeneralInformation)}>
           <div className='grid grid-cols-3 gap-4 mb-4'>

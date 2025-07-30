@@ -83,7 +83,6 @@ import {
 import { useId, useMemo, useRef, useState } from 'react'
 import dayjs from 'dayjs'
 import { toast } from 'sonner'
-import { updateOrderStatusAPI } from '@/apis/sellerApis'
 import Image from 'next/image'
 
 // Custom filter function for multi-column searching

@@ -34,7 +34,7 @@ export default function Dashboard() {
       </div>
 
       <div className='grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6'>
-        <div className='col-span-1 bg-white rounded-lg p-6'>
+        <div className='col-span-1 bg-card rounded-lg p-6'>
           <div className='flex items-center gap-3 mb-3 text-gray-500'>
             <Coins />
             <span className='font-semibold text-sm'>Tổng Doanh thu</span>
@@ -58,7 +58,7 @@ export default function Dashboard() {
           <div></div>
         </div>
 
-        <div className='col-span-1 bg-white rounded-lg p-6'>
+        <div className='col-span-1 bg-card rounded-lg p-6'>
           <div className='flex items-center gap-3 mb-3 text-gray-500'>
             <Package2 />
             <span className='font-semibold text-sm'>Tổng Sản phẩm</span>
@@ -82,7 +82,7 @@ export default function Dashboard() {
           <div></div>
         </div>
 
-        <div className='col-span-1 bg-white rounded-lg p-6'>
+        <div className='col-span-1 bg-card rounded-lg p-6'>
           <div className='flex items-center gap-3 mb-3 text-gray-500'>
             <Layers />
             <span className='font-semibold text-sm'>Tổng Đơn hàng</span>
@@ -106,7 +106,7 @@ export default function Dashboard() {
           <div></div>
         </div>
 
-        <div className='col-span-1 bg-white rounded-lg p-6'>
+        <div className='col-span-1 bg-card rounded-lg p-6'>
           <div className='flex items-center gap-3 mb-3 text-gray-500'>
             <Percent />
             <span className='font-semibold text-sm'>Tỉ lệ chuyển đổi</span>
@@ -132,7 +132,7 @@ export default function Dashboard() {
       </div>
 
       <div className='grid grid-cols-10 gap-4 mb-4'>
-        <div className='col-span-7 bg-white rounded-lg p-6'>
+        <div className='col-span-7 bg-section rounded-lg p-6 drop-shadow-md drop-shadow-mainColor1-100'>
           <div className='flex items-center justify-between mb-4'>
             <div className='font-semibold text-lg'>Tổng quan</div>
             <MoreHorizontal className='text-gray-400 cursor-pointer' />
@@ -144,7 +144,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className='col-span-3 bg-white rounded-lg p-6'>
+        <div className='col-span-3 bg-section rounded-lg p-6 drop-shadow-md drop-shadow-mainColor1-100'>
           <div className='flex items-center justify-between mb-4'>
             <div className='font-semibold text-lg'>Sản phẩm bán chạy nhất</div>
             <MoreHorizontal className='text-gray-400 cursor-pointer' />
@@ -155,7 +155,7 @@ export default function Dashboard() {
       </div>
 
       <div className='grid grid-cols-10 gap-4'>
-        <div className='col-span-7 bg-white rounded-lg p-6'>
+        <div className='col-span-7 bg-section rounded-lg p-6 drop-shadow-md drop-shadow-mainColor1-100'>
           <div className='flex items-center justify-between mb-4'>
             <div className='font-semibold text-lg'>Đơn hàng mới nhất</div>
             <Button variant='outline' className=''>
@@ -166,7 +166,7 @@ export default function Dashboard() {
           <LatestOrders />
         </div>
 
-        <div className='col-span-3 bg-white rounded-lg p-6'>
+        <div className='col-span-3 bg-section rounded-lg p-6 drop-shadow-md drop-shadow-mainColor1-100'>
           <div className='flex items-center justify-between mb-4'>
             <div className='font-semibold text-lg'>Khách hàng thân thiết</div>
             <MoreHorizontal className='text-gray-400 cursor-pointer' />

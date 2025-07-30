@@ -45,7 +45,7 @@ export default function StoreProfile() {
       {/* Content */}
       <div className='p-4 mt-14 xl:mt-24 h-full'>
         <Tabs defaultValue='1' className='w-full'>
-          <TabsList className='w-full grid grid-cols-4 bg-mainColor1-200 text-white h-fit'>
+          <TabsList className='w-full grid grid-cols-4 bg-mainColor1-100/20 dark:bg-muted/50 text-white h-fit'>
             <TabsTrigger value='1' className='px-2 text-md'>
               Tổng quan
             </TabsTrigger>

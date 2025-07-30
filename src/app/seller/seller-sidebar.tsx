@@ -46,13 +46,13 @@ export default function SellerSidebar() {
 
   return (
     <Sidebar
-      className='px-4 bg-mainColor1-800 border-none pb-4'
+      className='px-4 bg-sidebar border-none pb-4'
       collapsible='icon'
       variant='inset'
     >
       <SidebarHeader className='p-0'>
         <div
-          className='text-4xl font-medium text-white text-center cursor-pointer hover:scale-105 transition-transform hover:duration-500 my-10 flex justify-center'
+          className='text-4xl font-medium text-accent text-center cursor-pointer hover:scale-105 transition-transform hover:duration-500 my-10 flex justify-center'
           onClick={() => router.push('/seller')}
         >
           {open ? 'LEVI' : <Home />}
@@ -63,7 +63,7 @@ export default function SellerSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              className='text-white hover:bg-white/15 hover:text-white hover:rounded-lg'
+              className='text-accent hover:bg-white/15 hover:text-white hover:rounded-lg'
               asChild
               isActive={pathname === '/seller'}
             >
@@ -78,7 +78,7 @@ export default function SellerSidebar() {
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton
-                  className='text-white group-data-[state=open]/collapsible:hover:bg-white/15 hover:bg-white/15 group-data-[state=open]/collapsible:hover:text-white hover:text-white'
+                  className='text-accent-foreground group-data-[state=open]/collapsible:hover:bg-white/15 hover:bg-white/15 group-data-[state=open]/collapsible:hover:text-white hover:text-white'
                   isActive={pathname.includes('/seller/store')}
                 >
                   <Store />

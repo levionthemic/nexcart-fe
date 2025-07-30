@@ -1,21 +1,14 @@
-export interface ReviewData {
-  content?: string
-  rating: number
-  buyerName: string
-  buyerAvatar: string
-  medias?: string[]
-  createdAt: Date
-  updatedAt?: Date
-  isDeleted?: boolean
-}
+import { Buyer } from './user'
 
 export interface Review {
   id?: string
   productId: string
 
-  comments: ReviewData[]
+  rating: number
+  content: string
+  buyer: Buyer
 
   createdAt?: Date
   updatedAt?: Date
-  _deleted?: boolean
+  isDeleted?: boolean
 }

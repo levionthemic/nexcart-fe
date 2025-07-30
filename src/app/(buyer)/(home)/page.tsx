@@ -201,7 +201,7 @@ export default async function HomePage() {
                     />
                   ))
               : [...Array(40)].map((_, index) => (
-                  <ProductCard loading={true} key={index} />
+                  <ProductCard product={null} loading={true} key={index} />
                 ))}
           </div>
         </div>

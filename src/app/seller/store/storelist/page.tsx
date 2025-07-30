@@ -7,26 +7,27 @@ import PageHeader from '../../_components/page-header'
 import OverviewStats from './_components/overview-stats'
 import StoreCard from './_components/store-card'
 import AddShopDialog from './_components/add-shop'
-import { getShopsAPI } from '@/apis/sellerApis'
 import { useEffect, useState } from 'react'
 import { Shop } from '@/types/entities/shop'
 import { getAddressString } from '@/utils/helpers'
+import { getShopsApi } from '@/apis/shop.api'
 
 export default function StoreList() {
   const [shops, setShops] = useState<Shop[]>([])
 
   useEffect(() => {
-    getShopsAPI().then(async (data) => {
+    getShopsApi().then(async (data) => {
       const shopsResult = []
-      for (const d of data) {
-        const shortAddress = await getAddressString({
-          province: d.provinceId,
-          district: d.districtId,
-          ward: d.wardCode,
-          address: d.address
-        })
-        shopsResult.push({ ...d, shortAddress: shortAddress })
-      }
+      if (data)
+        for (const d of data) {
+          const shortAddress = await getAddressString({
+            provinceId: d.provinceId,
+            districtId: d.districtId,
+            wardCode: d.wardCode,
+            address: d.address
+          })
+          shopsResult.push({ ...d, shortAddress: shortAddress })
+        }
       setShops(shopsResult)
     })
   }, [])
@@ -49,7 +50,7 @@ export default function StoreList() {
       <OverviewStats />
 
       {/* Toolbar */}
-      <div className='bg-white p-3 rounded-lg flex items-center justify-between gap-20 mb-8'>
+      <div className='bg-section p-3 rounded-lg flex items-center justify-between gap-20 mb-8'>
         <div className='flex items-center gap-2'>
           <Button variant='outline'>Lọc</Button>
           <Button variant='outline'>Sắp xếp</Button>

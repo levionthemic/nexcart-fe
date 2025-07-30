@@ -23,7 +23,7 @@ export default function BestSoldProducts() {
               alt='Ảnh'
               width={40}
               height={40}
-              className='rounded-lg object-cover min-w-10'
+              className='rounded-lg object-cover min-w-10 size-10'
             />
             <div className='flex flex-col'>
               <span className='line-clamp-1'>{product?.name}</span>

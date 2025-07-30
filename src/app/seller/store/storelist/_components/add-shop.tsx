@@ -1,6 +1,6 @@
 'use client'
 
-import { addNewShopAPI } from '@/apis/sellerApis'
+import { addNewShopApi } from '@/apis/shop.api'
 import Autocomplete from '@/components/Autocomplete'
 import { Button } from '@/components/ui/button'
 import {
@@ -148,7 +148,7 @@ export default function AddShopDialog({
 
   const [open, setOpen] = useState(false)
   const handleSubmit = (data: AddShopFormSchemaType) => {
-    toast.promise(addNewShopAPI(data), {
+    toast.promise(addNewShopApi(data), {
       loading: 'Đang xử lý...',
       success: 'Tạo shop thành công!',
       error: 'Đã có lỗi!'

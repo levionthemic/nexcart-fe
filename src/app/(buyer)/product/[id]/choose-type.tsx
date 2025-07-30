@@ -32,7 +32,7 @@ export default function ChooseType({ product }: { product: Product }) {
           <sup>đ</sup>
         </div>
 
-        <div className='bg-[#ddd] rounded-xl px-1 text-xs'>
+        <div className='bg-[#ddd] dark:bg-muted/50 rounded-xl px-1 text-xs'>
           {`-${discount}%`}
         </div>
 

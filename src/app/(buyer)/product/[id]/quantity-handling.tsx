@@ -11,7 +11,7 @@ import {
 import { AppDispatch } from '@/redux/store'
 import { Product } from '@/types/entities/product'
 import { useRouter } from 'next/navigation'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { IoMdAdd } from 'react-icons/io'
 import { IoBagCheckOutline } from 'react-icons/io5'
 import { MdAddShoppingCart } from 'react-icons/md'
@@ -23,6 +23,7 @@ import { toast } from 'sonner'
 import { cloneDeep } from 'lodash'
 import { useVariantHandling } from '@/contexts/variant-handling-context'
 import { Ratings } from '@/components/ui/ratings'
+import { useReview } from '@/contexts/review-context'
 
 export default function QuantityHandling({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1)
@@ -33,6 +34,12 @@ export default function QuantityHandling({ product }: { product: Product }) {
   const dispatch = useDispatch<AppDispatch>()
 
   const router = useRouter()
+
+  const { ratingAverage, setRatingAverage, totalReviews, reviews } = useReview()
+
+  useEffect(() => {
+    if (product.rating) setRatingAverage(product.rating)
+  }, [])
 
   const calculateTotalStock = useMemo(() => {
     return product.shopProductTypes.reduce((sum, item) => sum + item.stock, 0)
@@ -61,9 +68,11 @@ export default function QuantityHandling({ product }: { product: Product }) {
       })
       if (!isExistedItem) {
         const type = product.types.find((t) => t.id === typeId)!
-        const shopProductType = product.shopProductTypes.find((pt) => pt.typeId === type.id)!
+        const shopProductType = product.shopProductTypes.find(
+          (pt) => pt.typeId === type.id
+        )!
         cartItems.push({
-          product: { ...product, type, shopProductType},
+          product: { ...product, type, shopProductType },
           quantity
         })
       }
@@ -77,12 +86,14 @@ export default function QuantityHandling({ product }: { product: Product }) {
     }
 
     toast.promise(
-      dispatch(addToCartAPI({
-        cartId: String(currentCart?.id),
-        productId: product.id,
-        typeId,
-        quantity
-      }))
+      dispatch(
+        addToCartAPI({
+          cartId: String(currentCart?.id),
+          productId: product.id,
+          typeId,
+          quantity
+        })
+      )
         .unwrap()
         .then(() => dispatch(fetchCurrentCartAPI())),
       {
@@ -208,20 +219,13 @@ export default function QuantityHandling({ product }: { product: Product }) {
 
         <div className='my-3'>
           <div className='flex items-center gap-4 mt-3'>
-            <span className='text-3xl font-semibold'>
-              {product?.rating || 0}
-            </span>
-            <Ratings rating={product?.rating || 0} variant='yellow' size={35} />
+            <span className='text-3xl font-semibold'>{ratingAverage || 0}</span>
+            <Ratings rating={ratingAverage || 0} variant='yellow' size={35} />
           </div>
-          <span className='text-sm text-gray-400'>
-            ({product.reviews?.map((review) => review.comments).flat(1)?.length}{' '}
-            đánh giá)
-          </span>
+          <span className='text-sm text-gray-400'>{totalReviews} đánh giá</span>
         </div>
 
-        <ReviewRate
-          comments={product.reviews?.map((review) => review.comments).flat(1)}
-        />
+        <ReviewRate reviews={reviews} />
       </div>
     </div>
   )

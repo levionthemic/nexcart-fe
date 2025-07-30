@@ -1,6 +1,6 @@
 import { IoMenu } from 'react-icons/io5'
-import { FaPhoneAlt } from 'react-icons/fa'
 import Link from 'next/link'
+import { ModeToggle } from '@/components/mode-toggle'
 
 export default function MenuBar() {
   return (
@@ -28,8 +28,9 @@ export default function MenuBar() {
               Liên hệ
             </li>
           </ul>
-          <div className='flex items-center gap-3 text-white text-sm'>
-            <FaPhoneAlt className='animate-phoneShake' /> 0798 576 809
+          <div className='flex items-center gap-4'>
+            <span>Chế độ: </span>
+            <ModeToggle />
           </div>
         </div>
       </div>

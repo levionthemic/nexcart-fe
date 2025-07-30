@@ -229,7 +229,7 @@ export default function BuyerHeader() {
                           alt=''
                           width={40}
                           height={40}
-                          className='rounded-md'
+                          className='rounded-md size-10'
                         />
                         <div className='flex flex-col gap-1'>
                           <TooltipProvider>
@@ -283,7 +283,7 @@ export default function BuyerHeader() {
                       </Avatar>
                       <div className='text-sm text-gray-500'>
                         Xin chào, <br></br>
-                        <b className='text-gray-900'>{currentUser?.username}</b>
+                        <b className='text-accent-foreground'>{currentUser?.username}</b>
                       </div>
                     </div>
                   </DropdownMenuTrigger>

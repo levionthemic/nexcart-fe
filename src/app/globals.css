@@ -63,6 +63,7 @@
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.129 0.042 264.695);
+  --section: oklch(1 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
@@ -217,13 +218,14 @@
 
   body[data-scroll-locked] {
     margin-right: 0 !important;
+    overflow: visible !important;
   }
 
   /* Áp dụng cho phần tử có cuộn */
   .custom-scrollbar {
     overflow-y: auto;
     scrollbar-width: thin; /* Firefox */
-    scrollbar-color: #6666ae #121212; /* thumb và track (Firefox) */
+    scrollbar-color: #6666ae var(--background); /* thumb và track (Firefox) */
   }
 
   /* Chrome, Safari, Edge */
@@ -232,7 +234,7 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: #121212; /* track background */
+    background: var(--background); /* track background */
     border-radius: 8px;
   }
 

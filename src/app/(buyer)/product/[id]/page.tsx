@@ -22,6 +22,7 @@ import { VariantHandlingProvider } from '@/contexts/variant-handling-context'
 import WithPersistProvider from '@/components/providers/WithPersistProvider'
 import { Ratings } from '@/components/ui/ratings'
 import { getProductDetailsApi, getProductsApi } from '@/apis/product.api'
+import { ReviewProvider } from '@/contexts/review-context'
 
 export default async function ProductDetail({
   params
@@ -55,99 +56,104 @@ export default async function ProductDetail({
         <VariantHandlingProvider
           initialProductEndPrice={Number(product?.averagePrice)}
         >
-          <div className='relative grid grid-cols-4 gap-6'>
-            <div className='col-span-3'>
-              <div className='relative grid grid-cols-3 gap-6 mb-6 h-fit'>
-                <div className='sticky left-0 flex items-center justify-center p-4 pb-32 bg-white dark:bg-section rounded-lg h-fit top-36'>
-                  <div className='overflow-hidden border rounded-2xl'>
-                    <Image
-                      width={350}
-                      height={350}
-                      src={product?.avatar || DEFAULT_IMAGE_URL}
-                      alt={String(product?.name)}
-                      className='scale-105 object-cover'
-                    />
-                  </div>
-                </div>
-
-                <div className='col-span-2'>
-                  <div className='p-4 mb-6 bg-white dark:bg-section rounded-lg'>
-                    <span className='inline-flex items-center px-2 py-1 mb-2 text-xs font-medium text-green-700 rounded-md bg-green-50 ring-1 ring-green-600/20 ring-inset'>
-                      Còn hàng!
-                    </span>
-                    <div className='text-2xl font-bold text-mainColor1-600'>
-                      {product?.name}
+          <ReviewProvider>
+            <div className='relative grid grid-cols-4 gap-6'>
+              <div className='col-span-3'>
+                <div className='relative grid grid-cols-3 gap-6 mb-6 h-fit'>
+                  <div className='sticky left-0 flex items-center justify-center p-4 pb-32 bg-white dark:bg-section rounded-lg h-fit top-36'>
+                    <div className='overflow-hidden border rounded-2xl'>
+                      <Image
+                        width={350}
+                        height={350}
+                        src={product?.avatar || DEFAULT_IMAGE_URL}
+                        alt={String(product?.name)}
+                        className='scale-105 object-cover'
+                      />
                     </div>
-
-                    <div className='flex items-center gap-2 mt-2 text-sm'>
-                      <span>{product?.rating || 0}</span>
-                      <Ratings rating={product?.rating || 0} variant='yellow' />
-                      <div
-                        style={{ border: '1px solid #ddd', height: '20px' }}
-                      ></div>
-                      <div>Đã bán: {product?.sold || '0'}</div>
-                    </div>
-
-                    {product && <ChooseType product={product} />}
                   </div>
 
-                  <div className='p-4 mb-6 bg-white dark:bg-section rounded-lg'>
-                    <div className='mb-1 text-lg font-semibold text-mainColor1-600'>
-                      Thông tin vận chuyển
-                    </div>
-                    <WithPersistProvider>
-                      <ShowAddress />
-                    </WithPersistProvider>
-                    <div className='w-full h-px my-2 border border-t-0 border-gray-200 divider'></div>
-                    <div>GHTK</div>
-                  </div>
-
-                  <div className='p-4 mb-6 bg-white dark:bg-section rounded-lg'>
-                    <div className='mb-3 text-lg font-semibold text-mainColor1-600'>
-                      Thông tin chi tiết
-                    </div>
-                    {product?.features?.map((feature, index) => (
-                      <div key={index} className='mx-4'>
-                        <div className='flex items-center justify-between my-1.5'>
-                          <span className='text-sm text-gray-400'>
-                            {feature.field}
-                          </span>
-                          <span className=''>{feature.content}</span>
-                        </div>
-                        {index != product?.features?.length - 1 && (
-                          <Separator />
-                        )}
+                  <div className='col-span-2'>
+                    <div className='p-4 mb-6 bg-white dark:bg-section rounded-lg'>
+                      <span className='inline-flex items-center px-2 py-1 mb-2 text-xs font-medium text-green-700 rounded-md bg-green-50 ring-1 ring-green-600/20 ring-inset'>
+                        Còn hàng!
+                      </span>
+                      <div className='text-2xl font-bold text-mainColor1-600'>
+                        {product?.name}
                       </div>
-                    ))}
-                  </div>
 
-                  <div className='p-4 bg-white dark:bg-section rounded-lg'>
-                    <div className='mb-2 text-lg font-semibold text-mainColor1-800'>
-                      Mô tả sản phẩm
+                      <div className='flex items-center gap-2 mt-2 text-sm'>
+                        <span>{product?.rating || 0}</span>
+                        <Ratings
+                          rating={product?.rating || 0}
+                          variant='yellow'
+                        />
+                        <div
+                          style={{ border: '1px solid #ddd', height: '20px' }}
+                        ></div>
+                        <div>Đã bán: {product?.sold || '0'}</div>
+                      </div>
+
+                      {product && <ChooseType product={product} />}
                     </div>
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: String(product?.description)
-                      }}
-                      style={{ textAlign: 'justify' }}
-                    />
+
+                    <div className='p-4 mb-6 bg-white dark:bg-section rounded-lg'>
+                      <div className='mb-1 text-lg font-semibold text-mainColor1-600'>
+                        Thông tin vận chuyển
+                      </div>
+                      <WithPersistProvider>
+                        <ShowAddress />
+                      </WithPersistProvider>
+                      <div className='w-full h-px my-2 border border-t-0 border-gray-200 divider'></div>
+                      <div>GHTK</div>
+                    </div>
+
+                    <div className='p-4 mb-6 bg-white dark:bg-section rounded-lg'>
+                      <div className='mb-3 text-lg font-semibold text-mainColor1-600'>
+                        Thông tin chi tiết
+                      </div>
+                      {product?.features?.map((feature, index) => (
+                        <div key={index} className='mx-4'>
+                          <div className='flex items-center justify-between my-1.5'>
+                            <span className='text-sm text-gray-400'>
+                              {feature.field}
+                            </span>
+                            <span className=''>{feature.content}</span>
+                          </div>
+                          {index != product?.features?.length - 1 && (
+                            <Separator />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className='p-4 bg-white dark:bg-section rounded-lg'>
+                      <div className='mb-2 text-lg font-semibold text-mainColor1-800'>
+                        Mô tả sản phẩm
+                      </div>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: String(product?.description)
+                        }}
+                        style={{ textAlign: 'justify' }}
+                      />
+                    </div>
                   </div>
                 </div>
+
+                {product && (
+                  <WithPersistProvider>
+                    <ReviewSection product={product} />
+                  </WithPersistProvider>
+                )}
               </div>
 
               {product && (
                 <WithPersistProvider>
-                  <ReviewSection product={product} />
+                  <QuantityHandling product={product} />
                 </WithPersistProvider>
               )}
             </div>
-
-            {product && (
-              <WithPersistProvider>
-                <QuantityHandling product={product} />
-              </WithPersistProvider>
-            )}
-          </div>
+          </ReviewProvider>
         </VariantHandlingProvider>
 
         <div className='p-4 bg-white dark:bg-section rounded-lg'>

@@ -76,7 +76,7 @@ export default function ContactTab() {
   }
 
   return (
-    <div className='bg-white p-4 rounded-lg'>
+    <div className='bg-section p-4 rounded-lg'>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleUpdateStoreGeneralInformation)}>
           <div className='grid grid-cols-2 gap-4'>

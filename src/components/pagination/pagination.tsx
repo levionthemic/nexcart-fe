@@ -19,12 +19,14 @@ import { useRouter, useSearchParams } from 'next/navigation'
 interface PaginationProps {
   currentPage: number
   totalPages: number
+  externalHandlePaginate?: (page: number) => void
   paginationItemsToDisplay?: number
 }
 
 export default function PaginationComponent({
   currentPage,
   totalPages,
+  externalHandlePaginate,
   paginationItemsToDisplay = 6
 }: PaginationProps) {
   const { pages, showLeftEllipsis, showRightEllipsis } = usePagination({
@@ -36,6 +38,11 @@ export default function PaginationComponent({
   const params = new URLSearchParams(useSearchParams().toString())
 
   const handlePaginate = (page: number) => {
+    if (externalHandlePaginate) {
+      externalHandlePaginate(page)
+      return
+    }
+
     params.set('page', page.toString())
     router.push(`?${params.toString()}`)
   }

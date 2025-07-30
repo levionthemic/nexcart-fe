@@ -5,31 +5,31 @@ const stats = [
     label: 'Cửa hàng',
     value: 4,
     icon: <Store className="w-5 h-5 text-primary" />,
-    bg: 'bg-blue-50'
+    bg: 'bg-blue-50 dark:bg-blue-900/50'
   },
   {
     label: 'Sản phẩm',
     value: 134,
     icon: <Package className="w-5 h-5 text-primary" />,
-    bg: 'bg-green-50'
+    bg: 'bg-green-50 dark:bg-green-900/50'
   },
   {
     label: 'Doanh thu tháng',
     value: '32.500.000đ',
     icon: <DollarSign className="w-5 h-5 text-primary" />,
-    bg: 'bg-yellow-50'
+    bg: 'bg-yellow-50 dark:bg-yellow-900/50'
   },
   {
     label: 'Đơn hàng tháng',
     value: 215,
     icon: <BarChart className="w-5 h-5 text-primary" />,
-    bg: 'bg-purple-50'
+    bg: 'bg-purple-50 dark:bg-purple-900/50'
   }
 ]
 
 export default function OverviewStats() {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 bg-white p-4 rounded-lg">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 bg-section p-4 rounded-lg">
       {stats.map((stat, index) => (
         <div
           key={index}

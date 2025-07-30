@@ -3,18 +3,17 @@
 import { Label } from '@/components/ui/label'
 import { FaStar } from 'react-icons/fa'
 import { useEffect, useState } from 'react'
-import { cloneDeep } from 'lodash'
-import { ReviewData } from '@/types/entities/review'
+import { Review } from '@/types/entities/review'
 
-export default function ReviewRate({ comments }: { comments: ReviewData[] }) {
+export default function ReviewRate({ reviews }: { reviews: Review[] }) {
   const [stats, setStats] = useState([0, 0, 0, 0, 0])
   useEffect(() => {
-    const newStats = cloneDeep(stats)
-    comments?.forEach((comment) => {
-      newStats[comment.rating - 1]++
+    const newStats = [0, 0, 0, 0, 0]
+    reviews.forEach((review) => {
+      newStats[review.rating - 1]++
     })
     setStats(newStats)
-  }, [])
+  }, [reviews.length])
 
   return (
     <div className='flex flex-col gap-1.5'>

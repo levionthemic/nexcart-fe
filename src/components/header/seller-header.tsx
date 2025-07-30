@@ -9,6 +9,7 @@ import { selectCurrentUser } from '@/redux/user/userSlice'
 import { TbBellRinging2 } from 'react-icons/tb'
 import { useSidebar } from '@/components/ui/sidebar'
 import { Button } from '@/components/ui/button'
+import { ModeToggle } from '../mode-toggle'
 
 export default function SellerHeader() {
   const { handleSubmit, register } = useForm()
@@ -23,7 +24,7 @@ export default function SellerHeader() {
   const { open, toggleSidebar } = useSidebar()
 
   return (
-    <div className='grid grid-cols-5 px-4 py-2 gap-4 bg-white'>
+    <div className='grid grid-cols-5 px-4 py-2 gap-4 bg-background shadow-lg shadow-mainColor1-100'>
       <div className='col-span-1 flex items-center'>
         <Button variant='outline' size='icon' onClick={toggleSidebar}>
           {open ? <SidebarCloseIcon /> : <SidebarOpenIcon />}
@@ -49,6 +50,7 @@ export default function SellerHeader() {
         <div className='bg-[#ECEEF6] p-2 rounded-lg'>
           <TbBellRinging2 className='text-xl text-gray-500' />
         </div>
+        <ModeToggle />
         <div className='flex items-center gap-2 cursor-pointer'>
           <Avatar>
             <AvatarImage src={currentUser?.avatar} />

@@ -11,7 +11,7 @@ export default async function BuyerLayout({
 }) {
   return (
     <WithLoadingProvider>
-      <div className='font-nunitoSans relative max-h-full'>
+      <div className='font-nunitoSans relative min-h-screen'>
         <WithPersistProvider>
           <BuyerHeader />
         </WithPersistProvider>

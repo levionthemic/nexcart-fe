@@ -400,7 +400,7 @@ export default function ClientCartPage() {
 
   return (
     <div className='container mx-auto'>
-      <div className='relative grid max-h-full grid-cols-4 gap-5 my-4'>
+      <div className='relative grid max-h-full grid-cols-4 gap-5 my-4 min-h-[95vh]'>
         <div className='col-span-3 py-4 h-fit'>
           <div className='mb-6 text-2xl font-semibold text-mainColor2-800'>
             Giỏ Hàng Của Bạn
