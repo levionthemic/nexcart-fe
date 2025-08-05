@@ -10,7 +10,6 @@ export interface User {
   avatar: string
   dateOfBirth: Date
   role: Role
-  buyerAddresses?: Address[]
   gender: GenderValue
   phone?: string
   status: AccountStatusValue

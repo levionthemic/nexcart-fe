@@ -2,23 +2,26 @@
 import { Banknote, CircleX, NotepadText, Truck } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import CountUp from 'react-countup'
-import { fetchOrdersAPI } from '@/apis/sellerApis'
 
 import { useLoading } from '@/contexts/LoadingContext'
 import PageHeader from '../_components/page-header'
 import OrderTable from './order-table'
+import { getOrdersApi } from '@/apis/order.api'
+import { Order } from '@/types/entities/order'
 
 export default function Orders() {
-  const { setDataLoading } = useLoading()
+  const { startLoading, endLoading } = useLoading()
 
-  const [orders, setOrders] = useState([])
+  const [orders, setOrders] = useState<Order[]>([])
 
   useEffect(() => {
-    setDataLoading(true)
-    fetchOrdersAPI()
-      .then((data) => setOrders(data))
-      .finally(() => setDataLoading(false))
-  }, [setDataLoading])
+    startLoading()
+    getOrdersApi()
+      .then((data) => {
+        if (data) setOrders(data)
+      })
+      .finally(() => endLoading())
+  }, [])
 
   return (
     <div className='px-6 py-4'>
@@ -37,7 +40,7 @@ export default function Orders() {
       />
 
       <div className='grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4'>
-        <div className='col-span-1 bg-white rounded-lg p-6 flex items-center justify-between'>
+        <div className='col-span-1 bg-section rounded-lg p-6 flex items-center justify-between'>
           <div className=''>
             <span className='font-medium text-sm text-gray-500 mb-2 inline-block'>
               Tổng Đơn hàng đã nhận
@@ -56,7 +59,7 @@ export default function Orders() {
             <NotepadText />
           </div>
         </div>
-        <div className='col-span-1 bg-white rounded-lg p-6 flex items-center justify-between'>
+        <div className='col-span-1 bg-section rounded-lg p-6 flex items-center justify-between'>
           <div className=''>
             <span className='font-medium text-sm text-gray-500 mb-2 inline-block'>
               Đơn hàng đang vận chuyển
@@ -75,7 +78,7 @@ export default function Orders() {
             <Truck />
           </div>
         </div>
-        <div className='col-span-1 bg-white rounded-lg p-6 flex items-center justify-between'>
+        <div className='col-span-1 bg-section rounded-lg p-6 flex items-center justify-between'>
           <div className=''>
             <span className='font-medium text-sm text-gray-500 mb-2 inline-block'>
               Đơn hàng thành công
@@ -94,7 +97,7 @@ export default function Orders() {
             <Banknote />
           </div>
         </div>
-        <div className='col-span-1 bg-white rounded-lg p-6 flex items-center justify-between'>
+        <div className='col-span-1 bg-section rounded-lg p-6 flex items-center justify-between'>
           <div className=''>
             <span className='font-medium text-sm text-gray-500 mb-2 inline-block'>
               Đơn hàng đã hủy

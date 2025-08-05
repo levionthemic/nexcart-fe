@@ -6,9 +6,7 @@ import {
   TrendingUp,
   Truck
 } from 'lucide-react'
-import WithPersistProvider from '@/components/providers/WithPersistProvider'
 import UserHeader from '../_components/header'
-import WithLoadingProvider from '@/components/providers/WithLoadingProvider'
 import OrderTable from './order-table'
 
 function UserOrder() {
@@ -17,9 +15,7 @@ function UserOrder() {
       <div className='flex items-center bg-background rounded-lg h-[100vh] overflow-auto relative'>
         <div className='px-2 h-full w-full'>
           {/* Header */}
-          <WithPersistProvider>
-            <UserHeader />
-          </WithPersistProvider>
+          <UserHeader />
 
           {/* Content */}
           <div className='mb-6'>
@@ -105,9 +101,7 @@ function UserOrder() {
             </div>
           </div>
 
-          <WithLoadingProvider>
-            <OrderTable />
-          </WithLoadingProvider>
+          <OrderTable />
         </div>
       </div>
     </div>

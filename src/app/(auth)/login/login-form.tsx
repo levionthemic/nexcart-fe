@@ -69,8 +69,10 @@ export default function LoginForm() {
         (res) => res.json()
       )
       dispatch(setUser(userData))
-      if (userData.role === Role.BUYER) router.push('/')
-      else router.push('/seller')
+
+      if (userData.role === Role.BUYER) location.href = '/'
+      else location.href = '/seller'
+
       toast.success('Đăng nhập thành công!')
     }
   }

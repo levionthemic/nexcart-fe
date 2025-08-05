@@ -3,6 +3,9 @@ import { Roboto } from 'next/font/google'
 import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/theme-provider'
+import WithPersistProvider from '@/components/providers/WithPersistProvider'
+import { SocketProvider } from '@/components/providers/SocketProvider'
+import WithLoadingProvider from '@/components/providers/WithLoadingProvider'
 
 const roboto = Roboto({
   variable: '--roboto',
@@ -28,7 +31,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <WithPersistProvider>
+            <SocketProvider>
+              <WithLoadingProvider>{children}</WithLoadingProvider>
+            </SocketProvider>
+          </WithPersistProvider>
           <Toaster richColors={true} />
         </ThemeProvider>
       </body>

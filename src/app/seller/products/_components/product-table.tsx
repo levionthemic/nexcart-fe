@@ -137,7 +137,7 @@ const columns: ColumnDef<ProductListItem>[] = [
         className='border border-gray-300 p-0.5 overflow-hidden rounded-md size-10'
       />
     ),
-    size: 40,
+    size: 60,
     enableSorting: false
   },
   {

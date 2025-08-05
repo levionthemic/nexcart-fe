@@ -5,6 +5,7 @@ const configSchema = z.object({
   NEXT_PUBLIC_GOOGLE_CLIENT_ID: z.string(),
   NEXT_PUBLIC_GHN_TOKEN_API: z.string(),
   NEXT_PUBLIC_GHN_SHOP_ID: z.string(),
+  NEXT_PUBLIC_SOCKET_URL: z.string()
 })
 
 const configProject = configSchema.safeParse({
@@ -12,6 +13,7 @@ const configProject = configSchema.safeParse({
   NEXT_PUBLIC_GOOGLE_CLIENT_ID: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
   NEXT_PUBLIC_GHN_TOKEN_API: process.env.NEXT_PUBLIC_GHN_TOKEN_API,
   NEXT_PUBLIC_GHN_SHOP_ID: process.env.NEXT_PUBLIC_GHN_SHOP_ID,
+  NEXT_PUBLIC_SOCKET_URL: process.env.NEXT_PUBLIC_SOCKET_URL
 })
 
 if (!configProject.success) {

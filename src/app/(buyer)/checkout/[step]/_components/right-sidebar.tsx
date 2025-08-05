@@ -36,7 +36,7 @@ export default function RightSidebar({
             key={index}
             className='flex items-center gap-2 my-6 overflow-hidden'
           >
-            <Image src={product.avatar!} alt='' width={40} height={40} />
+            <Image src={product.avatar!} alt='' width={40} height={40} className='size-10 rounded-sm' />
             <div className='flex flex-col gap-1'>
               <TooltipProvider>
                 <Tooltip>

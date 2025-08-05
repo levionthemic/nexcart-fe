@@ -6,7 +6,6 @@ import UserHeader from '../_components/header'
 import ProfileLeftForm from './left-form'
 import ProfileRightForm from './right-form'
 import UserInfo from './user-info'
-import WithPersistProvider from '@/components/providers/WithPersistProvider'
 import { Ratings } from '@/components/ui/ratings'
 
 export default function UserProfile() {
@@ -15,12 +14,10 @@ export default function UserProfile() {
       <div className='flex items-center bg-white dark:bg-background rounded-lg h-[100vh] overflow-auto relative custom-scrollbar'>
         <div className='px-2 h-full w-[75%]'>
           {/* Header */}
-          <WithPersistProvider>
-            <UserHeader />
-          </WithPersistProvider>
+          <UserHeader />
 
           {/* Content */}
-          <div>
+          <div className='mb-4'>
             <div className='text-3xl font-semibold uppercase text-mainColor1-800'>
               Hồ sơ
             </div>
@@ -30,23 +27,22 @@ export default function UserProfile() {
             </p>
           </div>
 
-          <div className='grid grid-cols-2 gap-8'>
+          <div className='grid grid-cols-2 gap-10'>
             <div className='my-4'>
-              <div className='text-lg font-medium text-mainColor2-800'>
-                Thông tin cá nhân
+              <div className='flex items-center justify-between'>
+                <div className='text-lg font-medium text-mainColor2-800'>
+                  Thông tin cá nhân
+                </div>
               </div>
-              <WithPersistProvider>
-                <ProfileLeftForm />
-              </WithPersistProvider>
+
+              <ProfileLeftForm />
             </div>
 
             <div className='my-4'>
               <div className='text-lg font-medium text-mainColor2-800'>
                 Thông tin tài khoản
               </div>
-              <WithPersistProvider>
-                <ProfileRightForm />
-              </WithPersistProvider>
+              <ProfileRightForm />
             </div>
           </div>
 
@@ -158,9 +154,7 @@ export default function UserProfile() {
 
         <div className='flex-1 px-4 flex items-center sticky top-0 right-0 min-h-[100vh]'>
           <div className='bg-gray-100/80 dark:bg-section h-[95vh] rounded-xl flex-1 grid grid-rows-2 py-4'>
-            <WithPersistProvider>
-              <UserInfo />
-            </WithPersistProvider>
+            <UserInfo />
             <div className='grid grid-rows-4 py-2 mx-6 bg-white dark:bg-section brightness-125 rounded-xl'>
               <div className='py-2 mx-2'>
                 <div className='bg-[#9e9eb3] w-fit text-center text-xs text-mainColor1-600 px-2 py-1.5 rounded-lg font-medium'>

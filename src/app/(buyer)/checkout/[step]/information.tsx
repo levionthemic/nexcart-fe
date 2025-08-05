@@ -4,7 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSelector } from 'react-redux'
-import Autocomplete from '@/components/Autocomplete'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -25,14 +24,18 @@ import {
   PHONE_NUMBER_RULE_MESSAGE
 } from '@/utils/validators'
 import { z } from 'zod'
-import { GhnDistrict, GhnProvince, GhnWard } from '@/types/entities/ghn'
 import { useOrder } from '@/contexts/order-context'
 import { useRouter } from 'next/navigation'
 import {
-  getListDistrictsByProvinceIdApi,
-  getListProvincesApi,
-  getListWardsByDistrictIdApi
-} from '@/apis/ghn.api'
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import { getAddressString } from '@/utils/helpers'
+import { Address } from '@/types/entities/address'
 
 const formSchema = z.object({
   name: z
@@ -46,46 +49,26 @@ const formSchema = z.object({
     .string({ required_error: FIELD_REQUIRED_MESSAGE })
     .min(1, { message: FIELD_REQUIRED_MESSAGE })
     .regex(PHONE_NUMBER_RULE, { message: PHONE_NUMBER_RULE_MESSAGE }),
-  buyerAddress: z.object({
-    provinceId: z.number({ message: FIELD_REQUIRED_MESSAGE }),
-    districtId: z.number({ message: FIELD_REQUIRED_MESSAGE }),
-    wardCode: z
-      .string({ required_error: FIELD_REQUIRED_MESSAGE })
-      .min(1, { message: FIELD_REQUIRED_MESSAGE }),
-    address: z
-      .string({ required_error: FIELD_REQUIRED_MESSAGE })
-      .min(1, { message: FIELD_REQUIRED_MESSAGE })
-  })
+  defaultBuyerAddressId: z
+    .string()
+    .uuid()
+    .min(1, { message: FIELD_REQUIRED_MESSAGE })
 })
 
 export type InformationFormSchemaType = z.infer<typeof formSchema>
+
+export type InformationType = Omit<
+  InformationFormSchemaType,
+  'defaultBuyerAddressId'
+> & {
+  buyerAddress: Address & { shortAddress: string }
+}
 
 export default function Information() {
   const currentUser = useSelector(selectCurrentUser)
   const router = useRouter()
 
-  const [listProvinces, setListProvinces] = useState<GhnProvince[]>([])
-  const [listDistricts, setListDistricts] = useState<GhnDistrict[]>([])
-  const [listWards, setListWards] = useState<GhnWard[]>([])
-
   const { checkoutInfo, setCheckoutInfo } = useOrder()
-
-  const defaultBuyerAddress = currentUser?.buyer?.addresses?.find(
-    (a) => a.isDefault
-  )
-
-  const [provinceId, setProvinceId] = useState(
-    checkoutInfo?.information?.buyerAddress.provinceId ||
-      defaultBuyerAddress?.provinceId
-  )
-  const [districtId, setDistrictId] = useState(
-    checkoutInfo?.information?.buyerAddress.districtId ||
-      defaultBuyerAddress?.districtId
-  )
-  const [wardId, setWardId] = useState(
-    checkoutInfo?.information?.buyerAddress.wardCode ||
-      defaultBuyerAddress?.wardCode
-  )
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -104,81 +87,42 @@ export default function Information() {
   const form = useForm<InformationFormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      buyerAddress: checkoutInfo?.information?.buyerAddress ||
-        defaultBuyerAddress || {
-          address: ''
-        },
+      defaultBuyerAddressId:
+        checkoutInfo?.information?.buyerAddress.id ||
+        currentUser?.buyer?.addresses.find((a) => a.isDefault)?.id,
       email: checkoutInfo?.information?.email || currentUser?.email || '',
       name: checkoutInfo?.information?.name || currentUser?.name || '',
       phone: checkoutInfo?.information?.phone || currentUser?.phone || ''
     }
   })
 
+  const [buyerAddresses, setBuyerAddresses] = useState<
+    { id: string; addressString: string }[]
+  >([])
   useEffect(() => {
-    getListProvincesApi().then((data) => {
-      if (data) {
-        setListProvinces(data)
-      }
-    })
+    if (currentUser?.buyer?.addresses)
+      Promise.all<string>(
+        currentUser.buyer.addresses.map((addr) => getAddressString(addr))
+      ).then((addressStrings) => {
+        setBuyerAddresses(
+          addressStrings.map((addressString, index) => ({
+            id: String(currentUser.buyer?.addresses[index].id),
+            addressString: addressString
+          }))
+        )
+      })
   }, [])
 
-  useEffect(() => {
-    setListWards([])
-    if (provinceId) {
-      getListDistrictsByProvinceIdApi(provinceId).then((data) => {
-        if (data && data.length) setListDistricts(data)
-      })
-    }
-  }, [provinceId])
-
-  useEffect(() => {
-    if (districtId) {
-      getListWardsByDistrictIdApi(districtId).then((data) => {
-        if (data && data.length) setListWards(data)
-      })
-    }
-  }, [districtId])
-
-  useEffect(() => {
-    form.setValue('buyerAddress', {
-      provinceId: Number(provinceId),
-      districtId: Number(districtId),
-      wardCode: String(wardId),
-      address: form.watch('buyerAddress.address')
-    })
-  }, [
-    provinceId,
-    districtId,
-    wardId,
-    form,
-    listProvinces,
-    listDistricts,
-    listWards
-  ])
-
-  const getDetails = (data: { id: string | number; type: string }) => {
-    if (data.type === 'province') setProvinceId(Number(data.id))
-    else if (data.type === 'district') setDistrictId(Number(data.id))
-    else setWardId(String(data.id))
-  }
-
   const handleUpdateUser = (data: InformationFormSchemaType) => {
-    const buyerAddress = data.buyerAddress
-
-    const wardName = listWards.find(
-      (i) => i.WardCode === buyerAddress.wardCode
-    )?.WardName
-    const districtName = listDistricts.find(
-      (i) => i.DistrictID === buyerAddress.districtId
-    )?.DistrictName
-    const provinceName = listProvinces.find(
-      (i) => i.ProvinceID === buyerAddress.provinceId
-    )?.ProvinceName
-
-    const shortAddress = `${buyerAddress.address}, ${wardName}, ${districtName}, ${provinceName}`
-
+    const { defaultBuyerAddressId, ...rest } = data
+    const buyerAddress = currentUser?.buyer?.addresses.find(
+      (a) => a.id === defaultBuyerAddressId
+    )
+    const shortAddress = buyerAddresses.find(
+      (a) => a.id === defaultBuyerAddressId
+    )!.addressString
     const updatedCheckoutInfo = {
-      information: { ...data, shortAddress: shortAddress }
+      information: { ...rest, buyerAddress: { ...buyerAddress!, shortAddress } }
     }
 
     setCheckoutInfo(updatedCheckoutInfo)
@@ -271,118 +215,30 @@ export default function Information() {
 
           <FormField
             control={form.control}
-            name='buyerAddress'
-            render={() => (
-              <FormItem>
-                <FormLabel className='text-base'>Địa chỉ</FormLabel>
-                <FormControl>
-                  <div className=''>
-                    <div className='grid grid-cols-3 gap-10 mb-4'>
-                      <FormField
-                        control={form.control}
-                        name='buyerAddress.provinceId'
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Autocomplete
-                                data={listProvinces?.map((i) => ({
-                                  value: i.ProvinceID,
-                                  label: i.ProvinceName,
-                                  id: i.ProvinceID
-                                }))}
-                                title={'Tỉnh/thành'}
-                                getDetails={getDetails}
-                                flag={'province'}
-                                error={
-                                  !!form.formState.errors.buyerAddress?.provinceId
-                                }
-                                defaultValue={field.value}
-                                onChange={field.onChange}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name='buyerAddress.districtId'
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Autocomplete
-                                data={listDistricts?.map((i) => ({
-                                  value: i.DistrictID,
-                                  label: i.DistrictName,
-                                  id: i.DistrictID
-                                }))}
-                                title={'Quận/huyện'}
-                                getDetails={getDetails}
-                                flag={'district'}
-                                error={
-                                  !!form.formState.errors.buyerAddress?.districtId
-                                }
-                                defaultValue={field.value}
-                                onChange={field.onChange}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name='buyerAddress.wardCode'
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Autocomplete
-                                data={listWards?.map((i) => ({
-                                  value: i.WardCode,
-                                  label: i.WardName,
-                                  id: i.WardCode
-                                }))}
-                                title={'Phường/xã'}
-                                getDetails={getDetails}
-                                flag={'ward'}
-                                error={
-                                  !!form.formState.errors.buyerAddress?.wardCode
-                                }
-                                defaultValue={field.value}
-                                onChange={field.onChange}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    <FormField
-                      control={form.control}
-                      name='buyerAddress.address'
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              placeholder='Vd: 123 đường ABC'
-                              className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-xl focus:outline-none focus:border-[2px] border border-mainColor1-100/50 ${
-                                !!form.formState.errors.buyerAddress?.address &&
-                                'border-red-500'
-                              }`}
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
+            name='defaultBuyerAddressId'
+            render={({ field }) => (
+              <FormItem className='mb-6'>
+                <FormLabel>Địa chỉ mặc định</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger className='w-full overflow-hidden'>
+                    <SelectValue placeholder='Chọn địa chỉ mặc định' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {buyerAddresses.length ? (
+                        buyerAddresses.map((addr) => (
+                          <SelectItem key={addr.id} value={addr.id}>
+                            {addr.addressString}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem key={Math.random()} value='0' disabled>
+                          Không có địa chỉ. Hãy thêm địa chỉ!
+                        </SelectItem>
                       )}
-                    />
-                  </div>
-                </FormControl>
-                <FormDescription className=''>
-                  Địa chỉ nhận hàng của bạn.
-                </FormDescription>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

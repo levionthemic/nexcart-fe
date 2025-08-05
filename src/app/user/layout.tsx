@@ -1,7 +1,6 @@
 import { SidebarProvider } from '@/components/ui/sidebar'
 import UserSidebar from './_components/sidebar'
 import ClientUserLayout from './client-layout'
-import WithLoadingProvider from '@/components/providers/WithLoadingProvider'
 
 export default function UserLayout({
   children
@@ -16,9 +15,7 @@ export default function UserLayout({
       <UserSidebar />
       <main className='flex-1 overflow-x-auto'>
         {/* <SidebarTrigger /> */}
-        <WithLoadingProvider>
-          <ClientUserLayout>{children}</ClientUserLayout>
-        </WithLoadingProvider>
+        <ClientUserLayout>{children}</ClientUserLayout>
       </main>
     </SidebarProvider>
   )

@@ -58,6 +58,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  Row,
   useReactTable
 } from '@tanstack/react-table'
 import {
@@ -81,16 +82,19 @@ import { getAddressString } from '@/utils/helpers'
 import { Order, OrderItem } from '@/types/entities/order'
 import Image from 'next/image'
 import { getOrdersApi } from '@/apis/order.api'
+import { ShippingMethod } from '@/types/enums/checkout'
+import { OrderStatus } from '@/types/enums/order-status'
+import { MAP_ORDER_STATUS } from '@/utils/constants'
 
 // Custom filter function for multi-column searching
-const multiColumnFilterFn = (row, columnId, filterValue) => {
+const multiColumnFilterFn = (row: Row<Order>, columnId: string, filterValue: string) => {
   const searchableRowContent =
-    `${row.original._id} ${row.original.email}`.toLowerCase()
+    `${row.original.id} ${row.original.seller.id}`.toLowerCase()
   const searchTerm = (filterValue ?? '').toLowerCase()
   return searchableRowContent.includes(searchTerm)
 }
 
-const statusFilterFn = (row, columnId, filterValue) => {
+const statusFilterFn = (row: Row<Order>, columnId: string, filterValue: string) => {
   if (!filterValue?.length) return true
   const status = row.getValue(columnId)
   return filterValue.includes(status)
@@ -121,12 +125,12 @@ const columns: ColumnDef<Order>[] = [
     enableHiding: false
   },
   {
-    id: '_id',
+    id: 'id',
     header: 'Mã đơn hàng',
-    accessorKey: '_id',
+    accessorKey: 'id',
     cell: ({ row }) => (
       <div className='font-medium text-ellipsis overflow-x-hidden'>
-        {row.getValue('_id')}
+        {row.getValue('id')}
       </div>
     ),
     filterFn: multiColumnFilterFn,
@@ -136,52 +140,52 @@ const columns: ColumnDef<Order>[] = [
   {
     id: 'sellerId',
     header: 'Người bán',
-    accessorKey: 'sellerId',
+    accessorFn: (row) => row.seller.id,
     cell: ({ row }) => (
       <div className='font-medium text-ellipsis overflow-x-hidden'>
-        {row.getValue('sellerId')}
+        {row.original.seller.user.name || 'Ẩn danh'}
       </div>
     ),
     size: 80
   },
   {
-    id: 'itemList',
+    id: 'orderItems',
     header: 'Danh sách sản phẩm',
-    accessorKey: 'itemList',
+    accessorKey: 'orderItems',
     size: 200,
     cell: ({ row }) => (
       <>
         {row
-          .getValue<OrderItem[]>('itemList')
+          .getValue<OrderItem[]>('orderItems')
           .slice(0, 2)
           .map((item, index) => (
             <div
-              key={item.productId}
+              key={item.product.id}
               className={`flex items-center gap-2 ${
-                index != row.getValue<OrderItem[]>('itemList').length - 1 &&
+                index != row.getValue<OrderItem[]>('orderItems').length - 1 &&
                 'mb-2'
               }`}
             >
               <div>
                 <Image
-                  src={String(item.avatar)}
+                  src={String(item.product.avatar)}
                   alt=''
                   width={40}
                   height={40}
-                  className='rounded-md border border-gray-300 p-0.5'
+                  className='rounded-md border size-10 border-gray-300 p-0.5'
                 />
               </div>
               <div className='flex-1'>
-                <div className='line-clamp-1'>{item.productName}</div>
+                <div className='line-clamp-1'>{item.product.name}</div>
                 <div className='line-clamp-1 text-xs text-muted-foreground'>
-                  Loại: {item.typeName}
+                  Loại: {item.product.type.name}
                 </div>
               </div>
             </div>
           ))}
-        {row.getValue<OrderItem[]>('itemList').length > 2 && (
+        {row.getValue<OrderItem[]>('orderItems').length > 2 && (
           <div className='mt-2 text-muted-foreground'>
-            + {row.getValue<OrderItem[]>('itemList').length - 2} sản phẩm
+            + {row.getValue<OrderItem[]>('orderItems').length - 2} sản phẩm
           </div>
         )}
       </>
@@ -189,39 +193,43 @@ const columns: ColumnDef<Order>[] = [
   },
   {
     id: 'shippingMethod',
-    header: <div className='text-center flex-1'>Đơn vị vận chuyển</div>,
+    header: () => <div className='text-center flex-1'>Đơn vị vận chuyển</div>,
     accessorKey: 'shippingMethod',
     size: 80,
     cell: ({ row }) => (
       <div className='text-center'>
-        {row.getValue('shippingMethod') === 'ghn'
+        {row.getValue('shippingMethod') === ShippingMethod.GHN
           ? 'Giao hàng nhanh'
           : 'Giao hàng tiết kiệm'}
       </div>
     )
   },
   {
-    id: 'buyerAddress',
+    id: 'buyerAddressString',
     header: 'Địa chỉ nhận hàng',
-    accessorKey: 'buyerAddress'
+    accessorKey: 'buyerAddressString'
   },
   {
     id: 'status',
-    header: <div className='text-center flex-1'>Trạng thái</div>,
+    header: () => <div className='text-center w-full'>Trạng thái</div>,
     accessorKey: 'status',
     cell: ({ row }) => (
-      <div className='flex justify-center'>
+      <div className='flex items-center justify-center'>
         <Badge
           className={cn(
-            row.getValue('status') === 'Inactive' &&
-              'bg-muted-foreground/60 text-primary-foreground'
+            row.getValue('status') === OrderStatus.CANCELLED &&
+              'bg-muted-foreground/60 text-primary-foreground',
+            row.getValue('status') === OrderStatus.PENDING && 'bg-red-500',
+            row.getValue('status') === OrderStatus.SHIPPING && 'bg-amber-400',
+            row.getValue('status') === OrderStatus.SUCCESS && 'bg-green-600',
+            row.getValue('status') === OrderStatus.FAIL && 'bg-gray-600'
           )}
         >
-          {row.getValue('status')}
+          {MAP_ORDER_STATUS[row.original.status]}
         </Badge>
       </div>
     ),
-    size: 70,
+    size: 100,
     filterFn: statusFilterFn
   },
   {
@@ -240,8 +248,8 @@ const columns: ColumnDef<Order>[] = [
   },
   {
     id: 'actions',
-    header: <div className='text-center'>Thao tác</div>,
-    cell: <RowActions />,
+    header: () => <div className='text-center'>Thao tác</div>,
+    cell: () => <RowActions />,
     size: 30,
     enableHiding: false
   }
@@ -259,7 +267,7 @@ export default function OrderTable() {
 
   const [sorting, setSorting] = useState([
     {
-      id: '_id',
+      id: 'id',
       desc: false
     }
   ])
@@ -274,7 +282,7 @@ export default function OrderTable() {
           Promise.all(
             data.map(async (d) => {
               startLoading()
-              d.buyerAddress = await getAddressString(d.buyerAddress)
+              d.buyerAddressString = await getAddressString(d.buyerAddress)
               endLoading()
               return d
             })
@@ -366,11 +374,11 @@ export default function OrderTable() {
               ref={inputRef}
               className={cn(
                 'peer min-w-60 ps-9',
-                Boolean(table.getColumn('_id')?.getFilterValue()) && 'pe-9'
+                Boolean(table.getColumn('id')?.getFilterValue()) && 'pe-9'
               )}
-              value={table.getColumn('_id')?.getFilterValue() ?? ''}
+              value={table.getColumn('id')?.getFilterValue() ?? ''}
               onChange={(e) =>
-                table.getColumn('_id')?.setFilterValue(e.target.value)
+                table.getColumn('id')?.setFilterValue(e.target.value)
               }
               placeholder='Lọc theo mã đơn hàng...'
               type='text'
@@ -379,12 +387,12 @@ export default function OrderTable() {
             <div className='text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50'>
               <ListFilterIcon size={16} aria-hidden='true' />
             </div>
-            {Boolean(table.getColumn('_id')?.getFilterValue()) && (
+            {Boolean(table.getColumn('id')?.getFilterValue()) && (
               <button
                 className='text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50'
                 aria-label='Clear filter'
                 onClick={() => {
-                  table.getColumn('_id')?.setFilterValue('')
+                  table.getColumn('id')?.setFilterValue('')
                   if (inputRef.current) {
                     inputRef.current.focus()
                   }

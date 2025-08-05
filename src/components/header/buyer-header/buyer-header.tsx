@@ -13,7 +13,6 @@ import { logoutUserAPI, selectCurrentUser } from '@/redux/user/userSlice'
 import { Input } from '@/components/ui/input'
 
 import { LuShoppingCart } from 'react-icons/lu'
-import { IoNotificationsOutline } from 'react-icons/io5'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ArrowRightIcon, LogInIcon, SearchIcon } from 'lucide-react'
@@ -69,6 +68,8 @@ import { ProductListItem } from '@/types/entities/product'
 import { useRouter } from 'next/navigation'
 import { getProductsWithFiltersApi } from '@/apis/product.api'
 import { DEFAULT_IMAGE_URL } from '@/utils/constants'
+import Notification from '@/components/notification/notification'
+import { fetchCurrentNotificationListAPI } from '@/redux/notification/notificationSlice'
 
 export default function BuyerHeader() {
   const router = useRouter()
@@ -86,18 +87,23 @@ export default function BuyerHeader() {
       startLoading()
       if (currentCart && !currentCart.buyerId) {
         Promise.all(
-          currentCart?.cartItems.map((item) => dispatch(addToCartAPI({
-            productId: item.product.id,
-            typeId: item.product.type.id,
-            cartId: currentCart.id,
-            quantity: item.quantity
-          })))
+          currentCart?.cartItems?.map((item) =>
+            dispatch(
+              addToCartAPI({
+                productId: item.product.id,
+                typeId: item.product.type.id,
+                cartId: currentCart.id,
+                quantity: item.quantity
+              })
+            )
+          )
         )
           .then(() => dispatch(fetchCurrentCartAPI()))
           .finally(() => endLoading())
       } else {
         dispatch(fetchCurrentCartAPI()).finally(() => endLoading())
       }
+      dispatch(fetchCurrentNotificationListAPI())
     }
   }, [currentUser, dispatch])
 
@@ -160,6 +166,10 @@ export default function BuyerHeader() {
     1000
   )
 
+  const handleMoveToCart = () => {
+    router.push('/cart')
+  }
+
   return (
     <>
       <div className='fixed top-0 left-0 bg-background w-full z-50'>
@@ -198,7 +208,7 @@ export default function BuyerHeader() {
             </div>
 
             <div className='flex items-center gap-10'>
-              <IoNotificationsOutline className='text-mainColor1-600 text-xl font-bold' />
+              <Notification />
 
               <Sheet key={'right'}>
                 <SheetTrigger asChild>
@@ -222,49 +232,51 @@ export default function BuyerHeader() {
                     </SheetDescription>
                   </SheetHeader>
                   <div className='p-4 max-h-[89%] overflow-auto space-y-6'>
-                    {currentCart?.cartItems?.map(({ product, quantity }, index) => (
-                      <div key={index} className='flex items-center gap-2'>
-                        <Image
-                          src={product.avatar || DEFAULT_IMAGE_URL}
-                          alt=''
-                          width={40}
-                          height={40}
-                          className='rounded-md size-10'
-                        />
-                        <div className='flex flex-col gap-1'>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <span className='text-sm line-clamp-1 text-mainColor2-800 leading-none'>
-                                  {product?.name}
-                                </span>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>{product?.name}</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                          <p className='line-clamp-1 text-xs text-gray-400 mb-0.5'>
-                            Loại: {product.type?.name}
-                          </p>
-                          <div className='flex flex-col lg:flex-row lg:items-center lg:gap-4'>
-                            <Badge className='bg-mainColor2-800/90'>
-                              {quantity} sản phẩm
-                            </Badge>
-                            <span className='text-[0.8rem] text-muted-foreground'>
-                              x {product.type?.price.toLocaleString('vi-VN')}
-                              <sup>đ</sup>
-                            </span>
+                    {currentCart?.cartItems?.map(
+                      ({ product, quantity }, index) => (
+                        <div key={index} className='flex items-center gap-2'>
+                          <Image
+                            src={product.avatar || DEFAULT_IMAGE_URL}
+                            alt=''
+                            width={40}
+                            height={40}
+                            className='rounded-md size-10'
+                          />
+                          <div className='flex flex-col gap-1'>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className='text-sm line-clamp-1 text-mainColor2-800 leading-none'>
+                                    {product?.name}
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>{product?.name}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                            <p className='line-clamp-1 text-xs text-gray-400 mb-0.5'>
+                              Loại: {product.type?.name}
+                            </p>
+                            <div className='flex flex-col lg:flex-row lg:items-center lg:gap-4'>
+                              <Badge className='bg-mainColor2-800/90'>
+                                {quantity} sản phẩm
+                              </Badge>
+                              <span className='text-[0.8rem] text-muted-foreground'>
+                                x {product.type?.price.toLocaleString('vi-VN')}
+                                <sup>đ</sup>
+                              </span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      )
+                    )}
                   </div>
                   <SheetFooter>
                     <SheetClose asChild>
                       <Button
                         className='bg-mainColor2-800/90 hover:bg-mainColor2-800 w-full hover:drop-shadow-lg'
-                        onClick={() => router.push('/cart')}
+                        onClick={handleMoveToCart}
                       >
                         Xem giỏ hàng
                       </Button>
@@ -283,7 +295,9 @@ export default function BuyerHeader() {
                       </Avatar>
                       <div className='text-sm text-gray-500'>
                         Xin chào, <br></br>
-                        <b className='text-accent-foreground'>{currentUser?.username}</b>
+                        <b className='text-accent-foreground'>
+                          {currentUser?.username}
+                        </b>
                       </div>
                     </div>
                   </DropdownMenuTrigger>
@@ -298,7 +312,7 @@ export default function BuyerHeader() {
                         Hồ sơ
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        onClick={() => router.push('/user/order')}
+                        onClick={() => router.push('/user/orders')}
                         className='cursor-pointer'
                       >
                         Đơn hàng
@@ -373,7 +387,12 @@ export default function BuyerHeader() {
                     }}
                   >
                     <div>
-                      <Image src={prod?.avatar || DEFAULT_IMAGE_URL} alt='' width={40} height={40} />
+                      <Image
+                        src={prod?.avatar || DEFAULT_IMAGE_URL}
+                        alt=''
+                        width={40}
+                        height={40}
+                      />
                     </div>
                     <div>
                       <span className='text-sm'>{prod?.name}</span>

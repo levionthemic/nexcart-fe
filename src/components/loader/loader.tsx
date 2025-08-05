@@ -1,10 +1,20 @@
-function Loader({ caption }: { caption: string }) {
+function Loader() {
   return (
-    <div className='w-[98vw] h-[calc(90vh)] flex items-center justify-center'>
-      <div className='w-2 h-2 mr-2 rounded-full bg-mainColor1-600 animate-bounce'></div>
-      <div className='w-2 h-2 bg-mainColor1-600 mr-2 rounded-full animate-bounce [animation-delay:-0.2s]'></div>
-      <div className='w-2 h-2 bg-mainColor1-600 mr-2 rounded-full animate-bounce [animation-delay:-0.4s]'></div>
-      <span>{caption}</span>
+    <div className='w-screen h-screen flex items-center justify-center'>
+      <div className='loader-wrapper'>
+        <span className='loader-letter'>G</span>
+        <span className='loader-letter'>e</span>
+        <span className='loader-letter'>n</span>
+        <span className='loader-letter'>e</span>
+        <span className='loader-letter'>r</span>
+        <span className='loader-letter'>a</span>
+        <span className='loader-letter'>t</span>
+        <span className='loader-letter'>i</span>
+        <span className='loader-letter'>n</span>
+        <span className='loader-letter'>g</span>
+
+        <div className='loader'></div>
+      </div>
     </div>
   )
 }

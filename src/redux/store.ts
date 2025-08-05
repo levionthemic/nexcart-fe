@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 
 import { cartReducer } from '@/redux/cart/cartSlice'
 import { userReducer } from '@/redux/user/userSlice'
+import { notificationReducer } from '@/redux/notification/notificationSlice'
 
 import { combineReducers } from 'redux'
 import { PersistConfig, persistReducer } from 'redux-persist'
@@ -10,12 +11,13 @@ import storage from 'redux-persist/lib/storage'
 const rootPersistConfig: PersistConfig<ReturnType<typeof reducers>> = {
   key: 'root',
   storage: storage,
-  whitelist: ['user', 'cart']
+  whitelist: ['user', 'cart', 'notification']
 }
 
 const reducers = combineReducers({
   cart: cartReducer,
-  user: userReducer
+  user: userReducer,
+  notification: notificationReducer
 })
 
 const persistedReducers = persistReducer(rootPersistConfig, reducers)

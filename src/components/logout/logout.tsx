@@ -18,14 +18,20 @@ import { logoutUserAPI } from '@/redux/user/userSlice'
 import { clearCart } from '@/redux/cart/cartSlice'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import { useSocketContext } from '../providers/SocketProvider'
 
 export default function LogoutComponent({ icon }: { icon: React.ReactNode }) {
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
+  const { notificationSocket, setNotificationSocket } = useSocketContext()
 
   const handleLogout = async () => {
+    notificationSocket?.off('connect')
+    setNotificationSocket(null)
+
     dispatch(clearCart())
-    toast.promise(dispatch(logoutUserAPI()), {
+
+    toast.promise(dispatch(logoutUserAPI()).unwrap(), {
       loading: 'Đang đăng xuất...',
       success: () => {
         router.refresh()

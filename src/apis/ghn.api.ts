@@ -1,6 +1,12 @@
 import envConfig from '@/config'
 import http from '@/lib/http'
-import { GhnDistrict, GhnProvince, GhnWard } from '@/types/entities/ghn'
+import {
+  GhnAvailableService,
+  GhnDistrict,
+  GhnFee,
+  GhnProvince,
+  GhnWard
+} from '@/types/entities/ghn'
 
 export const GHN_BASE_URL = 'https://dev-online-gateway.ghn.vn'
 
@@ -37,6 +43,38 @@ export const getListWardsByDistrictIdApi = async (districtId: number) => {
     { district_id: districtId },
     {
       headers: { token: envConfig.NEXT_PUBLIC_GHN_TOKEN_API },
+      baseUrl: GHN_BASE_URL
+    }
+  )
+  return response.data
+}
+
+export const getAvailableServicesApi = async (data: Record<string, number>) => {
+  const response = await http.post<GhnAvailableService[]>(
+    '/shiip/public-api/v2/shipping-order/available-services',
+    {
+      from_district: data.fromDistrictId,
+      to_district: data.toDistrictId,
+      shop_id: Number(envConfig.NEXT_PUBLIC_GHN_SHOP_ID)
+    },
+    {
+      headers: { token: envConfig.NEXT_PUBLIC_GHN_TOKEN_API },
+      baseUrl: GHN_BASE_URL
+    }
+  )
+  return response.data
+}
+
+export const getFeeApi = async (data: Record<string, unknown>) => {
+  const response = await http.post<GhnFee>(
+    '/shiip/public-api/v2/shipping-order/fee',
+    data,
+    {
+      headers: {
+        token: envConfig.NEXT_PUBLIC_GHN_TOKEN_API,
+        'Content-Type': 'application/json',
+        shop_id: envConfig.NEXT_PUBLIC_GHN_SHOP_ID
+      },
       baseUrl: GHN_BASE_URL
     }
   )

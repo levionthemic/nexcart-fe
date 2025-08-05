@@ -33,15 +33,14 @@ import { getAddressString } from '@/utils/helpers'
 import { z } from 'zod'
 import { ShippingMethod } from '@/types/enums/checkout'
 import Image from 'next/image'
-import envConfig from '@/config'
 import { Address } from '@/types/entities/address'
 import RightSidebar from './_components/right-sidebar'
 import { ShippingDataType, useOrder } from '@/contexts/order-context'
 import { useRouter } from 'next/navigation'
 import { clusterOrdersApi } from '@/apis/order.api'
+import { getAvailableServicesApi, getFeeApi } from '@/apis/ghn.api'
 
 const formSchema = z.object({
-  buyerAddress: z.array(z.string({ required_error: FIELD_REQUIRED_MESSAGE })),
   discountCode: z.array(z.string()),
   shippingMethod: z
     .array(z.nativeEnum(ShippingMethod))
@@ -65,7 +64,6 @@ export default function Shipping() {
   const form = useForm<ShippingFormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      buyerAddress: [...Array(clusterOrders.length)].map(() => '0'),
       discountCode: [...Array(clusterOrders.length)].map(() => ''),
       note: [...Array(clusterOrders.length)].map(() => ''),
       shippingMethod: checkoutInfo?.shipping?.map((s) => s.type)
@@ -81,7 +79,6 @@ export default function Shipping() {
     clusterOrdersApi({ orderItems: body }).then((data) => {
       if (data) {
         form.reset({
-          buyerAddress: [...Array(data.length)].map(() => '0'),
           discountCode: [...Array(data.length)].map(() => ''),
           note: [...Array(data.length)].map(() => ''),
           shippingMethod: checkoutInfo?.shipping?.map((s) => s.type)
@@ -108,55 +105,68 @@ export default function Shipping() {
   }, [clusterOrders])
 
   const [shippingData, setShippingData] = useState<ShippingDataType[][]>([])
+  const [ghnServiceError, setGhnServiceError] = useState<string>('')
   useEffect(() => {
     const shippingDataResult: ShippingDataType[][] = []
-    for (const clusterOrder of clusterOrders) {
-      fetch(
-        'https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee',
-        {
-          method: 'POST',
-          headers: {
-            token: envConfig.NEXT_PUBLIC_GHN_TOKEN_API,
-            'Content-Type': 'application/json',
-            shop_id: envConfig.NEXT_PUBLIC_GHN_SHOP_ID
-          },
-          body: JSON.stringify({
-            service_type_id: 2,
-            from_district_id: clusterOrder?.shop?.districtId,
-            from_ward_code: clusterOrder?.shop.wardCode,
-            to_district_id: checkoutInfo?.information?.buyerAddress.districtId,
-            to_ward_code: checkoutInfo?.information?.buyerAddress.wardCode,
-            weight: 3000,
-            insurance_value: 0,
-            coupon: null,
-            items: clusterOrder.orderItems.map((item) => ({
-              name: item.product.name,
-              quantity: item.quantity
-            }))
-          })
-        }
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          const result = [
-            {
-              type: ShippingMethod.GHTK,
-              detail: {}
-            },
-            {
-              type: ShippingMethod.GHN,
-              detail: data.data
-            }
-          ]
-          shippingDataResult.push(result)
+    if (clusterOrders.length) {
+      for (const clusterOrder of clusterOrders) {
+        getAvailableServicesApi({
+          fromDistrictId: Number(checkoutInfo?.information?.buyerAddress.districtId),
+          toDistrictId: Number(clusterOrder.shop.districtId)
+        }).then((res) => {
+          if (!res) {
+            setGhnServiceError(
+              'GHN hiện không hỗ trợ giao hàng từ địa chỉ đã chọn.'
+            )
+            const result = [
+              {
+                type: ShippingMethod.GHTK,
+                detail: {}
+              },
+              {
+                type: ShippingMethod.GHN,
+                detail: {}
+              }
+            ]
+            shippingDataResult.push(result)
+            return
+          } else {
+            getFeeApi({
+              service_id: 0,
+              service_type_id: 2,
+              from_district_id: clusterOrder?.shop?.districtId,
+              from_ward_code: clusterOrder?.shop.wardCode,
+              to_district_id:
+                checkoutInfo?.information?.buyerAddress.districtId,
+              to_ward_code: checkoutInfo?.information?.buyerAddress.wardCode,
+              weight: 3000,
+              insurance_value: 0,
+              coupon: null,
+              items: clusterOrder.orderItems.map((item) => ({
+                name: item.product.name,
+                quantity: item.quantity
+              }))
+            }).then((data) => {
+              if (data) {
+                const result = [
+                  {
+                    type: ShippingMethod.GHTK,
+                    detail: {}
+                  },
+                  {
+                    type: ShippingMethod.GHN,
+                    detail: data
+                  }
+                ]
+                shippingDataResult.push(result)
+              }
+            })
+          }
         })
+      }
       setShippingData(shippingDataResult)
     }
-  }, [
-    checkoutInfo?.information?.buyerAddress.districtId,
-    checkoutInfo?.information?.buyerAddress.wardCode,
-    clusterOrders
-  ])
+  }, [clusterOrders.length])
 
   const handleUpdateShipping = (data: ShippingFormSchemaType) => {
     setCheckoutInfo({
@@ -192,7 +202,10 @@ export default function Shipping() {
         chính sách của chúng tôi!
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleUpdateShipping)} className='space-y-20'>
+        <form
+          onSubmit={form.handleSubmit(handleUpdateShipping)}
+          className='space-y-20'
+        >
           {clusterOrders.map((clusterOrder, index) => (
             <div key={index} className='grid grid-cols-12 gap-12'>
               <div className='border-[2px] rounded-md p-4 col-span-9'>
@@ -201,37 +214,18 @@ export default function Shipping() {
                 </div>
                 <Separator className='mt-1 mb-4' />
                 <div className='space-y-8'>
-                  <div className='grid grid-cols-2 gap-10'>
-                    <FormField
-                      control={form.control}
-                      name={`buyerAddress.${index}`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className='text-mainColor1-600 font-medium text-lg mb-2'>
-                            Địa chỉ nhận hàng
-                          </FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value}
-                          >
-                            <SelectTrigger className='w-full'>
-                              <SelectValue placeholder='Chọn địa chỉ nhận hàng' />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                <SelectItem value='0' disabled>
-                                  {checkoutInfo?.information?.shortAddress}
-                                </SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                          <FormDescription>
-                            Địa chỉ bạn đã điền ở phần trước.
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <div className='grid grid-cols-2 gap-10 items-start'>
+                    <FormItem>
+                      <FormLabel className='text-mainColor1-600 font-medium text-lg'>
+                        Địa chỉ nhận hàng
+                      </FormLabel>
+                      <FormDescription className='!mt-0'>
+                        Địa chỉ bạn đã điền ở phần trước.
+                      </FormDescription>
+                      <div>
+                        {checkoutInfo?.information?.buyerAddress.shortAddress}
+                      </div>
+                    </FormItem>
 
                     <FormItem>
                       <FormLabel className='text-mainColor1-600 font-medium text-lg'>
@@ -338,6 +332,7 @@ export default function Shipping() {
                                   alt=''
                                   width={30}
                                   height={30}
+                                  className='size-[30px] rounded-sm'
                                 />
                                 <div className='grid grow gap-2'>
                                   <Label htmlFor={`${id}-1`}>
@@ -363,6 +358,7 @@ export default function Shipping() {
                                   id={`${id}-2`}
                                   aria-describedby={`${id}-2-description`}
                                   className='order-1 after:absolute after:inset-0'
+                                  disabled={!!ghnServiceError}
                                 />
                               </FormControl>
                               <div className='flex grow items-start gap-3'>
@@ -371,6 +367,7 @@ export default function Shipping() {
                                   alt=''
                                   width={30}
                                   height={30}
+                                  className='rounded-sm'
                                 />
                                 <div className='grid grow gap-2'>
                                   <Label htmlFor={`${id}-2`}>
@@ -396,6 +393,12 @@ export default function Shipping() {
                             </FormItem>
                           </RadioGroup>
                         </FormControl>
+                        <div className='grid grid-cols-2 gap-2'>
+                          <div className=''></div>
+                          <div className='text-xs text-red-200'>
+                            {ghnServiceError}
+                          </div>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}

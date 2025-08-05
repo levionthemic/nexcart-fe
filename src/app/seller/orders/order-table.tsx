@@ -54,12 +54,14 @@ import {
   TableRow
 } from '@/components/ui/table'
 import {
+  ColumnDef,
   flexRender,
   getCoreRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  Row,
   useReactTable
 } from '@tanstack/react-table'
 import {
@@ -80,197 +82,51 @@ import {
   PlusIcon,
   TrashIcon
 } from 'lucide-react'
-import { useId, useMemo, useRef, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useId,
+  useMemo,
+  useRef,
+  useState
+} from 'react'
 import dayjs from 'dayjs'
 import { toast } from 'sonner'
 import Image from 'next/image'
+import { Order } from '@/types/entities/order'
+import { DEFAULT_IMAGE_URL, MAP_ORDER_STATUS } from '@/utils/constants'
+import { OrderStatus } from '@/types/enums/order-status'
+import { getOrdersApi, updateOrderStatusApi } from '@/apis/order.api'
+import { PopoverClose } from '@radix-ui/react-popover'
 
 // Custom filter function for multi-column searching
-const multiColumnFilterFn = (row, columnId, filterValue) => {
+const multiColumnFilterFn = (
+  row: Row<Order>,
+  columnId: string,
+  filterValue: string
+) => {
   const searchableRowContent =
-    `${row.original.buyerName} ${row.original.email}`.toLowerCase()
+    `${row.original.buyer.user.name} ${row.original.buyer.user.email}`.toLowerCase()
   const searchTerm = (filterValue ?? '').toLowerCase()
   return searchableRowContent.includes(searchTerm)
 }
 
-const statusFilterFn = (row, columnId, filterValue) => {
+const statusFilterFn = (
+  row: Row<Order>,
+  columnId: string,
+  filterValue: string
+) => {
   if (!filterValue?.length) return true
-  const status = row.getValue(columnId)
+  const status = row.getValue(columnId) as string
   return filterValue.includes(status)
 }
 
-const columns = [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label='Select all'
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label='Select row'
-      />
-    ),
-    size: 28,
-    enableSorting: false,
-    enableHiding: false
-  },
-  {
-    id: 'orderId',
-    header: 'Mã đơn hàng',
-    accessorKey: 'orderId',
-    cell: ({ row }) => (
-      <div className='text-ellipsis overflow-hidden'>{row.original._id}</div>
-    )
-  },
-  {
-    id: 'createdAt',
-    header: 'Ngày đặt hàng',
-    accessorKey: 'createdAt',
-    cell: ({ row }) => (
-      <div className='text-ellipsis overflow-hidden'>
-        {dayjs(row.getValue('createdAt')).format('DD-MM-YYYY')}
-      </div>
-    )
-  },
-  {
-    id: 'buyerName',
-    header: 'Tên người đặt',
-    accessorKey: 'buyerName',
-    cell: ({ row }) => (
-      <div className='font-medium'>{row.getValue('buyerName')}</div>
-    ),
-    size: 160,
-    filterFn: multiColumnFilterFn,
-    enableHiding: false
-  },
-  {
-    id: 'shopId',
-    header: 'Mã cửa hàng',
-    accessorKey: 'shopId',
-    cell: ({ row }) => (
-      <div className='text-ellipsis overflow-hidden'>
-        {row.getValue('shopId')}
-      </div>
-    )
-  },
-  {
-    id: 'itemList',
-    header: 'Danh sách sản phẩm',
-    accessorKey: 'itemList',
-    size: 200,
-    cell: ({ row }) => (
-      <div>
-        {row
-          .getValue('itemList')
-          .slice(0, 2)
-          .map((item, index) => (
-            <div
-              key={item._id}
-              className={`flex items-center gap-2 ${
-                index != row.getValue('itemList').length - 1 && 'mb-2'
-              }`}
-            >
-              <div>
-                <Image
-                  src={item.avatar}
-                  alt=''
-                  width={40}
-                  height={40}
-                  className='rounded-md border border-gray-300 p-0.5'
-                />
-              </div>
-              <div className='flex-1'>
-                <div className='line-clamp-1'>{item.productName}</div>
-                <div className='line-clamp-1 text-xs text-muted-foreground'>
-                  Loại: {item.typeName}
-                </div>
-              </div>
-            </div>
-          ))}
-        {row.getValue('itemList').length > 2 && (
-          <div className='mt-2 text-muted-foreground'>
-            + {row.getValue('itemList').length - 2} sản phẩm
-          </div>
-        )}
-      </div>
-    )
-  },
-  {
-    header: 'Tổng tiền',
-    accessorKey: 'totalPrice',
-    cell: ({ row }) => {
-      const total =
-        parseInt(row.original.finalPrice) + parseInt(row.original.shippingFee)
-      return (
-        <div className='font-bold text-red-500'>
-          {total.toLocaleString('vi-vn')}
-          <sup>đ</sup>
-        </div>
-      )
-    },
-    size: 120
-  },
-  {
-    header: <div className='text-center w-full'>Trạng thái</div>,
-    accessorKey: 'status',
-    cell: ({ row }) => (
-      <div className='flex items-center justify-center'>
-        <Badge
-          className={cn(
-            row.getValue('status') === ORDER_STATUS.CANCELLED &&
-              'bg-muted-foreground/60 text-primary-foreground',
-            row.getValue('status') === ORDER_STATUS.PENDING && 'bg-red-500',
-            row.getValue('status') === ORDER_STATUS.SHIPPING && 'bg-amber-400',
-            row.getValue('status') === ORDER_STATUS.SUCCESS && 'bg-green-600',
-            row.getValue('status') === ORDER_STATUS.FAIL && 'bg-gray-600'
-          )}
-        >
-          {row.getValue('status')}
-        </Badge>
-      </div>
-    ),
-    size: 100,
-    filterFn: statusFilterFn
-  },
-  {
-    id: 'note',
-    header: 'Ghi chú',
-    accessorKey: 'note',
-    cell: ({ row }) => <div>{row.getValue('note')}</div>,
-    size: 150
-  },
-  {
-    id: 'actions',
-    header: <div className='text-center w-full'>Thao tác</div>,
-    cell: ({ row }) => <RowActions row={row} />,
-    size: 80,
-    enableHiding: false
-  }
-]
-
-const handleConfirmOrder = (row) => {
-  const data = {
-    orderId: row.original._id.toString(),
-    status: ORDER_STATUS.SHIPPING
-  }
-  toast.promise(updateOrderStatusAPI(data), {
-    loading: 'Đang cập nhật...',
-    success: () => {
-      return 'Cập nhật thành công!'
-    }
-  })
+interface OrderTableProps {
+  data: Order[]
+  setData: Dispatch<SetStateAction<Order[]>>
 }
 
-export default function OrderTable({ data, setData }) {
+export default function OrderTable({ data, setData }: OrderTableProps) {
   const id = useId()
   const [columnFilters, setColumnFilters] = useState([])
   const [columnVisibility, setColumnVisibility] = useState({})
@@ -278,7 +134,7 @@ export default function OrderTable({ data, setData }) {
     pageIndex: 0,
     pageSize: 10
   })
-  const inputRef = useRef(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const [sorting, setSorting] = useState([
     {
@@ -286,6 +142,23 @@ export default function OrderTable({ data, setData }) {
       desc: false
     }
   ])
+
+  const handleConfirmOrder = (row: Row<Order>) => {
+    const data = {
+      orderId: row.original.id,
+      status: OrderStatus.SHIPPING
+    }
+    toast.promise(updateOrderStatusApi(data), {
+      loading: 'Đang cập nhật...',
+      success: () => {
+        getOrdersApi().then((data) => {
+          if (data) setData(data)
+        })
+        return 'Cập nhật thành công!'
+      },
+      error: 'Đã có lỗi!'
+    })
+  }
 
   const handleDeleteRows = () => {
     const selectedRows = table.getSelectedRowModel().rows
@@ -295,6 +168,164 @@ export default function OrderTable({ data, setData }) {
     setData(updatedData)
     table.resetRowSelection()
   }
+
+  const columns: ColumnDef<Order>[] = [
+    {
+      id: 'select',
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && 'indeterminate')
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label='Select all'
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label='Select row'
+        />
+      ),
+      size: 28,
+      enableSorting: false,
+      enableHiding: false
+    },
+    {
+      id: 'id',
+      header: 'Mã đơn hàng',
+      accessorKey: 'id',
+      cell: ({ row }) => (
+        <div className='text-ellipsis overflow-hidden'>
+          {row.getValue('id')}
+        </div>
+      )
+    },
+    {
+      id: 'createdAt',
+      header: 'Ngày đặt hàng',
+      accessorKey: 'createdAt',
+      cell: ({ row }) => (
+        <div className='text-ellipsis overflow-hidden'>
+          {dayjs(row.getValue('createdAt')).format('DD-MM-YYYY')}
+        </div>
+      )
+    },
+    {
+      id: 'buyerName',
+      header: 'Người đặt',
+      accessorFn: (row) => row.buyer.user.name,
+      cell: ({ row }) => (
+        <div className='font-medium'>{row.original.buyer.user.name}</div>
+      ),
+      size: 160,
+      filterFn: multiColumnFilterFn,
+      enableHiding: false
+    },
+    {
+      id: 'shopId',
+      header: 'Mã cửa hàng',
+      accessorFn: (row) => row.shop.id,
+      cell: ({ row }) => (
+        <div className='text-ellipsis overflow-hidden'>
+          {row.getValue('shopId')}
+        </div>
+      )
+    },
+    {
+      id: 'orderItems',
+      header: 'Danh sách sản phẩm',
+      accessorKey: 'orderItems',
+      size: 200,
+      cell: ({ row }) => (
+        <div>
+          {row.original.orderItems.slice(0, 2).map((item, index) => (
+            <div
+              key={Math.random()}
+              className={`flex items-center gap-2 ${
+                index != row.original.orderItems.length - 1 && 'mb-2'
+              }`}
+            >
+              <div>
+                <Image
+                  src={item.product.avatar || DEFAULT_IMAGE_URL}
+                  alt=''
+                  width={40}
+                  height={40}
+                  className='rounded-md border border-gray-300 p-0.5 size-10'
+                />
+              </div>
+              <div className='flex-1'>
+                <div className='line-clamp-1'>{item.product.name}</div>
+                <div className='line-clamp-1 text-xs text-muted-foreground'>
+                  Loại: {item.product.type.name}
+                </div>
+              </div>
+            </div>
+          ))}
+          {row.original.orderItems.length > 2 && (
+            <div className='mt-2 text-muted-foreground'>
+              + {row.original.orderItems.length - 2} sản phẩm
+            </div>
+          )}
+        </div>
+      )
+    },
+    {
+      id: 'totalPrice',
+      header: 'Tổng tiền',
+      cell: ({ row }) => {
+        return (
+          <div className='font-bold text-red-500'>
+            {row.original.finalPrice.toLocaleString('vi-vn')}
+            <sup>đ</sup>
+          </div>
+        )
+      },
+      size: 120
+    },
+    {
+      id: 'status',
+      header: () => <div className='text-center w-full'>Trạng thái</div>,
+      accessorKey: 'status',
+      cell: ({ row }) => (
+        <div className='flex items-center justify-center'>
+          <Badge
+            className={cn(
+              row.getValue('status') === OrderStatus.CANCELLED &&
+                'bg-muted-foreground/60 text-primary-foreground',
+              row.getValue('status') === OrderStatus.PENDING && 'bg-red-500',
+              row.getValue('status') === OrderStatus.SHIPPING && 'bg-amber-400',
+              row.getValue('status') === OrderStatus.SUCCESS && 'bg-green-600',
+              row.getValue('status') === OrderStatus.FAIL && 'bg-gray-600'
+            )}
+          >
+            {MAP_ORDER_STATUS[row.original.status]}
+          </Badge>
+        </div>
+      ),
+      size: 100,
+      filterFn: statusFilterFn
+    },
+    {
+      id: 'note',
+      header: 'Ghi chú',
+      accessorKey: 'note',
+      cell: ({ row }) => <div>{row.getValue('note')}</div>,
+      size: 150
+    },
+    {
+      id: 'actions',
+      header: () => <div className='text-center w-full'>Thao tác</div>,
+      cell: ({ row }) => (
+        <RowActions row={row} handleConfirmOrder={handleConfirmOrder} />
+      ),
+      size: 80,
+      enableHiding: false
+    }
+  ]
 
   const table = useReactTable({
     data,
@@ -340,7 +371,7 @@ export default function OrderTable({ data, setData }) {
     return filterValue ?? []
   }, [table])
 
-  const handleStatusChange = (checked, value) => {
+  const handleStatusChange = (checked: boolean, value: OrderStatus) => {
     const filterValue = table.getColumn('status')?.getFilterValue()
     const newFilterValue = filterValue ? [...filterValue] : []
 
@@ -361,7 +392,7 @@ export default function OrderTable({ data, setData }) {
   return (
     <div className='space-y-1'>
       {/* Filters */}
-      <div className='flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-lg'>
+      <div className='flex flex-wrap items-center justify-between gap-3 bg-section p-3 rounded-lg'>
         <div className='font-semibold text-mainColor1-600'>
           Danh sách đơn hàng
         </div>
@@ -550,7 +581,7 @@ export default function OrderTable({ data, setData }) {
       {/* Table */}
       <div className='bg-background overflow-hidden rounded-md border'>
         <Table className='table-fixed'>
-          <TableHeader>
+          <TableHeader className='bg-muted/50'>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className='hover:bg-transparent'>
                 {headerGroup.headers.map((header) => {
@@ -760,10 +791,16 @@ export default function OrderTable({ data, setData }) {
   )
 }
 
-function RowActions({ row }) {
+function RowActions({
+  row,
+  handleConfirmOrder
+}: {
+  row: Row<Order>
+  handleConfirmOrder: (row: Row<Order>) => void
+}) {
   return (
     <div className='flex items-center justify-center gap-0.5'>
-      {row.getValue('status') === ORDER_STATUS.PENDING && (
+      {row.getValue('status') === OrderStatus.PENDING && (
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -778,8 +815,14 @@ function RowActions({ row }) {
           <PopoverContent>
             <div className='text-sm mb-4'>Xác nhận đơn hàng?</div>
             <div className='flex items-center justify-end gap-2'>
-              <Button variant='outline'>Hủy</Button>
-              <Button onClick={() => handleConfirmOrder(row)}>Xác nhận</Button>
+              <PopoverClose asChild>
+                <Button variant='outline'>Hủy</Button>
+              </PopoverClose>
+              <PopoverClose asChild>
+                <Button onClick={() => handleConfirmOrder(row)}>
+                  Xác nhận
+                </Button>
+              </PopoverClose>
             </div>
           </PopoverContent>
         </Popover>

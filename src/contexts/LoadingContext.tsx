@@ -1,19 +1,8 @@
-'use client' 
+'use client'
 
-import {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  Dispatch,
-  SetStateAction
-} from 'react'
+import { createContext, useContext, useState, ReactNode } from 'react'
 
 type LoadingContextType = {
-  isPageLoading: boolean
-  setPageLoading: Dispatch<SetStateAction<boolean>>
-  isDataLoading: boolean
-  setDataLoading: Dispatch<SetStateAction<boolean>>
   apiLoadingCount: number
   startLoading: () => void
   endLoading: () => void
@@ -26,9 +15,6 @@ type LoadingProviderProps = {
 }
 
 export const LoadingProvider = ({ children }: LoadingProviderProps) => {
-  const [isPageLoading, setPageLoading] = useState(false)
-  const [isDataLoading, setDataLoading] = useState(false)
-
   const [apiLoadingCount, setApiLoadingCount] = useState(0)
 
   const startLoading = () => setApiLoadingCount((count) => count + 1)
@@ -37,10 +23,6 @@ export const LoadingProvider = ({ children }: LoadingProviderProps) => {
   return (
     <LoadingContext.Provider
       value={{
-        isPageLoading,
-        setPageLoading,
-        isDataLoading,
-        setDataLoading,
         apiLoadingCount,
         startLoading,
         endLoading

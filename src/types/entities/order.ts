@@ -1,4 +1,5 @@
 import { OrderStatus } from '../enums/order-status'
+import { Address } from './address'
 import { CartProductItem } from './cart'
 import { Shop } from './shop'
 import { Buyer, Seller } from './user'
@@ -20,6 +21,8 @@ export interface Order {
   createdAt?: Date
   updatedAt?: Date
   
+  buyerAddress: Address
+  buyerAddressString?: string
   buyer: Buyer
   seller: Seller
   shop: Shop

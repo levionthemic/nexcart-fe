@@ -19,7 +19,6 @@ import ShowAddress from './show-address'
 import ReviewSection from './review-section'
 import QuantityHandling from './quantity-handling'
 import { VariantHandlingProvider } from '@/contexts/variant-handling-context'
-import WithPersistProvider from '@/components/providers/WithPersistProvider'
 import { Ratings } from '@/components/ui/ratings'
 import { getProductDetailsApi, getProductsApi } from '@/apis/product.api'
 import { ReviewProvider } from '@/contexts/review-context'
@@ -100,9 +99,7 @@ export default async function ProductDetail({
                       <div className='mb-1 text-lg font-semibold text-mainColor1-600'>
                         Thông tin vận chuyển
                       </div>
-                      <WithPersistProvider>
-                        <ShowAddress />
-                      </WithPersistProvider>
+                      <ShowAddress />
                       <div className='w-full h-px my-2 border border-t-0 border-gray-200 divider'></div>
                       <div>GHTK</div>
                     </div>
@@ -140,18 +137,10 @@ export default async function ProductDetail({
                   </div>
                 </div>
 
-                {product && (
-                  <WithPersistProvider>
-                    <ReviewSection product={product} />
-                  </WithPersistProvider>
-                )}
+                {product && <ReviewSection product={product} />}
               </div>
 
-              {product && (
-                <WithPersistProvider>
-                  <QuantityHandling product={product} />
-                </WithPersistProvider>
-              )}
+              {product && <QuantityHandling product={product} />}
             </div>
           </ReviewProvider>
         </VariantHandlingProvider>

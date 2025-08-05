@@ -1,10 +1,9 @@
 'use client'
 
 import { CiSearch } from 'react-icons/ci'
-import { CiBellOn } from 'react-icons/ci'
 import { BsHandbag } from 'react-icons/bs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { selectCurrentUser } from '@/redux/user/userSlice'
 import { House } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
@@ -30,12 +29,22 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { DEFAULT_IMAGE_URL } from '@/utils/constants'
+import Notification from '@/components/notification/notification'
+import { useEffect } from 'react'
+import { AppDispatch } from '@/redux/store'
+import { fetchCurrentNotificationListAPI } from '@/redux/notification/notificationSlice'
 
 export default function UserHeader() {
   const currentUser = useSelector(selectCurrentUser)
   const currentCart = useSelector(selectCurrentCart)
-  const router = useRouter()
+  const dispatch = useDispatch<AppDispatch>()
 
+  useEffect(() => {
+    dispatch(fetchCurrentNotificationListAPI())
+  }, [])
+
+  const router = useRouter()
+  
   return (
     <div className='flex items-center justify-between my-10'>
       <Link href='/'>
@@ -43,7 +52,7 @@ export default function UserHeader() {
       </Link>
       <CiSearch className='text-2xl font-bold cursor-pointer text-mainColor1-800' />
       <div className='flex items-center justify-between gap-8'>
-        <CiBellOn className='text-2xl font-bold cursor-pointer text-mainColor1-800' />
+        <Notification />
 
         <Sheet key={'right'}>
           <SheetTrigger asChild>

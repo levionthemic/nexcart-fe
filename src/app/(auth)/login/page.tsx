@@ -1,6 +1,5 @@
 import LoginForm from '@/app/(auth)/login/login-form'
 import WithGoogleOAuthProvider from '@/components/providers/WithGoogleOAuthProvider'
-import WithPersistProvider from '@/components/providers/WithPersistProvider'
 
 export default function LoginPage() {
   return (
@@ -11,11 +10,9 @@ export default function LoginPage() {
       }}
     >
       <div className='flex items-center justify-center w-full h-full bg-gray-900/50 animate-fadeIn'>
-        <WithPersistProvider>
-          <WithGoogleOAuthProvider>
-            <LoginForm />
-          </WithGoogleOAuthProvider>
-        </WithPersistProvider>
+        <WithGoogleOAuthProvider>
+          <LoginForm />
+        </WithGoogleOAuthProvider>
       </div>
     </div>
   )

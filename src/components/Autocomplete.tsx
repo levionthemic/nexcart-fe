@@ -60,8 +60,8 @@ export default function Autocomplete({
             variant='outline'
             role='combobox'
             aria-expanded={open}
-            className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-xl focus:outline-none focus:border-[2px] border border-mainColor1-100/50 w-full flex justify-between ${
-              error && 'border-red-500'
+            className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-xl focus:outline-none focus:border-[2px] border w-full flex justify-between ${
+              error ? 'border-red-400!' : 'border-mainColor1-100/50!'
             }`}
           >
             <span className={cn('truncate', !value && 'text-muted-foreground')}>

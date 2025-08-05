@@ -10,7 +10,7 @@ export default function ClientSellerLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { setPageLoading, apiLoadingCount } = useLoading()
+  const { apiLoadingCount } = useLoading()
 
   const pathname = usePathname()
   const [navKey, setNavKey] = useState(() => crypto.randomUUID())
@@ -19,15 +19,6 @@ export default function ClientSellerLayout({
     setNavKey(crypto.randomUUID())
   }, [pathname])
 
-  useEffect(() => {
-    setPageLoading(true)
-
-    const timeout = setTimeout(() => {
-      setPageLoading(false)
-    }, 2000)
-
-    return () => clearTimeout(timeout)
-  }, [pathname, setPageLoading])
   return (
     <>
       <NProgress isAnimating={apiLoadingCount > 0} key={navKey} />

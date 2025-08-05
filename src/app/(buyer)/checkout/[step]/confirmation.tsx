@@ -1,5 +1,6 @@
 'use client'
 
+import { addOrderApi, AddOrderPayload } from '@/apis/order.api'
 import ghnLogo from '@/assets/ghn-logo.png'
 import ghtkLogo from '@/assets/ghtk-logo.png'
 import { Badge } from '@/components/ui/badge'
@@ -15,9 +16,10 @@ import { ShippingMethod } from '@/types/enums/checkout'
 import { DEFAULT_IMAGE_URL } from '@/utils/constants'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 export default function Confirmation() {
-  const { clusterOrders, checkoutInfo } = useOrder()
+  const { clusterOrders, checkoutInfo, setCheckoutData } = useOrder()
 
   const router = useRouter()
 
@@ -28,7 +30,49 @@ export default function Confirmation() {
     )
   }
 
-  const handleCheckout = () => {}
+  const handleCheckout = () => {
+    toast.promise(
+      Promise.all(
+        clusterOrders.map((clusterOrder, index) => {
+          const data: AddOrderPayload = {
+            sellerId: clusterOrder.seller.id,
+            shopId: clusterOrder.shop.id,
+            buyerAddressId: String(checkoutInfo?.information?.buyerAddress.id),
+            discountCode: checkoutInfo?.discountCode?.[index] || '',
+            note: checkoutInfo?.note?.[index] || '',
+            originalPrice: clusterOrder.originalPrice,
+            finalPrice:
+              clusterOrder.originalPrice +
+              Number(checkoutInfo?.shipping?.[index].detail.total),
+            shippingFee: Number(checkoutInfo?.shipping?.[index].detail.total),
+            shippingMethod:
+              checkoutInfo?.shipping?.[index].type || ShippingMethod.GHN,
+            orderItems: clusterOrder.orderItems.map((orderItem) => ({
+              productId: orderItem.product.id,
+              typeId: orderItem.product.type.id,
+              quantity: orderItem.quantity,
+              unitPrice: orderItem.product.type.price,
+              discount: orderItem.product.type.discount,
+              finalPrice:
+                (orderItem.product.type.price *
+                  (100 - orderItem.product.type.discount)) /
+                100
+            }))
+          }
+          return addOrderApi(data)
+        })
+      ),
+      {
+        loading: 'Đang xử lý...',
+        success: (res) => {
+          router.push('/checkout/complete')
+          setCheckoutData(res)
+          return 'Thành công!'
+        },
+        error: 'Đã có lỗi!'
+      }
+    )
+  }
 
   return (
     <>
@@ -52,7 +96,7 @@ export default function Confirmation() {
         <div className='flex items-center justify-between mx-20 mb-2'>
           <span className='text-sm text-gray-400'>Địa chỉ nhận hàng:</span>
           <span className='font-medium'>
-            {checkoutInfo?.information?.shortAddress}
+            {checkoutInfo?.information?.buyerAddress.shortAddress}
           </span>
         </div>
 

@@ -4,6 +4,9 @@ import { RootState } from '../store'
 import { User } from '@/types/entities/user'
 import { TokenResponse } from '@react-oauth/google'
 import { Role } from '@/types/enums/role'
+import { Address } from '@/types/entities/address'
+import { Gender } from '@/types/enums/account'
+import http from '@/lib/http'
 
 //  Define types
 interface UserState {
@@ -21,7 +24,11 @@ type LoginPayload =
   | Omit<TokenResponse, 'error' | 'error_description' | 'error_uri'>
 
 interface UpdatePayload {
-  role?: string
+  name?: string
+  phone?: string
+  gender?: Gender
+  buyerAddress?: Address
+  defaultBuyerAddressId?: string
 }
 
 //  Async Thunks
@@ -49,37 +56,12 @@ export const logoutUserAPI = createAsyncThunk<unknown>(
   }
 )
 
-export const updateUserAPI = createAsyncThunk<User, FormData | UpdatePayload>(
+export const updateUserAPI = createAsyncThunk<User | undefined, FormData | UpdatePayload>(
   'user/updateUserAPI',
   async (data) => {
-    const role =
-      (data as UpdatePayload).role || (data as FormData).get('role')?.toString()
-
-    let response
-    if (role === Role.BUYER) {
-      if (data instanceof FormData) {
-        data.delete('role')
-      } else {
-        delete (data as UpdatePayload)['role']
-      }
-      response = await authorizedAxiosInstance.put(
-        '/buyer/profile/update',
-        data
-      )
-    } else if (role === Role.SELLER) {
-      if (data instanceof FormData) {
-        data.delete('role')
-      } else {
-        delete (data as UpdatePayload)['role']
-      }
-      response = await authorizedAxiosInstance.put(
-        '/seller/profile/update',
-        data
-      )
-    } else {
-      throw new Error('Invalid role')
-    }
-
+    const response = await http.put<User>('/users/profile', data, {
+      credentials: 'include'
+    })
     return response.data
   }
 )
