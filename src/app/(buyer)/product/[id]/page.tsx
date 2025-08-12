@@ -22,6 +22,9 @@ import { VariantHandlingProvider } from '@/contexts/variant-handling-context'
 import { Ratings } from '@/components/ui/ratings'
 import { getProductDetailsApi, getProductsApi } from '@/apis/product.api'
 import { ReviewProvider } from '@/contexts/review-context'
+import { FaStar } from 'react-icons/fa'
+import { Plus, Star, Store, UserPlus } from 'lucide-react'
+import Link from 'next/link'
 
 export default async function ProductDetail({
   params
@@ -95,7 +98,69 @@ export default async function ProductDetail({
                       {product && <ChooseType product={product} />}
                     </div>
 
-                    <div className='p-4 mb-6 bg-white dark:bg-section rounded-lg'>
+                    <div className='p-4 mb-6 bg-section rounded-lg flex items-center gap-4'>
+                      <div className='flex items-center gap-4'>
+                        <Image
+                          src={product?.seller.user.avatar || DEFAULT_IMAGE_URL}
+                          alt='Avatar'
+                          width={80}
+                          height={80}
+                          className='w-20 h-20 rounded-full border object-cover'
+                        />
+                        <div className='space-y-2'>
+                          <h2 className='text-base font-medium text-mainColor1-600 dark:text-foreground'>
+                            {product?.seller.user?.name || 'Chưa có tên'}
+                          </h2>
+                          <div className='text-base dark:text-muted-foreground flex items-center gap-2'>
+                            <Button
+                              variant='outline'
+                              className='flex items-center gap-1 bg-mainColor1-200/50! border border-mainColor1-400! hover:bg-mainColor1-200! px-2! py-0.5!'
+                            >
+                              <Plus /> Theo dõi
+                            </Button>
+                            <Link href={`/shop/${product?.seller.user.id}`}>
+                              <Button
+                                variant='outline'
+                                className='flex items-center gap-1 px-2! py-0.5!'
+                              >
+                                <Store />
+                                Xem shop
+                              </Button>
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                      <Separator
+                        orientation='vertical'
+                        className='h-18! bg-muted-foreground'
+                      />
+                      <div className='flex-1 space-y-2'>
+                        <div className='flex items-center'>
+                          <div className='flex items-center gap-2 w-[40%] text-muted-foreground text-sm'>
+                            <Star size={14} />
+                            <span>Đánh giá</span>
+                          </div>
+                          <div className='flex-1 leading-none'>
+                            4.5 / 5{' '}
+                            <FaStar
+                              className='text-yellow-400 inline ml-1 mr-3'
+                              size={16}
+                            />
+                            (5.5tr+)
+                          </div>
+                        </div>
+                        <div className='flex items-center'>
+                          <div className='flex items-center gap-2 w-[40%] text-muted-foreground text-sm'>
+                            <UserPlus size={14} />
+                            <span>Theo dõi</span>
+                          </div>
+                          <div className='flex-1'>510.5k+</div>
+                        </div>
+                      </div>
+                      <div className=''></div>
+                    </div>
+
+                    <div className='p-4 mb-6 bg-section rounded-lg'>
                       <div className='mb-1 text-lg font-semibold text-mainColor1-600'>
                         Thông tin vận chuyển
                       </div>
@@ -104,7 +169,7 @@ export default async function ProductDetail({
                       <div>GHTK</div>
                     </div>
 
-                    <div className='p-4 mb-6 bg-white dark:bg-section rounded-lg'>
+                    <div className='p-4 mb-6 bg-section rounded-lg'>
                       <div className='mb-3 text-lg font-semibold text-mainColor1-600'>
                         Thông tin chi tiết
                       </div>
@@ -123,7 +188,7 @@ export default async function ProductDetail({
                       ))}
                     </div>
 
-                    <div className='p-4 bg-white dark:bg-section rounded-lg'>
+                    <div className='p-4 bg-section rounded-lg'>
                       <div className='mb-2 text-lg font-semibold text-mainColor1-800'>
                         Mô tả sản phẩm
                       </div>
@@ -145,7 +210,7 @@ export default async function ProductDetail({
           </ReviewProvider>
         </VariantHandlingProvider>
 
-        <div className='p-4 bg-white dark:bg-section rounded-lg'>
+        <div className='p-4 bg-section rounded-lg'>
           <div className='flex items-center gap-2'>
             <div className='w-3 rounded-sm h-7 bg-mainColor2-800'></div>
             <span className='text-sm font-semibold text-mainColor2-800'>

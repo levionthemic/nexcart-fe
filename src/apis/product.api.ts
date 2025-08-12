@@ -23,6 +23,11 @@ export const getProductsApi = async () => {
   return response.data
 }
 
+export const getSellerProductsApi = async (sellerId: string) => {
+  const response = await http.get<GetProductsResponstType>(`${PRODUCT_API_PREFIX}/seller/${sellerId}`)
+  return response.data
+}
+
 export const getProductsWithFiltersApi = async (searchPath = '') => {
   const response = await http.get<GetProductsWithFiltersResponseType>(
     `${PRODUCT_API_PREFIX}/filter${searchPath}`

@@ -88,7 +88,7 @@ export default async function ProductList({
           <div>
             <div className='flex items-end justify-between mb-4'>
               <span className='text-xl font-medium text-mainColor2-800'>
-                {keyword ? 'Kết quả tìm kiếm cho &quot;{keyword}&quot;' : 'Tất cả sản phẩm' }
+                {keyword ? `Kết quả tìm kiếm cho "${keyword}"` : 'Tất cả sản phẩm' }
               </span>
               <span>Trang {page}</span>
             </div>

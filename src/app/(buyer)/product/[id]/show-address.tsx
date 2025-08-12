@@ -19,6 +19,8 @@ export default function ShowAddress() {
       const defaultAddress = currentUser?.buyer?.addresses.find(
         (address: Address) => address.isDefault
       )
+
+      console.log(defaultAddress)
       if (defaultAddress)
         getAddressString(defaultAddress)
           .then((result) => setAddress(result))
