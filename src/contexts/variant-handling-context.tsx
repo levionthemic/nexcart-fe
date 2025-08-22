@@ -10,8 +10,8 @@ import {
 } from 'react'
 
 type VariantHandlingContextType = {
-  typeId: string,
-  setTypeId: Dispatch<SetStateAction<string>>,
+  productVariantId: number | undefined,
+  setProductVariantId: Dispatch<SetStateAction<number | undefined>>,
   productEndPrice: number,
   setProductEndPrice: Dispatch<SetStateAction<number>>,
   discount: number,
@@ -26,15 +26,15 @@ type VariantHandlingProviderProps = {
 }
 
 export const VariantHandlingProvider = ({ children, initialProductEndPrice = 0 }: VariantHandlingProviderProps) => {
-  const [typeId, setTypeId] = useState<string>('')
+  const [productVariantId, setProductVariantId] = useState<number | undefined>()
   const [productEndPrice, setProductEndPrice] = useState<number>(initialProductEndPrice)
   const [discount, setDiscount] = useState<number>(0)
 
   return (
     <VariantHandlingContext.Provider
       value={{
-        typeId,
-        setTypeId,
+        productVariantId,
+        setProductVariantId,
         productEndPrice,
         setProductEndPrice,
         discount,

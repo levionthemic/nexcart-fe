@@ -276,7 +276,7 @@ export default function ProductFilterForm({
                   {categories?.map((category: Category) => (
                     <SelectItem
                       key={category?.id}
-                      value={category.id}
+                      value={String(category.id)}
                     >
                       {category?.name}
                     </SelectItem>
@@ -301,7 +301,7 @@ export default function ProductFilterForm({
                 </FormControl>
                 <SelectContent>
                   {brands?.map((brand) => (
-                    <SelectItem key={brand.id} value={brand.id}>
+                    <SelectItem key={brand.id} value={String(brand.id)}>
                       {brand?.name}
                     </SelectItem>
                   ))}

@@ -35,8 +35,8 @@ export const getProductsWithFiltersApi = async (searchPath = '') => {
   return response.data
 }
 
-export const getProductDetailsApi = async (productId: string | undefined) => {
-  const response = await http.get<Product>(`${PRODUCT_API_PREFIX}/${productId}`)
+export const getProductDetailsApi = async (slug: string | undefined) => {
+  const response = await http.get<Product>(`${PRODUCT_API_PREFIX}/${slug}`)
   return response.data
 }
 

@@ -197,7 +197,7 @@ export default function ProductCard({
     >
       <CardContent
         className='p-0 pb-2'
-        onClick={() => router.push(`/product/${product?.id}`)}
+        onClick={() => router.push(`/product/${product?.slug}`)}
       >
         {loading ? (
           <Skeleton className='w-full aspect-square' />
@@ -214,7 +214,7 @@ export default function ProductCard({
 
       <CardHeader
         className='px-4'
-        onClick={() => router.push(`/product/${product?.id}`)}
+        onClick={() => router.push(`/product/${product?.slug}`)}
       >
         {loading ? (
           <Skeleton className='h-[32px] w-full' />

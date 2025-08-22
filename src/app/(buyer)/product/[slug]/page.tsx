@@ -29,12 +29,21 @@ import Link from 'next/link'
 export default async function ProductDetail({
   params
 }: {
-  params: { id: string }
+  params: { slug: string }
 }) {
   const awaitParams = await params
-  const productId = awaitParams.id
-  const product = await getProductDetailsApi(String(productId))
+  const productSlug = awaitParams.slug
+  const product = await getProductDetailsApi(String(productSlug))
   const recommendedProducts = (await getProductsApi())?.data
+
+  console.log(product)
+
+  const averagePrice = product
+    ? Math.ceil(
+        product.product_variants.reduce((sum, pv) => sum + pv.price, 0) /
+          product.product_variants.length
+      )
+    : 0
 
   return (
     <div className='bg-[#F5F5FA] dark:bg-background py-4'>
@@ -55,9 +64,7 @@ export default async function ProductDetail({
           </BreadcrumbList>
         </Breadcrumb>
 
-        <VariantHandlingProvider
-          initialProductEndPrice={Number(product?.averagePrice)}
-        >
+        <VariantHandlingProvider initialProductEndPrice={averagePrice}>
           <ReviewProvider>
             <div className='relative grid grid-cols-4 gap-6'>
               <div className='col-span-3'>
@@ -67,7 +74,7 @@ export default async function ProductDetail({
                       <Image
                         width={350}
                         height={350}
-                        src={product?.avatar || DEFAULT_IMAGE_URL}
+                        src={product?.thumbnail_url || DEFAULT_IMAGE_URL}
                         alt={String(product?.name)}
                         className='scale-105 object-cover'
                       />
@@ -109,7 +116,7 @@ export default async function ProductDetail({
                         />
                         <div className='space-y-2'>
                           <h2 className='text-base font-medium text-mainColor1-600 dark:text-foreground'>
-                            {product?.seller.user?.name || 'Chưa có tên'}
+                            {product?.seller.name || 'Chưa có tên'}
                           </h2>
                           <div className='text-base dark:text-muted-foreground flex items-center gap-2'>
                             <Button
@@ -118,7 +125,9 @@ export default async function ProductDetail({
                             >
                               <Plus /> Theo dõi
                             </Button>
-                            <Link href={`/shop/${product?.seller.user.id}`}>
+                            <Link
+                              href={`/shop/${product?.seller.user.user_id}`}
+                            >
                               <Button
                                 variant='outline'
                                 className='flex items-center gap-1 px-2! py-0.5!'
@@ -173,15 +182,20 @@ export default async function ProductDetail({
                       <div className='mb-3 text-lg font-semibold text-mainColor1-600'>
                         Thông tin chi tiết
                       </div>
-                      {product?.features?.map((feature, index) => (
+                      {product?.specifications?.map((specification, index) => (
                         <div key={index} className='mx-4'>
                           <div className='flex items-center justify-between my-1.5'>
                             <span className='text-sm text-gray-400'>
-                              {feature.field}
+                              {specification.field}
                             </span>
-                            <span className=''>{feature.content}</span>
+                            <span
+                              dangerouslySetInnerHTML={{
+                                __html: specification.content
+                              }}
+                              style={{ textAlign: 'justify' }}
+                            />
                           </div>
-                          {index != product?.features?.length - 1 && (
+                          {index != product?.specifications?.length - 1 && (
                             <Separator />
                           )}
                         </div>

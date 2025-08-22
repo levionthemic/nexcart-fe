@@ -2,14 +2,14 @@
 
 import { useEffect } from 'react'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Product } from '@/types/entities/product'
 import { Label } from '@/components/ui/label'
 import { useVariantHandling } from '@/contexts/variant-handling-context'
+import { Product } from '@/types/entities/product'
 
-export default function ChooseType({ product }: { product: Product }) {
+export default function Choosepv({ product }: { product: Product }) {
   const {
-    typeId,
-    setTypeId,
+    productVariantId,
+    setProductVariantId,
     productEndPrice,
     setProductEndPrice,
     discount,
@@ -17,12 +17,14 @@ export default function ChooseType({ product }: { product: Product }) {
   } = useVariantHandling()
 
   useEffect(() => {
-    if (typeId) {
-      const type = product?.types.find((type) => type.id === typeId)
-      setProductEndPrice(Number(type?.price))
-      setDiscount(Number(type?.discount))
+    if (productVariantId) {
+      const pv = product?.product_variants.find(
+        (pv) => pv.id === productVariantId
+      )
+      setProductEndPrice(Number(pv?.price))
+      setDiscount(Number(pv?.discount))
     }
-  }, [product?.types, typeId])
+  }, [product, productVariantId])
 
   return (
     <>
@@ -49,25 +51,25 @@ export default function ChooseType({ product }: { product: Product }) {
         <fieldset className='space-y-4'>
           <RadioGroup
             className='gap-0 -space-y-px rounded-md shadow-xs'
-            onValueChange={(value) => setTypeId(value)}
+            onValueChange={(value) => setProductVariantId(Number(value))}
           >
-            {product?.types?.map((type) => (
+            {product.product_variants.map((pv) => (
               <div
-                key={type.id}
+                key={pv.id}
                 className='border-input has-[button[data-state=checked]]:border-mainColor1-200 has-[button[data-state=checked]]:bg-mainColor1-100/20 relative flex flex-col gap-4 border px-4 py-3 outline-none first:rounded-t-md last:rounded-b-md has-[button[data-state=checked]]:z-10'
               >
                 <div className='flex items-center justify-between'>
                   <div className='flex items-center gap-2'>
                     <RadioGroupItem
-                      id={type.id}
-                      value={type.id}
+                      id={String(pv.id)}
+                      value={String(pv.id)}
                       className='after:absolute after:inset-0'
                     />
                     <Label
                       className='inline-flex items-start'
-                      htmlFor={type.id}
+                      htmlFor={String(pv.id)}
                     >
-                      {type.name}
+                      {pv.name}
                     </Label>
                   </div>
                 </div>

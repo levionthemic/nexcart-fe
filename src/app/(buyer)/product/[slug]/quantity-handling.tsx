@@ -27,7 +27,7 @@ import { useReview } from '@/contexts/review-context'
 
 export default function QuantityHandling({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1)
-  const { typeId, productEndPrice, discount } = useVariantHandling()
+  const { productVariantId, productEndPrice, discount } = useVariantHandling()
 
   const currentCart = useSelector(selectCurrentCart)
   const currentUser = useSelector(selectCurrentUser)
@@ -42,43 +42,43 @@ export default function QuantityHandling({ product }: { product: Product }) {
   }, [])
 
   const calculateTotalStock = useMemo(() => {
-    return product.shopProductTypes.reduce((sum, item) => sum + item.stock, 0)
-  }, [])
+    return product.product_variants
+      .find((pv) => pv.id === productVariantId)
+      ?.shop_product_variants.reduce(
+        (sum, item) => sum + item.stock_quantity,
+        0
+      )
+  }, [product, productVariantId])
 
   const handleAddToCart = () => {
-    if (!typeId) {
+    if (!productVariantId) {
       toast.error('Bạn chưa chọn loại sản phẩm!', { position: 'top-right' })
       return
     }
 
     // Have to handle use case cart of non-login users
     if (!currentUser) {
-      const cartItems = cloneDeep(currentCart?.cartItems) || []
+      const cart_items = cloneDeep(currentCart?.cart_items) || []
 
       let isExistedItem = false
-      cartItems.forEach((item) => {
-        if (
-          !isExistedItem &&
-          item.product.id === product.id &&
-          item.product.type.id === typeId
-        ) {
+      cart_items.forEach((item) => {
+        if (!isExistedItem && item.product_variant.id === productVariantId) {
           item.quantity += quantity
           isExistedItem = true
         }
       })
       if (!isExistedItem) {
-        const type = product.types.find((t) => t.id === typeId)!
-        const shopProductType = product.shopProductTypes.find(
-          (pt) => pt.typeId === type.id
+        const productVariant = product.product_variants.find(
+          (pv) => pv.id === productVariantId
         )!
-        cartItems.push({
-          product: { ...product, type, shopProductType },
+        cart_items.push({
+          product_variant: productVariant,
           quantity
         })
       }
 
       const newCart = cloneDeep(currentCart)!
-      newCart.cartItems = cartItems
+      newCart.cart_items = cart_items
 
       dispatch(setCart(newCart))
       toast.success('Thêm vào giỏ hàng thành công!')
@@ -88,9 +88,8 @@ export default function QuantityHandling({ product }: { product: Product }) {
     toast.promise(
       dispatch(
         addToCartAPI({
-          cartId: String(currentCart?.id),
-          productId: product.id,
-          typeId,
+          cart_id: Number(currentCart?.id),
+          product_variant_id: product.id,
           quantity
         })
       )
@@ -111,7 +110,7 @@ export default function QuantityHandling({ product }: { product: Product }) {
       return
     }
 
-    if (!typeId) {
+    if (!productVariantId) {
       toast.error('Bạn chưa chọn loại sản phẩm!', { position: 'top-right' })
       return
     }
@@ -120,13 +119,9 @@ export default function QuantityHandling({ product }: { product: Product }) {
       'itemList',
       JSON.stringify([
         {
-          productId: product.id,
-          typeId,
+          product_variant_id: productVariantId,
           quantity: quantity,
-          _weight: 0,
-          _length: 0,
-          _width: 0,
-          _height: 0
+          price_at_purchase: productEndPrice
         }
       ])
     )
@@ -148,10 +143,7 @@ export default function QuantityHandling({ product }: { product: Product }) {
 
         <div className='flex items-center justify-between text-sm'>
           <span className='text-gray-500'>Số lượng còn lại:</span>
-          <span>
-            {product?.shopProductTypes.find((t) => t.typeId === typeId)
-              ?.stock || 0}
-          </span>
+          <span>{calculateTotalStock}</span>
         </div>
 
         <Separator className='my-4' />

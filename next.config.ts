@@ -14,6 +14,12 @@ const nextConfig: NextConfig = {
         hostname: 'salt.tikicdn.com',
         port: '',
         pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'vcdn.tikicdn.com',
+        port: '',
+        pathname: '/**'
       }
     ]
   },

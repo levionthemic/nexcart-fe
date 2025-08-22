@@ -4,7 +4,6 @@ import { AccountStatusValue } from '../enums/account'
 
 export interface User {
   user_id: string
-  name: string
   email: string
   avatar: string
   role: Role
@@ -28,6 +27,7 @@ export interface Buyer extends BuyerMinimal {
 export interface SellerMinimal {
   seller_id: string
 
+  name: string
   cover_photo: string | null
   foundedDate: Date | null
   description: string | null
