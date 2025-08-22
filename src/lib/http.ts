@@ -21,19 +21,16 @@ export interface ApiResponse<T = unknown> {
   data?: T
 }
 
-let apiPendingRequests: ((
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE',
-  url: string,
-  options?: CustomOptions
-) => unknown)[] = []
+let apiPendingRequests: (() => Promise<unknown>)[] = []
 let isRefreshing = false
 
 const request = async <T>(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',
   url: string,
+  requestBody?: Record<string, unknown>,
   options?: CustomOptions
 ) => {
-  const body = options?.body ? JSON.stringify(options?.body) : undefined
+  const body = requestBody ? JSON.stringify(requestBody) : undefined
   const baseHeaders = {
     'Content-Type': 'application/json'
   }
@@ -60,7 +57,7 @@ const request = async <T>(
       refreshTokenAPI()
         .then(() => {
           // Call the holding requests respectively.
-          apiPendingRequests.forEach((cb) => cb(method, url, options))
+          apiPendingRequests.forEach((cb) => cb())
           apiPendingRequests = []
         })
         .catch((error) => {
@@ -72,9 +69,9 @@ const request = async <T>(
 
     // If is refreshing, the incoming request will be held and pushed to queue. Return Promise for that waiting purpose.
     return new Promise<ApiResponse<T>>((resolve, reject) => {
-      apiPendingRequests.push(async (method, url, options) => {
+      apiPendingRequests.push(async () => {
         try {
-          const retryResponse = await request<T>(method, url, options)
+          const retryResponse = await request<T>(method, url, requestBody, options)
           resolve(retryResponse)
         } catch (error) {
           reject(error)
@@ -94,17 +91,17 @@ const http = {
   },
   post<T>(
     url: string,
-    body: BodyInit,
+    body: Record<string, unknown>,
     options?: Omit<CustomOptions, 'body'> | undefined
   ) {
-    return request<T>('POST', url, { ...options, body })
+    return request<T>('POST', url, body, options)
   },
   put<T>(
     url: string,
-    body: BodyInit,
+    body: Record<string, unknown>,
     options?: Omit<CustomOptions, 'body'> | undefined
   ) {
-    return request<T>('PUT', url, { ...options, body })
+    return request<T>('PUT', url, body, options)
   },
   delete<T>(url: string, options?: Omit<CustomOptions, 'body'> | undefined) {
     return request<T>('DELETE', url, options)

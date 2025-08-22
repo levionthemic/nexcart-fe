@@ -1,7 +1,9 @@
 export interface Category {
-  id: string
+  id: number
   name: string
-  avatar: string | null
-  description: string | null
-  parentId: string | null
+  is_leaf: boolean
+  slug: string
+  thumbnail_url: string | null
+  description: string
+  parent_id: string | null
 }

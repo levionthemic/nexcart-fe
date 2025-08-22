@@ -28,7 +28,7 @@ import {
   DrawerTrigger
 } from '../ui/drawer'
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { RiSubtractFill } from 'react-icons/ri'
 import { IoMdAdd } from 'react-icons/io'
 import { toast } from 'sonner'
@@ -64,40 +64,40 @@ export default function ProductCard({
   const currentUser = useSelector(selectCurrentUser)
   const currentCart = useSelector(selectCurrentCart)
 
-  const [typeId, setTypeId] = useState<string>('')
+  const [productVariantId, setProductVariantId] = useState<number | undefined>()
   const [quantity, setQuantity] = useState<number>(1)
   const [isAddToCart, setIsAddToCart] = useState(false)
+  const [averagePrice, setAveragePrice] = useState(0)
+  const [totalStockQuantity, setTotalStockQuantity] = useState(0)
 
   const handleAddToCart = () => {
-    if (!typeId) {
+    if (!productVariantId) {
       toast.error('Bạn chưa chọn loại sản phẩm!', { position: 'top-right' })
       return
     }
 
     if (!currentUser) {
-      const cartItems = cloneDeep(currentCart?.cartItems) || []
+      const cartItems = cloneDeep(currentCart?.cart_items) || []
 
       let isExistedItem = false
       cartItems.forEach((item) => {
-        if (
-          !isExistedItem &&
-          item.product.id === product?.id &&
-          item.product.type.id === typeId
-        ) {
+        if (!isExistedItem && item.product_variant.id === productVariantId) {
           item.quantity += quantity
           isExistedItem = true
         }
       })
       if (!isExistedItem && product) {
-        const type = product.types.find((t) => t.id === typeId)!
+        const productVariant = product.product_variants.find(
+          (pv) => pv.id === productVariantId
+        )!
         cartItems.push({
-          product: { ...product, type },
+          product_variant: productVariant,
           quantity
         })
       }
 
       const newCart = cloneDeep(currentCart)!
-      newCart.cartItems = cartItems
+      newCart.cart_items = cartItems
 
       dispatch(setCart(newCart))
       toast.success('Thêm vào giỏ hàng thành công!')
@@ -107,9 +107,8 @@ export default function ProductCard({
     toast.promise(
       dispatch(
         addToCartAPI({
-          cartId: String(currentCart?.id),
-          productId: product!.id,
-          typeId,
+          cart_id: Number(currentCart?.id),
+          product_variant_id: product!.id,
           quantity
         })
       )
@@ -130,30 +129,25 @@ export default function ProductCard({
       return
     }
 
-    if (!typeId) {
+    if (!productVariantId) {
       toast.error('Bạn chưa chọn loại sản phẩm!', { position: 'top-right' })
       return
     }
 
     sessionStorage.setItem(
-      'itemList',
+      'order_items',
       JSON.stringify([
         {
-          productId: String(product?.id),
-          typeId,
+          product_variant_id: productVariantId,
           quantity,
-          _weight: 0,
-          _length: 0,
-          _width: 0,
-          _height: 0
         }
       ])
     )
-    sessionStorage.setItem('buyNow', JSON.stringify(true))
+    sessionStorage.setItem('buy_now', JSON.stringify(true))
     router.push('/checkout')
   }
 
-  const handleChooseType = () => {
+  const handleChooseProductVariant = () => {
     if (isAddToCart) {
       handleAddToCart()
     } else {
@@ -163,11 +157,35 @@ export default function ProductCard({
 
   const handleCloseDrawer = (open: boolean) => {
     if (!open) {
-      setTypeId('')
+      setProductVariantId(undefined)
       setQuantity(1)
       setIsAddToCart(false)
     }
   }
+
+  useEffect(() => {
+    if (product) {
+      setAveragePrice(
+        Math.ceil(
+          product.product_variants.reduce((sum, pv) => sum + pv.price, 0) /
+            product.product_variants.length
+        )
+      )
+    }
+  }, [product])
+
+  useEffect(() => {
+    if (product && productVariantId) {
+      setTotalStockQuantity(
+        product.product_variants
+          .find((pv) => pv.id === productVariantId)!
+          .shop_product_variants.reduce(
+            (sum, item) => sum + item.stock_quantity,
+            0
+          )
+      )
+    }
+  }, [productVariantId, product])
 
   return (
     <Card
@@ -185,7 +203,7 @@ export default function ProductCard({
           <Skeleton className='w-full aspect-square' />
         ) : (
           <Image
-            src={product?.avatar || DEFAULT_IMAGE_URL}
+            src={product?.thumbnail_url || DEFAULT_IMAGE_URL}
             height={300}
             width={300}
             alt=''
@@ -211,7 +229,7 @@ export default function ProductCard({
         ) : (
           <CardDescription>
             <div className='text-lg font-bold text-[#ff4d4f] mb-1 text-justify'>
-              {product?.averagePrice.toLocaleString()}
+              {averagePrice.toLocaleString()}
               <sup>đ</sup>
             </div>
             <div className='flex items-center justify-between my-2 text-sm text-gray-400'>
@@ -265,7 +283,7 @@ export default function ProductCard({
                   <Image
                     width={112}
                     height={112}
-                    src={product?.avatar || DEFAULT_IMAGE_URL}
+                    src={product?.thumbnail_url || DEFAULT_IMAGE_URL}
                     alt=''
                     className='object-contain w-full aspect-square'
                   />
@@ -274,8 +292,9 @@ export default function ProductCard({
                   <div>{product?.name}</div>
                   <div className='text-[#f90606] font-bold text-2xl'>
                     {(
-                      product?.types.find((t) => t.id === typeId)?.price ||
-                      product?.averagePrice
+                      product?.product_variants.find(
+                        (pv) => pv.id === productVariantId
+                      )?.price || averagePrice
                     )?.toLocaleString()}
                     <sup>đ</sup>
                   </div>
@@ -298,14 +317,7 @@ export default function ProductCard({
                       <IoMdAdd
                         onClick={() =>
                           setQuantity(
-                            quantity <
-                              (product?.shopProductTypes.find(
-                                (t) => t.typeId === typeId
-                              )?.stock || 1000)
-                              ? quantity + 1
-                              : product?.shopProductTypes.find(
-                                  (t) => t.typeId === typeId
-                                )?.stock || 1000
+                            Math.min(quantity + 1, totalStockQuantity)
                           )
                         }
                         className='text-xl rounded-md cursor-pointer text-mainColor1-800 hover:bg-mainColor2-800/40'
@@ -314,9 +326,7 @@ export default function ProductCard({
 
                     <div className='text-sm text-gray-500'>
                       Còn lại:{' '}
-                      {product?.shopProductTypes.find(
-                        (t) => t.typeId === typeId
-                      )?.stock || '(Chọn loại để hiện số lượng)'}
+                      {totalStockQuantity || '(Chọn loại để hiện số lượng)'}
                     </div>
                   </div>
                 </div>
@@ -325,25 +335,25 @@ export default function ProductCard({
               <fieldset className='space-y-4'>
                 <RadioGroup
                   className='gap-0 -space-y-px rounded-md shadow-xs'
-                  onValueChange={setTypeId}
+                  onValueChange={() => setProductVariantId}
                 >
-                  {product?.types?.map((type) => (
+                  {product?.product_variants?.map((productVariant) => (
                     <div
-                      key={type.id}
+                      key={productVariant.id}
                       className='border-input has-data-[state=checked]:border-ring has-data-[state=checked]:bg-accent relative flex flex-col gap-4 border px-4 py-3 outline-none first:rounded-t-md last:rounded-b-md has-data-[state=checked]:z-10'
                     >
                       <div className='flex items-center justify-between'>
                         <div className='flex items-center gap-2'>
                           <RadioGroupItem
-                            id={type.id}
-                            value={type.id}
+                            id={String(productVariant.id)}
+                            value={String(productVariant.id)}
                             className='after:absolute after:inset-0'
                           />
                           <Label
                             className='inline-flex items-start'
-                            htmlFor={type.id}
+                            htmlFor={String(productVariant.id)}
                           >
-                            {type.name}
+                            {productVariant.name}
                           </Label>
                         </div>
                       </div>
@@ -355,7 +365,7 @@ export default function ProductCard({
 
             <DrawerFooter>
               <DrawerClose asChild>
-                <Button onClick={handleChooseType}>Xác nhận</Button>
+                <Button onClick={handleChooseProductVariant}>Xác nhận</Button>
               </DrawerClose>
             </DrawerFooter>
           </DrawerContent>

@@ -1,26 +1,23 @@
 import { Role } from '@/types/enums/role'
 import { Address } from './address'
-import { AccountStatusValue, GenderValue } from '../enums/account'
+import { AccountStatusValue } from '../enums/account'
 
 export interface User {
-  id: string
+  user_id: string
   name: string
-  username: string
   email: string
   avatar: string
-  dateOfBirth: Date
   role: Role
-  gender: GenderValue
   phone?: string
   status: AccountStatusValue
-  createdAt: Date
-  updatedAt: Date
+  created_at: Date
+  updated_at: Date
   buyer?: BuyerMinimal
   seller?: SellerMinimal
 }
 
 export interface BuyerMinimal {
-  id: string
+  buyer_id: string
   addresses: Address[]
 }
 
@@ -29,15 +26,14 @@ export interface Buyer extends BuyerMinimal {
 }
 
 export interface SellerMinimal {
-  id: string
+  seller_id: string
 
-  coverPhoto: string | null
+  cover_photo: string | null
   foundedDate: Date | null
-  shortDescription: string | null
   description: string | null
-  facebookLink: string | null
-  instagramLink: string | null
-  twitterLink: string | null
+  facebook_link: string | null
+  instagram_link: string | null
+  twitter_link: string | null
 }
 
 export interface Seller extends SellerMinimal {

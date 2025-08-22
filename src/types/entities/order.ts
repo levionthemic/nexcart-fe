@@ -1,30 +1,29 @@
 import { OrderStatus } from '../enums/order-status'
 import { Address } from './address'
-import { CartProductItem } from './cart'
+import { ProductVariant } from './product'
 import { Shop } from './shop'
 import { Buyer, Seller } from './user'
 
-export type OrderProductItem = Omit<CartProductItem, 'seller' | 'shopProductType'>
 export interface OrderItem {
-  product: OrderProductItem
+  product_variant: ProductVariant
   quantity: number
+  price_at_purchase: number
 }
 
 export interface Order {
-  id: string
-  originalPrice: number
-  finalPrice: number
+  order_code: string
+  final_price: number
   status: OrderStatus
   note?: string
-  shippingFee: number
-  shippingMethod: string
-  createdAt?: Date
-  updatedAt?: Date
+  shipping_fee: number
+  shipping_method: string
+  created_at?: Date
+  updated_at?: Date
   
-  buyerAddress: Address
+  buyer_address: Address
   buyerAddressString?: string
   buyer: Buyer
   seller: Seller
   shop: Shop
-  orderItems: OrderItem[]
+  order_items: OrderItem[]
 }

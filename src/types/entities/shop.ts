@@ -1,13 +1,11 @@
 import { ShopStatus } from "../enums/shop-status"
+import { Address } from "./address"
 
 export interface Shop {
-  id: string
+  id: number
   phone: string
-  provinceId: number
-  districtId: number
-  wardCode: string
-  address: string
+  address: Address
   shortAddress: string
   status: ShopStatus
-  createdAt: Date
+  created_at: Date
 }

@@ -1,6 +1,5 @@
 export interface Brand {
-  id: string
+  id: number
   name: string
-  avatar: string | null
-  description: string | null
+  slug: string
 }

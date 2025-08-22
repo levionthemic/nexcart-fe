@@ -27,7 +27,7 @@ export default function CarouselProducts({
               </CarouselItem>
             ))
           : [...Array(6)].map((_, index) => (
-              <ProductCard key={index} loading={true} />
+              <ProductCard product={null} key={index} loading={true} />
             ))}
       </CarouselContent>
     </Carousel>

@@ -21,7 +21,7 @@ export default function CarouselCategories({ categories }: { categories: Categor
                   <Image
                     width={96}
                     height={96}
-                    src={category.avatar || DEFAULT_IMAGE_URL}
+                    src={category.thumbnail_url || DEFAULT_IMAGE_URL}
                     alt=''
                     className='object-cover mb-1'
                   />
@@ -32,7 +32,7 @@ export default function CarouselCategories({ categories }: { categories: Categor
               </CarouselItem>
             ))
           : [...Array(6)].map((_, index) => (
-              <ProductCard key={index} loading={true} />
+              <ProductCard product={null} key={index} loading={true} />
             ))}
       </CarouselContent>
     </Carousel>

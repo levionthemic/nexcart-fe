@@ -11,6 +11,12 @@ interface CartState {
   currentCart: Cart | undefined
 }
 
+export type AddCartItemPayload = {
+  cart_id: number
+  product_variant_id: number
+  quantity: number
+}
+
 // -----------------------------
 // Async Thunks
 // -----------------------------
@@ -23,21 +29,21 @@ export const fetchCurrentCartAPI = createAsyncThunk<Cart | undefined>(
 
 export const addToCartAPI = createAsyncThunk<
   Cart | undefined,
-  { cartId: string; productId: string; typeId: string; quantity: number }
+  AddCartItemPayload
 >('cart/addToCartAPI', async (data) => {
   return await addCartItemApi(data)
 })
 
 export const updateCartQuantityAPI = createAsyncThunk<
   void,
-  { cartId: string; productId: string; typeId: string; quantity: number }
+  AddCartItemPayload
 >('cart/updateCartQuantityAPI', async (data) => {
   await updateCartItemQuantityApi(data)
 })
 
 export const deleteItemAPI = createAsyncThunk<
   void,
-  { productId: string; typeId: string; cartId: string }
+  AddCartItemPayload
 >('cart/deleteItemAPI', async (data) => {
   await deleteCartItemApi(data)
 })

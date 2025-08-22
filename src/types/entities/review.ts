@@ -1,14 +1,14 @@
 import { Buyer } from './user'
 
 export interface Review {
-  id?: string
-  productId: string
+  id?: number
+  product_variant_id: number
 
   rating: number
   content: string
   buyer: Buyer
 
-  createdAt?: Date
-  updatedAt?: Date
-  isDeleted?: boolean
+  created_at?: Date
+  updated_at?: Date
+  is_deleted?: boolean
 }

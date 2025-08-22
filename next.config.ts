@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
         hostname: 'res.cloudinary.com',
         port: '',
         pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'salt.tikicdn.com',
+        port: '',
+        pathname: '/**'
       }
     ]
   },
