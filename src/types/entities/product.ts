@@ -1,6 +1,7 @@
 import { Brand } from './brand'
 import { Category } from './category'
 import { Review } from './review'
+import { Shop } from './shop'
 import { Seller } from './user'
 
 export interface ProductVariantMinimal {
@@ -18,6 +19,22 @@ export interface ProductVariantMinimal {
 
 export interface ProductVariant extends ProductVariantMinimal {
   shop_product_variants: ShopProductVariant[]
+  product_variant_option_values: ProductVariantOptionValue[]
+}
+
+export interface ProductVariantOptionValue {
+  option_value: OptionValue
+}
+
+export interface OptionValue {
+  value: string
+  option: Option
+  id: number
+}
+
+export interface Option {
+  id: number
+  name: string
 }
 
 export interface ProductSpecification {
@@ -28,8 +45,7 @@ export interface ProductSpecification {
 
 export interface ShopProductVariant {
   id: number
-  shop_id: number
-  product_variant_id: number
+  shop: Shop
   stock_quantity: number
   sold_quantity: number
 }

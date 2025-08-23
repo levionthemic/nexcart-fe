@@ -14,7 +14,7 @@ import { DEFAULT_IMAGE_URL, DEFAULT_ITEMS_PER_PAGE } from '@/utils/constants'
 import ProductCard from '@/components/product'
 
 import Image from 'next/image'
-import ChooseType from './choose-type'
+import ChooseProductVariant from './choose-product-variant'
 import ShowAddress from './show-address'
 import ReviewSection from './review-section'
 import QuantityHandling from './quantity-handling'
@@ -35,8 +35,6 @@ export default async function ProductDetail({
   const productSlug = awaitParams.slug
   const product = await getProductDetailsApi(String(productSlug))
   const recommendedProducts = (await getProductsApi())?.data
-
-  console.log(product)
 
   const averagePrice = product
     ? Math.ceil(
@@ -102,7 +100,7 @@ export default async function ProductDetail({
                         <div>Đã bán: {product?.sold || '0'}</div>
                       </div>
 
-                      {product && <ChooseType product={product} />}
+                      {product && <ChooseProductVariant product={product} />}
                     </div>
 
                     <div className='p-4 mb-6 bg-section rounded-lg flex items-center gap-4'>
