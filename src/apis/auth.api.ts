@@ -1,13 +1,34 @@
 import { TokenResponse } from '@react-oauth/google'
-import { RoleValue } from '@/types/enums/role'
-import authorizedAxiosInstance from '@/utils/authorizedAxios'
+import { Role, RoleValue } from '@/types/enums/role'
 import http from '@/lib/http'
 
-/**
- * Auth APIs
- * @author levi
- */
-export const registerUserAPI = async (
+const AUTH_API_PREFIX = '/auth'
+
+export type LoginPayload =
+  | {
+      email: string
+      password: string
+      role: Role
+      access_token?: string
+      remember_me?: boolean
+    }
+  | Omit<TokenResponse, 'error' | 'error_description' | 'error_uri'>
+
+export const loginUserApi = async (data: LoginPayload) => {
+  let response
+  if (data.access_token) {
+    response = await http.post(`${AUTH_API_PREFIX}/login/google/callback`, data)
+  } else {
+    response = await http.post(`${AUTH_API_PREFIX}/login`, data)
+  }
+  return response.data
+}
+
+export const logoutUserApi = async () => {
+  return await http.delete(`${AUTH_API_PREFIX}/logout`)
+}
+
+export const registerUserApi = async (
   data:
     | {
         email: string
@@ -17,78 +38,53 @@ export const registerUserAPI = async (
       }
     | Omit<TokenResponse, 'error' | 'error_description' | 'error_uri'>
 ) => {
-  try {
-    let response = null
-    if (data.access_token) {
-      response = await authorizedAxiosInstance.post(
-        '/auth/register/google/callback',
-        data
-      )
-    } else {
-      response = await authorizedAxiosInstance.post('/auth/register', data)
-    }
-    return response.data
-  } catch (error) {
-    throw error
+  let response = null
+  if (data.access_token) {
+    response = await http.post(
+      `${AUTH_API_PREFIX}/register/google/callback`,
+      data
+    )
+  } else {
+    response = await http.post(`${AUTH_API_PREFIX}/register`, data)
   }
+  return response.data
 }
 
-export const verifyUserAPI = async (data: {
+export const verifyUserApi = async (data: {
   email: string
   token: string
-  role: RoleValue
+  role: Role
 }) => {
-  const response = await authorizedAxiosInstance.put(
-    '/auth/verify-account',
+  const response = await http.put(`${AUTH_API_PREFIX}/verify-account`, data)
+  return response.data
+}
+
+export const refreshTokenApi = async () => {
+  await http.get(`${AUTH_API_PREFIX}/refresh-token`, {
+    credentials: 'include'
+  })
+}
+
+export const forgotPasswordApi = async (data: { email: string }) => {
+  const response = await http.post(`${AUTH_API_PREFIX}/forgot-password`, data)
+  return response.data
+}
+
+export const verifyOtpApi = async (data: {
+  email: string
+  otp_code: string
+}) => {
+  const response = await http.post<{ reset_token: string }>(
+    `${AUTH_API_PREFIX}/otp-verify`,
     data
   )
   return response.data
 }
 
-export const refreshTokenAPI = async () => {
-  await http.get('/auth/refresh-token', {
-    credentials: 'include'
-  })
-}
-
-export const forgotPasswordAPI = async (data: { email: string }) => {
-  try {
-    const response = await authorizedAxiosInstance.post(
-      '/auth/forgot-password',
-      data
-    )
-    return response.data
-  } catch (error) {
-    throw error
-  }
-}
-
-export const verifyOtpAPI = async (data: {
-  email: string
-  otpCode: string
-}) => {
-  try {
-    const response = await authorizedAxiosInstance.post(
-      '/auth/otp-verify',
-      data
-    )
-    return response.data
-  } catch (error) {
-    throw error
-  }
-}
-
-export const resetPasswordAPI = async (data: {
-  resetToken: string | null
+export const resetPasswordApi = async (data: {
+  reset_token: string | null
   password: string
 }) => {
-  try {
-    const response = await authorizedAxiosInstance.put(
-      '/auth/reset-password',
-      data
-    )
-    return response.data
-  } catch (error) {
-    throw error
-  }
+  const response = await http.put(`${AUTH_API_PREFIX}/reset-password`, data)
+  return response.data
 }

@@ -17,6 +17,7 @@ export interface User {
 
 export interface BuyerMinimal {
   buyer_id: string
+  name: string
   addresses: Address[]
 }
 

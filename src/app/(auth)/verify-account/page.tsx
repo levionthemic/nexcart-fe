@@ -31,7 +31,7 @@ function AccountVerification() {
   }, [email, token, roleValue])
 
   if (!isVerified) {
-    return <Loader caption={'Đang xác thực...'} />
+    return <Loader />
   }
 
   return

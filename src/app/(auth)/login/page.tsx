@@ -9,7 +9,7 @@ export default function LoginPage() {
         backgroundImage: 'url("/assets/background-auth.jpg")'
       }}
     >
-      <div className='flex items-center justify-center w-full h-full bg-gray-900/50 animate-fadeIn'>
+      <div className='flex items-center justify-center w-full h-full bg-white/10 dark:bg-gray-900/40'>
         <WithGoogleOAuthProvider>
           <LoginForm />
         </WithGoogleOAuthProvider>

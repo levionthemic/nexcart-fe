@@ -9,7 +9,7 @@ export default function RegisterPage() {
         backgroundImage: 'url("/assets/background-auth.jpg")'
       }}
     >
-      <div className='flex items-center justify-center w-full h-full bg-gray-900/60 animate-fadeIn'>
+      <div className='flex items-center justify-center w-full h-full bg-gray-500/10 dark:bg-gray-900/30'>
         <WithGoogleOAuthProvider>
           <RegisterForm />
         </WithGoogleOAuthProvider>

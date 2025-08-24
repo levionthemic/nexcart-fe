@@ -3,8 +3,8 @@ import { User } from '@/types/entities/user'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(req: NextRequest) {
-  const accessToken = req.cookies.get('accessToken')?.value
-  const sessionId = req.cookies.get('sessionId')?.value
+  const accessToken = req.cookies.get('access_token')?.value
+  const sessionId = req.cookies.get('session_id')?.value
   const userAgent = req.headers.get('user-agent') || ''
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]
 
@@ -13,16 +13,16 @@ export async function GET(req: NextRequest) {
 
   const response = await http.get<User>('/users/profile', {
     headers: {
-      cookie: `accessToken=${accessToken};sessionId=${sessionId}`,
+      Cookie: `access_token=${accessToken}; session_id=${sessionId}`,
       'User-Agent': userAgent,
       'X-Forwarded-For': ip!
     }
   })
 
-  if (response.statusCode !== 200)
+  if (response.status !== 200)
     return NextResponse.json(
       { error: 'Unauthorized' },
-      { status: response.statusCode }
+      { status: response.status }
     )
 
   return NextResponse.json(response.data)

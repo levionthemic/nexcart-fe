@@ -17,7 +17,7 @@ export default function SellerHeader() {
   const currentUser = useSelector(selectCurrentUser)
 
   // eslint-disable-next-line no-unused-vars
-  const handleSearch = (data) => {
+  const handleSearch = () => {
     //
   }
 
@@ -58,7 +58,7 @@ export default function SellerHeader() {
           </Avatar>
           <div>
             <div className='text-sm font-semibold'>
-              {currentUser?.name || 'Chưa có tên'}
+              {currentUser?.buyer?.name || 'Chưa có tên'}
             </div>
             <div className='text-xs text-gray-400'>Người bán</div>
           </div>

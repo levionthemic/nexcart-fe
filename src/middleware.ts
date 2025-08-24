@@ -5,8 +5,8 @@ import { Role } from '@/types/enums/role'
 export async function middleware(request: NextRequest) {
   console.log('Middleware is running for:', request.nextUrl.pathname)
 
-  const accessToken = request.cookies.get('accessToken')?.value as string
-  const sessionId = request.cookies.get('sessionId')?.value
+  const accessToken = request.cookies.get('access_token')?.value as string
+  const sessionId = request.cookies.get('session_id')?.value
 
   if (!accessToken && !sessionId)
     return NextResponse.redirect(new URL('/login', request.url))

@@ -31,8 +31,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/redux/store'
-import { loginUserAPI, setUser } from '@/redux/user/userSlice'
-import { asyncHandler } from '@/utils/asyncHandler'
+import { loginUserAction, setUser } from '@/redux/user/userSlice'
 
 export default function LoginForm() {
   const dispatch = useDispatch<AppDispatch>()
@@ -56,25 +55,29 @@ export default function LoginForm() {
 
   const submitLogIn = async (
     data:
-      | { email: string; password: string }
+      | LoginFormSchemaType
       | Omit<TokenResponse, 'error' | 'error_description' | 'error_uri'>
   ) => {
-    const [res] = await asyncHandler(
-      dispatch(loginUserAPI({ ...data, rememberMe: rememberMeCheck })),
-      'Đang đăng nhập...'
+    toast.promise(
+      dispatch(
+        loginUserAction({ ...data, remember_me: rememberMeCheck })
+      ).unwrap(),
+      {
+        loading: 'Đang đăng nhập...',
+        success: async () => {
+          const userData = await fetch('/api/me', {
+            credentials: 'include'
+          }).then((res) => res.json())
+
+          dispatch(setUser(userData))
+
+          if (userData.role === Role.BUYER) location.href = '/'
+          else location.href = '/seller'
+          return 'Đăng nhập thành công!'
+        },
+        error: (err) => err.message
+      }
     )
-
-    if (res) {
-      const userData = await fetch('/api/me', { credentials: 'include' }).then(
-        (res) => res.json()
-      )
-      dispatch(setUser(userData))
-
-      if (userData.role === Role.BUYER) location.href = '/'
-      else location.href = '/seller'
-
-      toast.success('Đăng nhập thành công!')
-    }
   }
 
   const handleLoginWithGoogle = useGoogleLogin({
@@ -198,27 +201,28 @@ export default function LoginForm() {
                   <RadioGroup
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    className='flex items-center justify-center gap-2 text-white'
+                    className='flex items-center justify-center gap-10 text-white'
                   >
-                    <FormItem className='flex items-center space-x-3 space-y-0 hover:bg-mainColor2-800/50 px-4 py-3 rounded-md hover:transition-all hover:ease-in-out hover:duration-400 cursor-pointer has-[button[data-state=checked]]:bg-mainColor2-800/50'>
+                    <FormItem className='flex items-center space-x-3 space-y-0 hover:bg-mainColor2-800/50 px-4 py-2 rounded-md hover:transition-all hover:ease-in-out hover:duration-400 cursor-pointer has-[button[data-state=checked]]:bg-mainColor2-800/40 has-[button[data-state=checked]]:border-accent has-[button[data-state=checked]]:border-2 border border-muted/50'>
                       <FormControl>
                         <RadioGroupItem
                           value={Role.BUYER}
-                          className='bg-white border-white'
+                          className='bg-white border-white sr-only'
                         />
                       </FormControl>
-                      <FormLabel className='font-normal cursor-pointer'>
+                      <FormLabel className='font-normal cursor-pointer text-sm'>
                         Người mua
                       </FormLabel>
                     </FormItem>
-                    <FormItem className='flex items-center space-x-3 space-y-0 hover:bg-mainColor2-800/50 px-4 py-3 rounded-md hover:transition-all hover:ease-in-out hover:duration-400 cursor-pointer has-[button[data-state=checked]]:bg-mainColor2-800/50'>
+
+                    <FormItem className='flex items-center space-x-3 space-y-0 hover:bg-mainColor2-800/50 px-4 py-2 rounded-md hover:transition-all hover:ease-in-out hover:duration-400 cursor-pointer has-[button[data-state=checked]]:bg-mainColor2-800/40 has-[button[data-state=checked]]:border-accent has-[button[data-state=checked]]:border-2 border border-muted/50'>
                       <FormControl>
                         <RadioGroupItem
                           value={Role.SELLER}
-                          className='bg-white border-white'
+                          className='bg-white border-white sr-only'
                         />
                       </FormControl>
-                      <FormLabel className='font-normal cursor-pointer'>
+                      <FormLabel className='font-normal cursor-pointer text-sm'>
                         Người bán
                       </FormLabel>
                     </FormItem>

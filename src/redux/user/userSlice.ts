@@ -1,12 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import authorizedAxiosInstance from '@/utils/authorizedAxios'
 import { RootState } from '../store'
 import { User } from '@/types/entities/user'
-import { TokenResponse } from '@react-oauth/google'
-import { Role } from '@/types/enums/role'
 import { Address } from '@/types/entities/address'
 import { Gender } from '@/types/enums/account'
 import http from '@/lib/http'
+import { LoginPayload, loginUserApi, logoutUserApi } from '@/apis/auth.api'
 
 //  Define types
 interface UserState {
@@ -14,15 +12,6 @@ interface UserState {
 }
 
 //  Define payload types
-type LoginPayload =
-  | {
-      email: string
-      password: string
-      access_token?: string
-      rememberMe?: boolean
-    }
-  | Omit<TokenResponse, 'error' | 'error_description' | 'error_uri'>
-
 interface UpdatePayload {
   name?: string
   phone?: string
@@ -32,39 +21,37 @@ interface UpdatePayload {
 }
 
 //  Async Thunks
-export const loginUserAPI = createAsyncThunk<User, LoginPayload>(
-  'user/loginUserAPI',
+export const loginUserAction = createAsyncThunk<unknown, LoginPayload>(
+  'user/loginUserAction',
   async (userData) => {
-    let response
-    if (userData.access_token) {
-      response = await authorizedAxiosInstance.post(
-        '/auth/login/google/callback',
-        userData
-      )
-    } else {
-      response = await authorizedAxiosInstance.post('/auth/login', userData)
+    try {
+      await loginUserApi(userData)
+    } catch (error) {
+      return Promise.reject(error)
     }
-    return response.data
   }
 )
 
-export const logoutUserAPI = createAsyncThunk<unknown>(
-  'user/logoutUserAPI',
+export const logoutUserAction = createAsyncThunk<unknown>(
+  'user/logoutUserAction',
   async () => {
-    const response = await authorizedAxiosInstance.delete('/auth/logout')
-    return response
+    try {
+      await logoutUserApi()
+    } catch (error) {
+      return Promise.reject(error)
+    }
   }
 )
 
-export const updateUserAPI = createAsyncThunk<User | undefined, FormData | UpdatePayload>(
-  'user/updateUserAPI',
-  async (data) => {
-    const response = await http.put<User>('/users/profile', data, {
-      credentials: 'include'
-    })
-    return response.data
-  }
-)
+export const updateUserAction = createAsyncThunk<
+  User,
+  FormData | UpdatePayload
+>('user/updateUserAction', async (data) => {
+  const response = await http.put<User>('/users/profile', data, {
+    credentials: 'include'
+  })
+  return response.data as User
+})
 
 // 🔵 Slice
 const initialState: UserState = {
@@ -80,11 +67,11 @@ const userSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
-    builder.addCase(logoutUserAPI.fulfilled, (state) => {
+    builder.addCase(logoutUserAction.fulfilled, (state) => {
       state.currentUser = null
     })
     builder.addCase(
-      updateUserAPI.fulfilled,
+      updateUserAction.fulfilled,
       (state, action: PayloadAction<User>) => {
         state.currentUser = action.payload
       }

@@ -9,7 +9,7 @@ import {
   selectCurrentCart
 } from '@/redux/cart/cartSlice'
 
-import { logoutUserAPI, selectCurrentUser } from '@/redux/user/userSlice'
+import { logoutUserAction, selectCurrentUser } from '@/redux/user/userSlice'
 import { Input } from '@/components/ui/input'
 
 import { LuShoppingCart } from 'react-icons/lu'
@@ -85,14 +85,13 @@ export default function BuyerHeader() {
   useEffect(() => {
     if (currentUser) {
       startLoading()
-      if (currentCart && !currentCart.buyerId) {
+      if (currentCart && !currentCart.buyer_id) {
         Promise.all(
-          currentCart?.cartItems?.map((item) =>
+          currentCart?.cart_items?.map((item) =>
             dispatch(
               addToCartAPI({
-                productId: item.product.id,
-                typeId: item.product.type.id,
-                cartId: currentCart.id,
+                product_variant_id: item.product_variant.id,
+                cart_id: currentCart.id,
                 quantity: item.quantity
               })
             )
@@ -119,7 +118,7 @@ export default function BuyerHeader() {
 
   const handleLogout = async () => {
     dispatch(clearCart())
-    toast.promise(dispatch(logoutUserAPI()), {
+    toast.promise(dispatch(logoutUserAction()), {
       loading: 'Đang đăng xuất...',
       success: () => {
         return 'Đăng xuất thành công!'
@@ -215,7 +214,7 @@ export default function BuyerHeader() {
                   <div className='relative cursor-pointer hover:scale-105 hover:ease-out hover:duration-300 transition-transform'>
                     <LuShoppingCart className='text-mainColor1-600 text-xl' />
                     <Badge className='w-2 h-2 rounded-full p-2 text-center absolute -top-3 -right-3 bg-mainColor1-600'>
-                      {currentCart?.cartItems?.length || 0}
+                      {currentCart?.cart_items?.length || 0}
                     </Badge>
                   </div>
                 </SheetTrigger>
@@ -224,7 +223,7 @@ export default function BuyerHeader() {
                     <SheetTitle>
                       Giỏ hàng của bạn{' '}
                       <span className='text-sm text-gray-700'>
-                        ({currentCart?.cartItems?.length || 0})
+                        ({currentCart?.cart_items?.length || 0})
                       </span>
                     </SheetTitle>
                     <SheetDescription className='!m-0'>
@@ -232,11 +231,11 @@ export default function BuyerHeader() {
                     </SheetDescription>
                   </SheetHeader>
                   <div className='p-4 max-h-[89%] overflow-auto space-y-6'>
-                    {currentCart?.cartItems?.map(
-                      ({ product, quantity }, index) => (
+                    {currentCart?.cart_items?.map(
+                      ({ product_variant, quantity }, index) => (
                         <div key={index} className='flex items-center gap-2'>
                           <Image
-                            src={product.avatar || DEFAULT_IMAGE_URL}
+                            src={product_variant.image_url || DEFAULT_IMAGE_URL}
                             alt=''
                             width={40}
                             height={40}
@@ -247,23 +246,23 @@ export default function BuyerHeader() {
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <span className='text-sm line-clamp-1 text-mainColor2-800 leading-none'>
-                                    {product?.name}
+                                    {product_variant.name}
                                   </span>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                  <p>{product?.name}</p>
+                                  <p>{product_variant.name}</p>
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
                             <p className='line-clamp-1 text-xs text-gray-400 mb-0.5'>
-                              Loại: {product.type?.name}
+                              Loại: {product_variant.name}
                             </p>
                             <div className='flex flex-col lg:flex-row lg:items-center lg:gap-4'>
                               <Badge className='bg-mainColor2-800/90'>
                                 {quantity} sản phẩm
                               </Badge>
                               <span className='text-[0.8rem] text-muted-foreground'>
-                                x {product.type?.price.toLocaleString('vi-VN')}
+                                x {product_variant.price.toLocaleString('vi-VN')}
                                 <sup>đ</sup>
                               </span>
                             </div>
@@ -296,7 +295,7 @@ export default function BuyerHeader() {
                       <div className='text-sm text-gray-500'>
                         Xin chào, <br></br>
                         <b className='text-accent-foreground'>
-                          {currentUser?.username}
+                          {currentUser?.buyer?.name || 'Ẩn danh'}
                         </b>
                       </div>
                     </div>
@@ -388,7 +387,7 @@ export default function BuyerHeader() {
                   >
                     <div>
                       <Image
-                        src={prod?.avatar || DEFAULT_IMAGE_URL}
+                        src={prod?.thumbnail_url || DEFAULT_IMAGE_URL}
                         alt=''
                         width={40}
                         height={40}

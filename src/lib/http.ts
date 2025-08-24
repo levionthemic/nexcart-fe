@@ -1,4 +1,4 @@
-import { refreshTokenAPI } from '@/apis/auth.api'
+import { refreshTokenApi } from '@/apis/auth.api'
 import envConfig from '@/config'
 
 type CustomOptions = RequestInit & {
@@ -10,15 +10,17 @@ class HttpError extends Error {
   message: string
   constructor(apiResponse: ApiResponse) {
     super('Http Error')
-    this.status = apiResponse.statusCode
+    this.status = apiResponse.status
     this.message = apiResponse.message
   }
 }
 
 export interface ApiResponse<T = unknown> {
-  statusCode: number
+  status: number
   message: string
-  data?: T
+  data: T
+  timestamp: string
+  path: string
 }
 
 let apiPendingRequests: (() => Promise<unknown>)[] = []
@@ -27,8 +29,8 @@ let isRefreshing = false
 const request = async <T>(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',
   url: string,
-  requestBody?: Record<string, unknown>,
-  options?: CustomOptions
+  options?: CustomOptions,
+  requestBody?: Record<string, unknown>
 ) => {
   const body = requestBody ? JSON.stringify(requestBody) : undefined
   const baseHeaders = {
@@ -41,20 +43,26 @@ const request = async <T>(
 
   const fullUrl = url.startsWith('/') ? `${baseUrl}${url}` : `${baseUrl}/${url}`
 
-  const res = await fetch(fullUrl, {
+  const fetchOptions: RequestInit = {
     ...options,
+    method,
     headers: { ...baseHeaders, ...options?.headers },
-    body,
-    method
-  })
+    credentials: 'include'
+  }
+
+  if (requestBody && method !== 'GET' && method !== 'DELETE') {
+    fetchOptions.body = body
+  }
+
+  const res = await fetch(fullUrl, fetchOptions)
 
   const apiResponse: ApiResponse<T> = await res.json()
 
   // Refresh token
-  if (apiResponse.statusCode === 410) {
+  if (apiResponse.status === 410) {
     if (!isRefreshing) {
       isRefreshing = true
-      refreshTokenAPI()
+      refreshTokenApi()
         .then(() => {
           // Call the holding requests respectively.
           apiPendingRequests.forEach((cb) => cb())
@@ -71,7 +79,12 @@ const request = async <T>(
     return new Promise<ApiResponse<T>>((resolve, reject) => {
       apiPendingRequests.push(async () => {
         try {
-          const retryResponse = await request<T>(method, url, requestBody, options)
+          const retryResponse = await request<T>(
+            method,
+            url,
+            options,
+            requestBody
+          )
           resolve(retryResponse)
         } catch (error) {
           reject(error)
@@ -94,14 +107,14 @@ const http = {
     body: Record<string, unknown>,
     options?: Omit<CustomOptions, 'body'> | undefined
   ) {
-    return request<T>('POST', url, body, options)
+    return request<T>('POST', url, options, body)
   },
   put<T>(
     url: string,
     body: Record<string, unknown>,
     options?: Omit<CustomOptions, 'body'> | undefined
   ) {
-    return request<T>('PUT', url, body, options)
+    return request<T>('PUT', url, options, body)
   },
   delete<T>(url: string, options?: Omit<CustomOptions, 'body'> | undefined) {
     return request<T>('DELETE', url, options)

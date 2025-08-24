@@ -80,7 +80,7 @@ function RegisterForm() {
   })
 
   return (
-    <div className='min-w-[500px] min-h-[600px] bg-gray-200/10 rounded-3xl border-gray-100 border-solid border-[1px] px-10 pb-4 animate-fadeInTop backdrop-blur-sm'>
+    <div className='min-w-[500px] min-h-[600px] bg-gray-200/10 rounded-3xl border-gray-100 border-solid border-[1px] px-10 pb-4 backdrop-blur-sm'>
       <div className='mt-10 text-4xl font-semibold text-center text-white uppercase'>
         SIGN UP
       </div>
@@ -162,27 +162,27 @@ function RegisterForm() {
                   <RadioGroup
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    className='flex justify-center gap-2 text-white'
+                    className='flex justify-center gap-10 text-white'
                   >
-                    <FormItem className='flex items-center space-x-3 space-y-0 hover:bg-mainColor2-800/50 px-4 py-3 rounded-md hover:transition-all hover:ease-in-out hover:duration-400 cursor-pointer has-[button[data-state=checked]]:bg-mainColor2-800/50'>
+                    <FormItem className='flex items-center space-x-3 space-y-0 hover:bg-mainColor2-800/50 px-4 py-2 rounded-md hover:transition-all hover:ease-in-out hover:duration-400 cursor-pointer has-[button[data-state=checked]]:bg-mainColor2-800/40 has-[button[data-state=checked]]:border-accent has-[button[data-state=checked]]:border-2 border border-muted/50'>
                       <FormControl>
                         <RadioGroupItem
                           value={Role.BUYER}
-                          className='bg-white border-white'
+                          className='bg-white border-white sr-only'
                         />
                       </FormControl>
-                      <FormLabel className='font-normal cursor-pointer'>
+                      <FormLabel className='font-normal cursor-pointer text-sm'>
                         Người mua
                       </FormLabel>
                     </FormItem>
-                    <FormItem className='flex items-center space-x-3 space-y-0 hover:bg-mainColor2-800/50 px-4 py-3 rounded-md hover:transition-all hover:ease-in-out hover:duration-400 cursor-pointer has-[button[data-state=checked]]:bg-mainColor2-800/50'>
+                    <FormItem className='flex items-center space-x-3 space-y-0 hover:bg-mainColor2-800/50 px-4 py-2 rounded-md hover:transition-all hover:ease-in-out hover:duration-400 cursor-pointer has-[button[data-state=checked]]:bg-mainColor2-800/40 has-[button[data-state=checked]]:border-accent has-[button[data-state=checked]]:border-2 border border-muted/50'>
                       <FormControl>
                         <RadioGroupItem
                           value={Role.SELLER}
-                          className='bg-white border-white'
+                          className='bg-white border-white sr-only'
                         />
                       </FormControl>
-                      <FormLabel className='font-normal cursor-pointer'>
+                      <FormLabel className='font-normal cursor-pointer text-sm'>
                         Người bán
                       </FormLabel>
                     </FormItem>
