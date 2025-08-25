@@ -8,8 +8,8 @@ function ForgotPassword() {
         backgroundImage: 'url("/assets/background-auth.jpg")'
       }}
     >
-      <div className='flex items-center justify-center w-full h-full bg-gray-900/50 animate-fadeIn'>
-        <div className='w-[500px] min-h-[500px] bg-gray-200/10 rounded-3xl border-gray-100 border-solid border-[1px] px-10 pb-4 animate-fadeInTop backdrop-blur-sm'>
+      <div className='flex items-center justify-center w-full h-full bg-gray-600/20'>
+        <div className='w-[500px] min-h-[500px] bg-gray-200/10 rounded-3xl border-gray-100 border-solid border-[1px] px-10 pb-4 backdrop-blur-sm'>
           <div className='mt-10 text-3xl font-semibold text-center text-white'>
             Lấy lại mật khẩu
           </div>

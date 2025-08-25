@@ -1,6 +1,6 @@
 'use client'
 
-import OTP from '@/components/OTP'
+import OTP from '@/components/otp-fill-in'
 import { Button } from '@/components/ui/button'
 import {
   Form,

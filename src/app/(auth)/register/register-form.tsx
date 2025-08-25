@@ -16,7 +16,6 @@ import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 
 import { toast } from 'sonner'
-import { registerUserAPI } from '@/apis/auth.api'
 import { FaGoogle } from 'react-icons/fa'
 import { TokenResponse, useGoogleLogin } from '@react-oauth/google'
 import { Role, RoleValue } from '@/types/enums/role'
@@ -26,6 +25,8 @@ import {
 } from '@/shared/schemas/auth.schema'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { registerUserApi, registerWithGoogleApi } from '@/apis/auth.api'
+import { asyncHandler } from '@/utils/asyncHandler'
 
 function RegisterForm() {
   const form = useForm<RegisterFormSchemaType>({
@@ -46,28 +47,24 @@ function RegisterForm() {
     role: RoleValue
   }) => {
     const { email, password, role } = data
-    toast.promise(registerUserAPI({ email, password, role }), {
+    toast.promise(asyncHandler(registerUserApi({ email, password, role })), {
       loading: 'Đang đăng ký...',
       success: (user) => {
-        if (!user.error) {
-          router.push(`/login?registeredEmail=${user.data.email}`)
-          return 'Đăng ký thành công!'
-        }
-        throw user
-      }
+        router.push(`/login?registeredEmail=${user.email}`)
+        return 'Đăng ký thành công!'
+      },
+      error: (err) => err.message
     })
   }
+
   const submitRegisterWithGoogle = (
     data: Omit<TokenResponse, 'error' | 'error_description' | 'error_uri'>
   ) => {
-    toast.promise(registerUserAPI(data), {
+    toast.promise(registerWithGoogleApi(data), {
       loading: 'Đang đăng ký...',
-      success: (res) => {
-        if (!res.error) {
-          router.push('/login')
-          return 'Đăng ký thành công!'
-        }
-        throw res
+      success: () => {
+        router.push('/login')
+        return 'Đăng ký thành công!'
       }
     })
   }

@@ -28,25 +28,28 @@ export const logoutUserApi = async () => {
   return await http.delete(`${AUTH_API_PREFIX}/logout`)
 }
 
-export const registerUserApi = async (
+export const registerUserApi = async (data: {
+  email: string
+  password: string
+  role: RoleValue
+}): Promise<{ email: string }> => {
+  const response = await http.post<{ email: string }>(
+    `${AUTH_API_PREFIX}/register`,
+    data
+  )
+
+  return response.data
+}
+
+export const registerWithGoogleApi = async (
   data:
-    | {
-        email: string
-        password: string
-        role: RoleValue
-        access_token?: string
-      }
+    | { access_token: string }
     | Omit<TokenResponse, 'error' | 'error_description' | 'error_uri'>
 ) => {
-  let response = null
-  if (data.access_token) {
-    response = await http.post(
-      `${AUTH_API_PREFIX}/register/google/callback`,
-      data
-    )
-  } else {
-    response = await http.post(`${AUTH_API_PREFIX}/register`, data)
-  }
+  const response = await http.post(
+    `${AUTH_API_PREFIX}/register/google/callback`,
+    data
+  )
   return response.data
 }
 

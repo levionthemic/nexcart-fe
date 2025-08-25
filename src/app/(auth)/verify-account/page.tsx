@@ -1,10 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { verifyUserAPI } from '@/apis/auth.api'
 import Loader from '@/components/loader/loader'
 import { RoleValue } from '@/types/enums/role'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { verifyUserApi } from '@/apis/auth.api'
 
 function AccountVerification() {
   const [isVerified, setVerified] = useState(false)
@@ -23,7 +23,7 @@ function AccountVerification() {
     }
 
     if (email && token && roleValue) {
-      verifyUserAPI({ email, token, role: roleValue }).then(() => {
+      verifyUserApi({ email, token, role: roleValue }).then(() => {
         setVerified(true)
         router.replace(`/login?verifiedEmail=${email}`)
       })

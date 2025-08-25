@@ -11,10 +11,8 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import OTP from '@/components/OTP'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { forgotPasswordAPI } from '@/apis/auth.api'
 import { asyncHandler } from '@/utils/asyncHandler'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -23,6 +21,8 @@ import {
 } from '@/shared/schemas/auth.schema'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
+import { forgotPasswordApi } from '@/apis/auth.api'
+import OtpFillIn from '@/components/otp-fill-in'
 
 export default function ForgotPasswordForm() {
   const [open, setOpen] = useState<boolean>(false)
@@ -35,16 +35,16 @@ export default function ForgotPasswordForm() {
       email: ''
     }
   })
+  
   const handleForgotPassword = async (data: { email: string }) => {
-    const toastId = toast.loading('Đang xử lý...')
-
-    const [res] = await asyncHandler(forgotPasswordAPI(data))
-
-    toast.dismiss(toastId)
-
-    if (res) {
-      setOpen(true)
-    }
+    toast.promise(asyncHandler(forgotPasswordApi(data)), {
+      loading: 'Đang xử lý...',
+      success: () => {
+        setOpen(true)
+        return `Một mã OTP đã được gửi đến email ${data.email}!`
+      },
+      error: (err) => err.message
+    })
   }
 
   return (
@@ -91,7 +91,7 @@ export default function ForgotPasswordForm() {
           Quay lại trang Đăng nhập
         </div>
       </div>
-      <OTP open={open} setOpen={setOpen} email={form.getValues('email')} />
+      <OtpFillIn open={open} setOpen={setOpen} email={form.getValues('email')} />
     </div>
   )
 }

@@ -15,7 +15,6 @@ import { ArrowLeft } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 
 import { toast } from 'sonner'
-import { resetPasswordAPI } from '@/apis/auth.api'
 import { asyncHandler } from '@/utils/asyncHandler'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -23,6 +22,7 @@ import {
   ResetPasswordFormSchemaType
 } from '@/shared/schemas/auth.schema'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { resetPasswordApi } from '@/apis/auth.api'
 
 export default function ResetPasswordForm() {
   const form = useForm<ResetPasswordFormSchemaType>({
@@ -37,28 +37,22 @@ export default function ResetPasswordForm() {
   const searchParams = useSearchParams()
 
   const handleChangePassword = async (data: { password: string }) => {
-    const toastId = toast.loading('Đang cập nhật...')
-
-    const [res] = await asyncHandler(
-      resetPasswordAPI({
-        password: data.password,
-        resetToken: searchParams.get('resetToken')
-      })
+    toast.promise(
+      asyncHandler(
+        resetPasswordApi({
+          password: data.password,
+          reset_token: searchParams.get('reset_token')
+        })
+      ),
+      {
+        loading: 'Đang cập nhật...',
+        success: () => {
+          router.replace('/login')
+          return 'Cập nhật mật khẩu thành công!'
+        },
+        error: (err) => err.message
+      }
     )
-
-    if (res) {
-      toast.success(
-        <div>
-          <p className='font-bold'>Cập nhật mật khẩu thành công!</p>
-          <p className='text-xs font-light'>
-            Vui lòng đăng nhập lại để tiếp tục.
-          </p>
-        </div>
-      )
-      router.replace('/login')
-    }
-
-    toast.dismiss(toastId)
   }
   return (
     <div>

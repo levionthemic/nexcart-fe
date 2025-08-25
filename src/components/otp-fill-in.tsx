@@ -14,11 +14,11 @@ import {
 import { OTPInput } from 'input-otp'
 import React, { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
-import { verifyOtpAPI } from '@/apis/auth.api'
 import { asyncHandler } from '@/utils/asyncHandler'
 import { useRouter } from 'next/navigation'
+import { verifyOtpApi } from '@/apis/auth.api'
 
-export default function OTP({
+export default function OtpFillIn({
   open,
   setOpen,
   email,
@@ -26,7 +26,7 @@ export default function OTP({
 }: {
   open?: boolean
   setOpen?: (open: boolean) => void | undefined
-  email?: string,
+  email?: string
   trigger?: React.ReactNode
 }) {
   const [value, setValue] = useState<string>('')
@@ -48,27 +48,27 @@ export default function OTP({
     inputRef.current?.select()
     await new Promise((r) => setTimeout(r, 1_00))
 
-    const toastId = toast.loading('Đang xác nhận...')
+    toast.promise(
+      asyncHandler(verifyOtpApi({ otp_code: value, email: String(email) })),
+      {
+        loading: 'Đang xác nhận...',
+        success: (res) => {
+          setToken(res.reset_token)
+          setHasGuessed(true)
+          setValue('')
 
-    const [res] = await asyncHandler(
-      verifyOtpAPI({ otpCode: value, email: String(email) })
+          setTimeout(() => {
+            inputRef.current?.blur()
+          }, 20)
+          return 'OTP hợp lệ!'
+        },
+        error: (err) => err.message
+      }
     )
-
-    toast.dismiss(toastId)
-
-    if (res) {
-      setToken(res.resetToken)
-      setHasGuessed(true)
-      setValue('')
-
-      setTimeout(() => {
-        inputRef.current?.blur()
-      }, 20)
-    }
   }
 
   const handleMoveToResetPassword = () => {
-    router.push(`/reset-password?resetToken=${token}`)
+    router.push(`/reset-password?reset_token=${token}`)
   }
 
   return (

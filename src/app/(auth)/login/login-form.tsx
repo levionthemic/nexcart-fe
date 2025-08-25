@@ -23,7 +23,7 @@ import { useSearchParams } from 'next/navigation'
 import { TokenResponse, useGoogleLogin } from '@react-oauth/google'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { FaGoogle } from 'react-icons/fa'
+import { FaFacebookF, FaGoogle } from 'react-icons/fa'
 import { Checkbox } from '@/components/ui/checkbox'
 import Link from 'next/link'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
@@ -90,7 +90,7 @@ export default function LoginForm() {
   return (
     <div className='w-[500px] min-h-[500px] bg-gray-200/10 rounded-3xl border-gray-100 border-solid border-[1px] px-10 pb-4 animate-fadeInTop backdrop-blur-sm'>
       <div className='mt-10 text-4xl font-semibold text-center text-white uppercase'>
-        Login
+        Đăng nhập
       </div>
 
       <div className='py-4'>
@@ -242,13 +242,20 @@ export default function LoginForm() {
         </form>
       </Form>
 
-      <div className='flex items-center justify-center gap-6 mt-6 text-sm text-white'>
+      <div className='flex items-center justify-between my-10 text-xs text-gray-200'>
+        <div className='h-px w-[32%] border-b border-gray-300'></div>
         <span>hoặc đăng nhập bằng: </span>
+        <div className='h-px w-[32%] border-b border-gray-300'></div>
+      </div>
+      <div className='flex items-center justify-between gap-6 mt-6 text-sm text-white'>
         <div
           onClick={() => handleLoginWithGoogle()}
-          className='border border-white rounded-full p-1.5 cursor-pointer hover:bg-mainColor1-600 hover:border-[2px] hover:scale-105 hover:duration-300 hover:ease-in-out transition-transform'
+          className='flex items-center justify-center border border-white rounded-sm w-full p-2 cursor-pointer hover:bg-mainColor1-600 hover:border-[2px] hover:scale-105 hover:duration-300 hover:ease-in-out transition-transform'
         >
-          <FaGoogle />
+          <FaGoogle size={20} />
+        </div>
+        <div className='flex items-center justify-center border border-white rounded-sm w-full p-2 cursor-pointer hover:bg-mainColor1-600 hover:border-[2px] hover:scale-105 hover:duration-300 hover:ease-in-out transition-transform'>
+          <FaFacebookF size={20} />
         </div>
       </div>
 
