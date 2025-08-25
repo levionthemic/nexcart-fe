@@ -7,3 +7,8 @@ export const getCategoriesApi = async () => {
   const response = await http.get<Category[]>(CATEGORY_API_PREFIX)
   return response.data
 }
+
+export const getCategoriesBySlugApi = async (slug: string) => {
+  const response = await http.get<Category>(`${CATEGORY_API_PREFIX}/${slug}`)
+  return response.data
+}

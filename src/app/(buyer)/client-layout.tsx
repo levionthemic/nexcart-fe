@@ -20,7 +20,7 @@ export default function ClientBuyerLayout({
   }, [pathname])
 
   return (
-    <div className='pt-[120px]'>
+    <div className='pt-[120px] bg-[#F5F5FA] dark:bg-background'>
       <NProgress isAnimating={apiLoadingCount > 0} key={navKey} />
       {children}
     </div>

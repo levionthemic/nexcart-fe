@@ -6,4 +6,5 @@ export interface Category {
   thumbnail_url: string | null
   description: string
   parent_id: string | null
+  children?: Category[]
 }

@@ -13,18 +13,18 @@ export type GetProductsWithFiltersResponseType = {
   meta: { total: number; page: number; limit: number }
 }
 
-export type GetProductsResponstType = {
+export type GetProductsResponseType = {
   data: ProductListItem[]
   meta: { total: number; page: number; limit: number }
 }
 
 export const getProductsApi = async () => {
-  const response = await http.get<GetProductsResponstType>(`${PRODUCT_API_PREFIX}`)
+  const response = await http.get<GetProductsResponseType>(`${PRODUCT_API_PREFIX}`)
   return response.data
 }
 
 export const getSellerProductsApi = async (sellerId: string) => {
-  const response = await http.get<GetProductsResponstType>(`${PRODUCT_API_PREFIX}/seller/${sellerId}`)
+  const response = await http.get<GetProductsResponseType>(`${PRODUCT_API_PREFIX}/seller/${sellerId}`)
   return response.data
 }
 
