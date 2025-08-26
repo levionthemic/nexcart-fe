@@ -32,13 +32,7 @@ import {
 import { cloneDeep } from 'lodash'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
-import {
-  ChevronDown,
-  ChevronUp,
-  EllipsisIcon,
-  Store,
-  Trash2Icon
-} from 'lucide-react'
+import { ChevronDown, ChevronUp, EllipsisIcon, Trash2Icon } from 'lucide-react'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -50,7 +44,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
-import { useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { selectCurrentUser } from '@/redux/user/userSlice'
 import { AppDispatch } from '@/redux/store'
 import { CartItem } from '@/types/entities/cart'
@@ -66,41 +60,24 @@ export default function CartPage() {
 
   const currentUser = useSelector(selectCurrentUser)
 
-  const changesRef = useRef(new Map<string, CartItem>())
-  const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const [pendingUpdates, setPendingUpdates] = useState<Map<string, CartItem>>(
+    new Map()
+  )
 
-  const updateQuantity = () => {
-    const updates = Array.from<CartItem>(changesRef.current.values())
-
-    Promise.all(
-      updates.map(({ product, quantity }) =>
-        dispatch(
-          updateCartQuantityAPI({
-            cartId: cart!.id,
-            productId: product.id,
-            typeId: product.type.id,
-            quantity
-          })
-        )
-      )
-    ).then(() => {
-      changesRef.current.clear()
-    })
-  }
-
-  const handleChangeQuantity = (
-    productId: string,
-    typeId: string,
-    inc: boolean
-  ) => {
+  const handleChangeQuantity = (product_variant_id: number, inc: boolean) => {
     const cloneCart = cloneDeep(cart)!
-    let changedCartItem: CartItem = cloneCart.cartItems[0] // initialize
-    cloneCart.cartItems = cloneCart.cartItems.map((item) => {
-      const { product, quantity } = item
-      if (product.id === productId && product.type.id === typeId) {
+    let changedCartItem: CartItem = cloneCart.cart_items[0]
+
+    cloneCart.cart_items = cloneCart.cart_items.map((item) => {
+      const { product_variant, quantity } = item
+      if (product_variant.id === product_variant_id) {
         changedCartItem = cloneDeep(item)
         if (inc) {
-          if (quantity < product.shopProductType.stock) {
+          const totalStock = product_variant.shop_product_variants.reduce(
+            (sum, item) => sum + item.stock_quantity,
+            0
+          )
+          if (quantity < totalStock) {
             changedCartItem.quantity = quantity + 1
           }
         } else {
@@ -116,31 +93,44 @@ export default function CartPage() {
     dispatch(setCart(cloneCart))
 
     if (currentUser) {
-      const key = `${productId}-${typeId}`
-      changesRef.current.set(key, changedCartItem)
-
-      if (timerRef.current) clearTimeout(timerRef.current)
-
-      timerRef.current = setTimeout(() => {
-        updateQuantity()
-      }, 1000)
+      const newMap = new Map(pendingUpdates)
+      newMap.set(String(product_variant_id), changedCartItem)
+      setPendingUpdates(newMap)
     }
   }
 
-  const handleDeleteItemCart = ({ product }: CartItem) => {
-    let cartItems = cloneDeep(cart?.cartItems)
-
-    cartItems = cartItems?.filter(
-      (item) =>
-        !(
-          item.product.id === product.id &&
-          item.product.type.id === product.type.id
+  // Debounce update API
+  useEffect(() => {
+    if (!pendingUpdates.size) return
+    const timer = setTimeout(async () => {
+      const updates = Array.from(pendingUpdates.values())
+      await Promise.all(
+        updates.map(({ product_variant, quantity }) =>
+          dispatch(
+            updateCartQuantityAPI({
+              cart_id: cart!.id,
+              product_variant_id: product_variant.id,
+              quantity
+            })
+          )
         )
+      )
+      setPendingUpdates(new Map())
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [pendingUpdates, dispatch, cart])
+
+  const handleDeleteItemCart = ({ product_variant }: CartItem) => {
+    let cart_items = cloneDeep(cart?.cart_items)
+
+    cart_items = cart_items?.filter(
+      (item) => !(item.product_variant.id === product_variant.id)
     )
 
     const updateCart = cloneDeep(cart)
-    if (updateCart && cartItems) {
-      updateCart.cartItems = cartItems
+    if (updateCart && cart_items) {
+      updateCart.cart_items = cart_items
       dispatch(setCart(updateCart))
     }
 
@@ -148,9 +138,8 @@ export default function CartPage() {
       toast.promise(
         dispatch(
           deleteItemAPI({
-            productId: product.id,
-            typeId: product.type.id,
-            cartId: cart.id
+            product_variant_id: product_variant.id,
+            cart_id: cart.id
           })
         ).unwrap(),
         {
@@ -185,12 +174,12 @@ export default function CartPage() {
       size: 30
     },
     {
-      id: 'sellerName',
+      id: 'sellerId',
       header: 'Người bán',
-      accessorFn: (row) => row.product.seller.id,
+      accessorFn: (row) => row.product_variant.product.seller.seller_id,
       cell: ({ row }) => (
         <div className='line-clamp-1 text-ellipsis'>
-          {row.getValue('sellerName')}
+          {row.original.product_variant.product.seller.name}
         </div>
       ),
       size: 60,
@@ -200,7 +189,7 @@ export default function CartPage() {
     {
       id: 'avatar',
       header: 'Ảnh',
-      accessorFn: (row) => row.product.avatar,
+      accessorFn: (row) => row.product_variant.image_url,
       cell: ({ row }) => (
         <Image
           width={64}
@@ -215,7 +204,7 @@ export default function CartPage() {
     {
       id: 'name',
       header: 'Tên sản phẩm',
-      accessorFn: (row) => row.product.name,
+      accessorFn: (row) => row.product_variant.name,
       cell: ({ row }) => (
         <div className='font-medium'>{row.getValue('name')}</div>
       )
@@ -223,7 +212,7 @@ export default function CartPage() {
     {
       id: 'price',
       header: 'Giá sản phẩm',
-      accessorFn: (row) => row.product.type.price,
+      accessorFn: (row) => row.product_variant.price,
       cell: ({ row }) => (
         <div>
           {Number(row.getValue('price')).toLocaleString('vi-VN')}
@@ -231,12 +220,6 @@ export default function CartPage() {
         </div>
       ),
       size: 80
-    },
-    {
-      id: 'typeName',
-      header: 'Loại sản phẩm',
-      accessorFn: (row) => row.product.type.name,
-      cell: ({ row }) => <div>{row.getValue('typeName')}</div>
     },
     {
       header: 'Số lượng',
@@ -247,11 +230,7 @@ export default function CartPage() {
             <RiSubtractFill
               className='text-xl rounded-md cursor-pointer hover:bg-mainColor2-800/40'
               onClick={() => {
-                handleChangeQuantity(
-                  row.original.product.id,
-                  row.original.product.type.id,
-                  false
-                )
+                handleChangeQuantity(row.original.product_variant.id, false)
               }}
             />
             <input
@@ -262,11 +241,7 @@ export default function CartPage() {
             <IoMdAdd
               className='text-xl rounded-md cursor-pointer hover:bg-mainColor2-800/40'
               onClick={() => {
-                handleChangeQuantity(
-                  row.original.product.id,
-                  row.original.product.type.id,
-                  true
-                )
+                handleChangeQuantity(row.original.product_variant.id, true)
               }}
             />
           </div>
@@ -319,7 +294,11 @@ export default function CartPage() {
           </AlertDialog>
           <div
             className='hover:bg-gray-200 p-1.5 rounded-md cursor-pointer transition-all hover:ease-in-out hover:duration-300'
-            onClick={() => router.push(`/product/${row.original.product.id}`)}
+            onClick={() =>
+              router.push(
+                `/product/${row.original.product_variant.product.slug}`
+              )
+            }
           >
             <EllipsisIcon className='size-4' />
           </div>
@@ -329,12 +308,12 @@ export default function CartPage() {
     }
   ]
 
-  const [grouping, setGrouping] = useState(['sellerName'])
+  const [grouping, setGrouping] = useState(['sellerId'])
+  // const [expanding, setExpanding] = useState<ExpandedState>(true)
 
   const table = useReactTable({
-    data: cart?.cartItems || [],
+    data: cart?.cart_items || [],
     columns,
-    getSubRows: (row) => row.subRows,
     getCoreRowModel: getCoreRowModel(),
     getGroupedRowModel: getGroupedRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
@@ -342,10 +321,11 @@ export default function CartPage() {
       grouping,
       expanded: true,
       columnVisibility: {
-        sellerName: false
+        sellerId: false
       }
     },
     onGroupingChange: setGrouping
+    // onExpandedChange: setExpanding
   })
 
   const totalPrice = () => {
@@ -366,11 +346,8 @@ export default function CartPage() {
     const selectedRows = rows
       .filter((row) => row.getIsSelected() && !row.getIsGrouped())
       .map((row) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { seller, shopProductType, ...rest } = row.original.product
-        const product = cloneDeep(rest)
         return {
-          product: product,
+          product_variant: row.original.product_variant,
           quantity: Number(row.getValue('quantity'))
         }
       })
@@ -386,28 +363,29 @@ export default function CartPage() {
       return
     }
 
-    const orderItems: OrderItem[] = selectedRows.map((item) => {
+    const order_items: OrderItem[] = selectedRows.map((item) => {
       return {
-        product: item.product,
-        quantity: item.quantity || 1
+        product_variant: item.product_variant,
+        quantity: item.quantity || 1,
+        price_at_purchase: item.product_variant.price
       }
     })
 
-    sessionStorage.setItem('orderItems', JSON.stringify(orderItems))
+    sessionStorage.setItem('order_items', JSON.stringify(order_items))
     router.push('/checkout')
   }
 
   return (
-    <div className='container mx-auto'>
-      <div className='relative grid max-h-full grid-cols-4 gap-5 my-4 min-h-[95vh]'>
+    <div className='container mx-auto py-6'>
+      <div className='relative grid max-h-full grid-cols-4 gap-5 min-h-[95vh]'>
         <div className='col-span-3 py-4 h-fit'>
           <div className='mb-6 text-2xl font-semibold text-mainColor2-800'>
             Giỏ Hàng Của Bạn
           </div>
-          {!cart || !cart?.cartItems?.length ? (
+          {!cart || !cart?.cart_items?.length ? (
             <p>Giỏ hàng của bạn đang trống.</p>
           ) : (
-            <div>
+            <div className='bg-section rounded-lg p-4 max-h-full h-[75vh]'>
               <Table className='table-fixed'>
                 <TableHeader>
                   {table.getHeaderGroups().map((headerGroup) => (
@@ -441,8 +419,7 @@ export default function CartPage() {
                         return (
                           <TableRow
                             key={row.id}
-                            className='cursor-pointer bg-mainColor1-100/50 hover:bg-mainColor1-100/50'
-                            onClick={row.getToggleExpandedHandler()}
+                            className='cursor-pointer bg-muted hover:bg-mainColor1-100/50'
                           >
                             <TableCell colSpan={1}>
                               <Checkbox
@@ -455,13 +432,20 @@ export default function CartPage() {
                             </TableCell>
                             <TableCell colSpan={columns.length - 3}>
                               <div className='flex items-center gap-2'>
-                                <Store />
+                                <Image
+                                  src={
+                                    row.subRows[0]?.original.product_variant
+                                      .product.seller.user.avatar
+                                  }
+                                  alt=''
+                                  width={32}
+                                  height={32}
+                                  className='w-8 h-8 rounded-full object-cover'
+                                />
                                 <span>
-                                  Tên người bán:{' '}
                                   {
-                                    row.getGroupingValue(
-                                      row.groupingColumnId!
-                                    ) as string
+                                    row.subRows[0]?.original.product_variant
+                                      .product.seller.name
                                   }{' '}
                                   <b>({row.subRows.length} sản phẩm)</b>
                                 </span>
@@ -469,7 +453,10 @@ export default function CartPage() {
                             </TableCell>
                             <TableCell>
                               {row.getCanExpand() && (
-                                <div className='flex justify-end'>
+                                <div
+                                  className='flex justify-end cursor-pointer'
+                                  // onClick={row.getToggleExpandedHandler()}
+                                >
                                   {row.getIsExpanded() ? (
                                     <ChevronUp />
                                   ) : (

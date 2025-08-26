@@ -1,6 +1,6 @@
 'use client'
 
-import ProductCard from "@/components/product"
+import { ProductCard } from '@/components/product'
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
 import { Category } from "@/types/entities/category"
 import { DEFAULT_IMAGE_URL } from "@/utils/constants"

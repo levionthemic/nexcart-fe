@@ -1,8 +1,8 @@
 'use client'
 
-import { GetProductsResponstType, getSellerProductsApi } from '@/apis/product.api'
+import { GetProductsResponseType, getSellerProductsApi } from '@/apis/product.api'
 import { getPublicSellerProfileApi } from '@/apis/user.api'
-import ProductCard from '@/components/product'
+import { ProductCard } from '@/components/product'
 import { ProductListItem } from '@/types/entities/product'
 import { User } from '@/types/entities/user'
 import { DEFAULT_IMAGE_URL } from '@/utils/constants'
@@ -35,7 +35,7 @@ export default function ShopDetail() {
   }, [sellerId])
 
   const [products, setProducts] = useState<ProductListItem[] | null>(null)
-  const [data, setData] = useState<GetProductsResponstType>()
+  const [data, setData] = useState<GetProductsResponseType>()
   useEffect(() => {
     startLoading()
     getSellerProductsApi(sellerId)
@@ -61,7 +61,7 @@ export default function ShopDetail() {
                 />
                 <div className='space-y-4 text-accent'>
                   <h2 className='text-2xl font-bold'>
-                    {user?.name || 'Chưa có tên'}
+                    {user?.seller?.name || 'Chưa có tên'}
                   </h2>
                   <div className='text-base dark:text-muted-foreground flex items-center gap-4'>
                     <div className='flex items-center gap-1'>

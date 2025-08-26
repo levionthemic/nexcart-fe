@@ -9,7 +9,7 @@ import {
   setCart
 } from '@/redux/cart/cartSlice'
 import { AppDispatch } from '@/redux/store'
-import { Product } from '@/types/entities/product'
+import { CartProductVariant, Product } from '@/types/entities/product'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useMemo, useState } from 'react'
 import { IoMdAdd } from 'react-icons/io'
@@ -28,7 +28,6 @@ import { useReview } from '@/contexts/review-context'
 export default function QuantityHandling({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1)
   const { productVariantId, productEndPrice, discount } = useVariantHandling()
-
   const currentCart = useSelector(selectCurrentCart)
   const currentUser = useSelector(selectCurrentUser)
   const dispatch = useDispatch<AppDispatch>()
@@ -38,8 +37,8 @@ export default function QuantityHandling({ product }: { product: Product }) {
   const { ratingAverage, setRatingAverage, totalReviews, reviews } = useReview()
 
   useEffect(() => {
-    if (product.rating) setRatingAverage(product.rating)
-  }, [])
+    if (product && product.rating) setRatingAverage(product.rating)
+  }, [product, setRatingAverage])
 
   const calculateTotalStock = useMemo(() => {
     return product.product_variants
@@ -71,8 +70,14 @@ export default function QuantityHandling({ product }: { product: Product }) {
         const productVariant = product.product_variants.find(
           (pv) => pv.id === productVariantId
         )!
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { category, brand, product_variants, specifications, reviews, ...restProduct } = product
+        const cartProductVariant: CartProductVariant = {
+          ...productVariant,
+          product: restProduct,          
+        }
         cart_items.push({
-          product_variant: productVariant,
+          product_variant: cartProductVariant,
           quantity
         })
       }
@@ -89,7 +94,7 @@ export default function QuantityHandling({ product }: { product: Product }) {
       dispatch(
         addToCartAPI({
           cart_id: Number(currentCart?.id),
-          product_variant_id: product.id,
+          product_variant_id: productVariantId,
           quantity
         })
       )

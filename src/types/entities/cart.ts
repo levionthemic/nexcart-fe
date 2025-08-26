@@ -1,13 +1,12 @@
-import { ProductVariant } from './product'
+import { CartProductVariant } from './product'
 
 export interface CartItem {
-  product_variant: ProductVariant
+  product_variant: CartProductVariant
   quantity: number
-  subRows?: CartItem[]
 }
 
 export interface Cart {
   id: number
-  buyer_id: string
+  buyer_id?: string
   cart_items: CartItem[]
 }

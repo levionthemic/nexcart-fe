@@ -22,6 +22,10 @@ export interface ProductVariant extends ProductVariantMinimal {
   product_variant_option_values: ProductVariantOptionValue[]
 }
 
+export interface CartProductVariant extends ProductVariant {
+  product: CartProduct
+}
+
 export interface ProductVariantOptionValue {
   option_value: OptionValue
 }
@@ -67,10 +71,14 @@ export interface ProductListItem extends ProductBase {
   category: Category
   brand: Brand
   product_variants: ProductVariant[]
+  seller: Seller
 }
 
 export interface Product extends ProductListItem {
   specifications: ProductSpecification[]
-  seller: Seller
   reviews: Review[]
+}
+
+export interface CartProduct extends ProductBase {
+  seller: Seller
 }

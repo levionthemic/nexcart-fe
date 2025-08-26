@@ -1,4 +1,4 @@
-import ProductCard from '@/components/product'
+import { ProductCard } from '@/components/product'
 import CategoryBar from './category-bar'
 
 import { FaShippingFast } from 'react-icons/fa'

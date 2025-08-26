@@ -60,7 +60,6 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
 import { useDebounceFn } from '@/hooks/use-debounce'
-import { useLoading } from '@/contexts/LoadingContext'
 import { AppDispatch } from '@/redux/store'
 import Image from 'next/image'
 import MenuBar from './menu-bar'
@@ -78,14 +77,11 @@ export default function BuyerHeader() {
   const currentCart = useSelector(selectCurrentCart)
   const dispatch = useDispatch<AppDispatch>()
 
-  const { startLoading, endLoading } = useLoading()
-
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (currentUser) {
-      startLoading()
-      if (currentCart && !currentCart.buyer_id) {
+      if (currentCart && !currentCart.cart_items.length) {
         Promise.all(
           currentCart?.cart_items?.map((item) =>
             dispatch(
@@ -96,11 +92,9 @@ export default function BuyerHeader() {
               })
             )
           )
-        )
-          .then(() => dispatch(fetchCurrentCartAPI()))
-          .finally(() => endLoading())
+        ).then(() => dispatch(fetchCurrentCartAPI()))
       } else {
-        dispatch(fetchCurrentCartAPI()).finally(() => endLoading())
+        dispatch(fetchCurrentCartAPI())
       }
       dispatch(fetchCurrentNotificationListAPI())
     }
@@ -262,7 +256,8 @@ export default function BuyerHeader() {
                                 {quantity} sản phẩm
                               </Badge>
                               <span className='text-[0.8rem] text-muted-foreground'>
-                                x {product_variant.price.toLocaleString('vi-VN')}
+                                x{' '}
+                                {product_variant.price.toLocaleString('vi-VN')}
                                 <sup>đ</sup>
                               </span>
                             </div>

@@ -11,7 +11,6 @@ import {
 import { Separator } from '@/components/ui/separator'
 
 import { DEFAULT_IMAGE_URL, DEFAULT_ITEMS_PER_PAGE } from '@/utils/constants'
-import ProductCard from '@/components/product'
 
 import Image from 'next/image'
 import ChooseProductVariant from './choose-product-variant'
@@ -25,6 +24,7 @@ import { ReviewProvider } from '@/contexts/review-context'
 import { FaStar } from 'react-icons/fa'
 import { Plus, Star, Store, UserPlus } from 'lucide-react'
 import Link from 'next/link'
+import { ProductCard } from '@/components/product'
 
 export default async function ProductDetail({
   params
@@ -67,7 +67,7 @@ export default async function ProductDetail({
             <div className='relative grid grid-cols-4 gap-6'>
               <div className='col-span-3'>
                 <div className='relative grid grid-cols-3 gap-6 mb-6 h-fit'>
-                  <div className='sticky left-0 flex items-center justify-center p-4 pb-32 bg-white dark:bg-section rounded-lg h-fit top-36'>
+                  <div className='sticky left-0 p-4 bg-white dark:bg-section rounded-lg h-fit top-36'>
                     <div className='overflow-hidden border rounded-2xl'>
                       <Image
                         width={350}
@@ -76,6 +76,19 @@ export default async function ProductDetail({
                         alt={String(product?.name)}
                         className='scale-105 object-cover'
                       />
+                    </div>
+                    <div className='flex flex-wrap gap-2 mt-2 overflow-x-auto custom-scrollbar'>
+                      {product.product_variants.map((variant) => (
+                        <div key={variant.id} className=''>
+                          <Image
+                            width={80}
+                            height={80}
+                            src={variant.image_url || DEFAULT_IMAGE_URL}
+                            alt={variant.name}
+                            className='w-20 h-20 border rounded-lg cursor-pointer hover:border-2'
+                          />
+                        </div>
+                      ))}
                     </div>
                   </div>
 

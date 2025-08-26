@@ -230,18 +230,18 @@
 
   /* Chrome, Safari, Edge */
   .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
+    width: 2px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
     background: var(--background); /* track background */
-    border-radius: 8px;
+    border-radius: 4px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background-color: #6666ae; /* mainColor1-400 */
-    border-radius: 8px;
-    border: 2px solid transparent;
+    border-radius: 4px;
+    border: 1px solid transparent;
     background-clip: content-box;
   }
 

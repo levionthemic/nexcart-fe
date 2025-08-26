@@ -11,9 +11,9 @@ import { Category } from '@/types/entities/category'
 import { getCategoriesApi } from '@/apis/category.api'
 
 export default function MenuBar() {
-  const [categories, setCateogries] = useState<Category[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
   useEffect(() => {
-    getCategoriesApi().then((data) => setCateogries(data))
+    getCategoriesApi().then((data) => setCategories(data))
   }, [])
   return (
     <div

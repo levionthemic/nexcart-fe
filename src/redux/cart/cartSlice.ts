@@ -43,7 +43,7 @@ export const updateCartQuantityAPI = createAsyncThunk<
 
 export const deleteItemAPI = createAsyncThunk<
   void,
-  AddCartItemPayload
+  Omit<AddCartItemPayload, 'quantity'>
 >('cart/deleteItemAPI', async (data) => {
   await deleteCartItemApi(data)
 })
@@ -52,7 +52,10 @@ export const deleteItemAPI = createAsyncThunk<
 // Slice
 // -----------------------------
 const initialState: CartState = {
-  currentCart: undefined
+  currentCart: {
+    id: 0,
+    cart_items: [],
+  }
 }
 
 const cartSlice = createSlice({

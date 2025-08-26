@@ -49,7 +49,7 @@ export const VariantHandlingProvider = ({ children, initialProductEndPrice = 0 }
 export const useVariantHandling = (): VariantHandlingContextType => {
   const context = useContext(VariantHandlingContext)
   if (!context) {
-    throw new Error('useTypeId must be used within a TypeIdProvider')
+    throw new Error('useVariantHandling must be used within a VariantHandlingProvider')
   }
   return context
 }

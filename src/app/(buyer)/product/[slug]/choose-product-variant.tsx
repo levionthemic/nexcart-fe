@@ -3,12 +3,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useVariantHandling } from '@/contexts/variant-handling-context'
-import { Product } from '@/types/entities/product'
+import { Product, ProductListItem } from '@/types/entities/product'
 
 export default function ChooseProductVariant({
   product
 }: {
-  product: Product
+  product: Product | ProductListItem
 }) {
   const {
     productVariantId,
@@ -65,8 +65,6 @@ export default function ChooseProductVariant({
     }
   }, [product])
 
-  console.log(mapProductVariantWithOptionAndOptionValue)
-
   useEffect(() => {
     if (productVariantId) {
       const pv = product?.product_variants.find(
@@ -102,8 +100,6 @@ export default function ChooseProductVariant({
       }
     })
   }
-
-  console.log(productVariantId)
 
   return (
     <>

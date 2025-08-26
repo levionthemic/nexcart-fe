@@ -1,5 +1,4 @@
-import ProductCard from '@/components/product'
-
+import { ProductCard } from '@/components/product'
 import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from '@/utils/constants'
 import PaginationComponent from '@/components/pagination/pagination'
 
@@ -72,9 +71,9 @@ export default async function ProductList({
   }
 
   return (
-    <div className='container mx-auto my-6'>
+    <div className='container mx-auto py-6'>
       <div className='relative flex h-full gap-6'>
-        <div className='w-[20%] px-6 h-full sticky top-36 left-0 max-h-full'>
+        <div className='w-[20%] px-6 py-4 h-full sticky top-36 left-0 max-h-full bg-section rounded-lg'>
           <div className='text-xl font-medium text-mainColor2-800'>
             Bộ lọc sản phẩm
           </div>
