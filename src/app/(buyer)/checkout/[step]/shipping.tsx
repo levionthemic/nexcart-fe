@@ -72,11 +72,10 @@ export default function Shipping() {
 
   useEffect(() => {
     const body = orderItems.map((orderItem) => ({
-      productId: orderItem.product.id,
-      typeId: orderItem.product.type.id,
+      product_variant_id: orderItem.product_variant.id,
       quantity: orderItem.quantity
     }))
-    clusterOrdersApi({ orderItems: body }).then((data) => {
+    clusterOrdersApi({ order_items: body }).then((data) => {
       if (data) {
         form.reset({
           discountCode: [...Array(data.length)].map(() => ''),
@@ -96,11 +95,9 @@ export default function Shipping() {
     }
 
     Promise.all(
-      clusterOrders.map((clusterOrder) => {
-        const { provinceId, districtId, wardCode, address } = clusterOrder.shop
-        const shopAddress = { provinceId, districtId, wardCode, address }
-        return getAddressStringResult(shopAddress)
-      })
+      clusterOrders.map((clusterOrder) =>
+        getAddressStringResult(clusterOrder.shop.address)
+      )
     ).then((res) => setShopAddresses(res))
   }, [clusterOrders])
 
@@ -111,8 +108,10 @@ export default function Shipping() {
     if (clusterOrders.length) {
       for (const clusterOrder of clusterOrders) {
         getAvailableServicesApi({
-          fromDistrictId: Number(checkoutInfo?.information?.buyerAddress.districtId),
-          toDistrictId: Number(clusterOrder.shop.districtId)
+          fromDistrictId: Number(
+            checkoutInfo?.information?.buyerAddress.district_id
+          ),
+          toDistrictId: Number(clusterOrder.shop.address.district_id)
         }).then((res) => {
           if (!res) {
             setGhnServiceError(
@@ -134,16 +133,16 @@ export default function Shipping() {
             getFeeApi({
               service_id: 0,
               service_type_id: 2,
-              from_district_id: clusterOrder?.shop?.districtId,
-              from_ward_code: clusterOrder?.shop.wardCode,
+              from_district_id: clusterOrder?.shop?.address.district_id,
+              from_ward_code: clusterOrder?.shop.address.ward_code,
               to_district_id:
-                checkoutInfo?.information?.buyerAddress.districtId,
-              to_ward_code: checkoutInfo?.information?.buyerAddress.wardCode,
+                checkoutInfo?.information?.buyerAddress.district_id,
+              to_ward_code: checkoutInfo?.information?.buyerAddress.ward_code,
               weight: 3000,
               insurance_value: 0,
               coupon: null,
-              items: clusterOrder.orderItems.map((item) => ({
-                name: item.product.name,
+              items: clusterOrder.order_items.map((item) => ({
+                name: item.product_variant.name,
                 quantity: item.quantity
               }))
             }).then((data) => {

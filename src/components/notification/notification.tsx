@@ -1,4 +1,5 @@
 'use client'
+
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -23,7 +24,7 @@ import {
   mapNotificationTypeToTitle,
   mapNotificationTypeToToastInfo
 } from '@/utils/helpers'
-import { useSocketContext } from '../providers/SocketProvider'
+import { useSocketContext } from '../providers/socket-provider'
 import { Button } from '../ui/button'
 
 export type SocketPayload = {
@@ -39,6 +40,10 @@ export default function Notification() {
   const { notificationSocket } = useSocketContext()
 
   const MAP_DATE_TYPE = ['Hôm nay', 'Hôm qua', 'Trước đó']
+
+  // Có 1 bug trong component này là nó được sử dụng trong header chung và header của user, nên khi chuyển sang giao diện user
+  // thì socket bị disconnect và không tự connect lại được
+  // Có thể cần làm sao để socket được khởi tạo và disconnect ở 1 nơi cao hơn, ví dụ như trong _app.tsx
 
   useEffect(() => {
     if (notificationSocket) {
@@ -71,7 +76,7 @@ export default function Notification() {
 
   const filterNotificationsByDate = (dateType = 0) => {
     return currentNotificationList?.filter(
-      (notification) => categorizeDate(notification.createdAt) === dateType
+      (notification) => categorizeDate(notification.created_at) === dateType
     )
   }
 
@@ -120,7 +125,7 @@ export default function Notification() {
                           key={notification.id}
                           className='rounded-lg p-3 transition hover:bg-mainColor1-100/50 flex items-center gap-6 bg-mainColor1-100/20 cursor-pointer'
                         >
-                          {!notification.readAt && (
+                          {!notification.read_at && (
                             <div className='size-2.5 bg-mainColor1-800 rounded-full relative -top-10'></div>
                           )}
                           <div className='flex-1'>
@@ -131,7 +136,7 @@ export default function Notification() {
                             <p className='text-sm'>{notification.content}</p>
                             <p className='text-xs text-right text-gray-500 italic'>
                               {format(
-                                notification.createdAt,
+                                notification.created_at,
                                 "'Lúc' k:m:ss 'ngày' dd/MM/yyyy"
                               )}
                             </p>

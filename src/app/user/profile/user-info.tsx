@@ -1,8 +1,9 @@
 'use client'
 
 import LogoutComponent from '@/components/logout/logout'
-import UploadAvatar from '@/components/UploadAvatar'
+import UploadAvatar from '@/components/upload-avatar'
 import { selectCurrentUser } from '@/redux/user/userSlice'
+import { DEFAULT_IMAGE_URL } from '@/utils/constants'
 import React from 'react'
 import { IoIosLogOut } from 'react-icons/io'
 import { useSelector } from 'react-redux'
@@ -17,9 +18,9 @@ export default function UserInfo() {
           <IoIosLogOut className='absolute top-0 text-xl cursor-pointer right-3 text-mainColor1-800' />
         }
       />
-      <UploadAvatar avatar={String(currentUser?.avatar)} />
+      <UploadAvatar avatar={currentUser?.avatar || DEFAULT_IMAGE_URL} />
       <div className='mt-6 text-xl font-medium text-mainColor2-800'>
-        {currentUser?.name}
+        {currentUser?.buyer?.name || 'Ẩn danh'}
       </div>
       <div className='text-xs text-mainColor2-800/90'>{currentUser?.email}</div>
     </div>

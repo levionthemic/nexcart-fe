@@ -14,11 +14,11 @@ import {
 } from '../ui/alert-dialog'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/redux/store'
-import { logoutUserAPI } from '@/redux/user/userSlice'
 import { clearCart } from '@/redux/cart/cartSlice'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
-import { useSocketContext } from '../providers/SocketProvider'
+import { useSocketContext } from '../providers/socket-provider'
+import { logoutUserAction } from '@/redux/user/userSlice'
 
 export default function LogoutComponent({ icon }: { icon: React.ReactNode }) {
   const dispatch = useDispatch<AppDispatch>()
@@ -31,7 +31,7 @@ export default function LogoutComponent({ icon }: { icon: React.ReactNode }) {
 
     dispatch(clearCart())
 
-    toast.promise(dispatch(logoutUserAPI()).unwrap(), {
+    toast.promise(dispatch(logoutUserAction()).unwrap(), {
       loading: 'Đang đăng xuất...',
       success: () => {
         router.refresh()

@@ -52,6 +52,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { OrderItem } from '@/types/entities/order'
 import { DEFAULT_IMAGE_URL } from '@/utils/constants'
+import { useOrder } from '@/contexts/order-context'
 
 export default function CartPage() {
   const router = useRouter()
@@ -59,6 +60,7 @@ export default function CartPage() {
   const cart = useSelector(selectCurrentCart)
 
   const currentUser = useSelector(selectCurrentUser)
+  const { setOrderItems } = useOrder()
 
   const [pendingUpdates, setPendingUpdates] = useState<Map<string, CartItem>>(
     new Map()
@@ -371,8 +373,8 @@ export default function CartPage() {
       }
     })
 
-    sessionStorage.setItem('order_items', JSON.stringify(order_items))
-    router.push('/checkout')
+    setOrderItems(order_items)
+    router.push('/checkout/1')
   }
 
   return (

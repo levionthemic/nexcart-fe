@@ -41,7 +41,7 @@ export default function UserHeader() {
 
   useEffect(() => {
     dispatch(fetchCurrentNotificationListAPI())
-  }, [])
+  }, [dispatch])
 
   const router = useRouter()
   
@@ -59,7 +59,7 @@ export default function UserHeader() {
             <div className='relative transition-transform cursor-pointer hover:scale-105 hover:ease-out hover:duration-300'>
               <BsHandbag className='text-xl text-mainColor1-600' />
               <Badge className='absolute w-2 h-2 p-2 text-center rounded-full -top-3 -right-3 bg-mainColor1-400'>
-                {currentCart?.cartItems?.length || 0}
+                {currentCart?.cart_items?.length || 0}
               </Badge>
             </div>
           </SheetTrigger>
@@ -68,7 +68,7 @@ export default function UserHeader() {
               <SheetTitle>
                 Giỏ hàng của bạn{' '}
                 <span className='text-sm text-gray-700'>
-                  ({currentCart?.cartItems.length || 0})
+                  ({currentCart?.cart_items.length || 0})
                 </span>
               </SheetTitle>
               <SheetDescription className='!m-0'>
@@ -76,10 +76,10 @@ export default function UserHeader() {
               </SheetDescription>
             </SheetHeader>
             <div className='p-4 max-h-[89%] overflow-auto'>
-              {currentCart?.cartItems?.map(({ product, quantity }, index) => (
+              {currentCart?.cart_items?.map(({ product_variant, quantity }, index) => (
                 <div key={index} className='flex items-center gap-2 my-6'>
                   <Image
-                    src={product?.avatar || DEFAULT_IMAGE_URL}
+                    src={product_variant?.image_url || DEFAULT_IMAGE_URL}
                     alt=''
                     width={40}
                     height={40}
@@ -90,23 +90,23 @@ export default function UserHeader() {
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <span className='text-sm leading-none line-clamp-1 text-mainColor2-800'>
-                            {product?.name}
+                            {product_variant.product.name}
                           </span>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>{product?.name}</p>
+                          <p>{product_variant.product.name}</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                     <p className='line-clamp-1 text-xs text-gray-400 mb-0.5'>
-                      Loại: {product?.type?.name}
+                      Loại: {product_variant.name}
                     </p>
                     <div className='flex flex-col lg:flex-row lg:items-center lg:gap-4'>
                       <Badge className='bg-mainColor2-800/90'>
                         {quantity} sản phẩm
                       </Badge>
                       <span className='text-[0.8rem] text-muted-foreground'>
-                        x {product?.type?.price.toLocaleString('vi-VN')}
+                        x {product_variant.price.toLocaleString('vi-VN')}
                         <sup>đ</sup>
                       </span>
                     </div>
@@ -133,7 +133,7 @@ export default function UserHeader() {
             <AvatarFallback>LV</AvatarFallback>
           </Avatar>
           <div className='text-sm text-mainColor1-800'>
-            Xin chào, <b>{currentUser?.username}</b>!
+            Xin chào, <b>{currentUser?.buyer?.name || 'Ẩn danh'}</b>!
           </div>
         </div>
       </div>

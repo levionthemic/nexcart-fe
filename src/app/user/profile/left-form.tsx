@@ -11,7 +11,6 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import {
   Select,
   SelectContent,
@@ -24,9 +23,8 @@ import { AppDispatch } from '@/redux/store'
 import {
   selectCurrentUser,
   setUser,
-  updateUserAPI
+  updateUserAction
 } from '@/redux/user/userSlice'
-import { Gender } from '@/types/enums/account'
 import { getAddressString } from '@/utils/helpers'
 import {
   FIELD_REQUIRED_MESSAGE,
@@ -42,22 +40,21 @@ import { z } from 'zod'
 import AddAddress from '../_components/add-address'
 
 const LeftFormSchema = z.object({
-   phone: z
+  phone: z
     .string()
     .min(1, { message: FIELD_REQUIRED_MESSAGE })
     .regex(PHONE_NUMBER_RULE, { message: PHONE_NUMBER_RULE_MESSAGE }),
 
   name: z.string().min(1, { message: FIELD_REQUIRED_MESSAGE }),
-  gender: z.nativeEnum(Gender),
-  defaultBuyerAddressId: z
-    .string()
-    .uuid()
-    .min(1, { message: FIELD_REQUIRED_MESSAGE })
+  default_buyer_address_id: z.string({ message: FIELD_REQUIRED_MESSAGE })
 })
 
 type LeftFormSchemaType = z.infer<typeof LeftFormSchema>
 
 export default function ProfileLeftForm() {
+  const dispatch = useDispatch<AppDispatch>()
+  const currentUser = useSelector(selectCurrentUser)
+
   const [renderCount, setRenderCount] = useState(0)
   const triggerRender = () => setRenderCount((prev) => prev + 1)
 
@@ -70,20 +67,16 @@ export default function ProfileLeftForm() {
         dispatch(setUser(userData))
         triggerRender()
       })
-  }, [])
-
-  const dispatch = useDispatch<AppDispatch>()
-  const currentUser = useSelector(selectCurrentUser)
+  }, [dispatch])
 
   const leftForm = useForm<LeftFormSchemaType>({
     resolver: zodResolver(LeftFormSchema),
     defaultValues: {
       phone: currentUser?.phone || '',
-      name: currentUser?.name || '',
-      gender: currentUser?.gender || Gender.MALE,
-      defaultBuyerAddressId: currentUser?.buyer?.addresses.find(
-        (a) => a.isDefault
-      )?.id
+      name: currentUser?.buyer?.name || '',
+      default_buyer_address_id: String(
+        currentUser?.buyer?.addresses.find((a) => a.is_default)?.id ?? '0'
+      )
     }
   })
 
@@ -102,14 +95,22 @@ export default function ProfileLeftForm() {
           }))
         )
       })
-  }, [renderCount])
+  }, [renderCount, currentUser])
 
   const handleLeftFormSubmit = (data: LeftFormSchemaType) => {
-    toast.promise(dispatch(updateUserAPI(data)).unwrap(), {
-      loading: 'Đang cập nhật...',
-      success: () => 'Cập nhật thành công!',
-      error: () => 'Đã có lỗi!'
-    })
+    toast.promise(
+      dispatch(
+        updateUserAction({
+          ...data,
+          default_buyer_address_id: Number(data.default_buyer_address_id)
+        })
+      ).unwrap(),
+      {
+        loading: 'Đang cập nhật...',
+        success: () => 'Cập nhật thành công!',
+        error: (err) => err.message || 'Cập nhật thất bại!'
+      }
+    )
   }
 
   return (
@@ -118,14 +119,19 @@ export default function ProfileLeftForm() {
         <form
           action='#'
           onSubmit={leftForm.handleSubmit(handleLeftFormSubmit)}
-          className='w-full'
+          className='w-full space-y-4'
         >
           <FormField
             control={leftForm.control}
             name='name'
             render={({ field }) => (
-              <FormItem className='mt-2 mb-4'>
-                <FormLabel className='text-base'>Họ và tên</FormLabel>
+              <FormItem className='mt-2'>
+                <div>
+                  <FormLabel className='text-base'>Họ và tên</FormLabel>
+                  <FormDescription>
+                    Mặc định chúng tôi sẽ lấy họ và tên này in trên đơn hàng.
+                  </FormDescription>
+                </div>
                 <FormControl>
                   <Input
                     className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-full focus:outline-none focus:border-[2px] border-[1px] ${
@@ -135,96 +141,67 @@ export default function ProfileLeftForm() {
                     {...field}
                   />
                 </FormControl>
-                <FormDescription>
-                  Mặc định chúng tôi sẽ lấy họ và tên này in trên đơn hàng.
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <div className='grid grid-cols-2 gap-4 my-4'>
-            <FormField
-              control={leftForm.control}
-              name='gender'
-              render={({ field }) => (
-                <FormItem className='my-3'>
-                  <FormLabel className='text-base'>Giới tính</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className='flex items-center gap-10 md:flex-col md:gap-4 md:items-start'
-                    >
-                      <FormItem className='flex items-center space-x-3 space-y-0'>
-                        <FormControl>
-                          <RadioGroupItem value={Gender.MALE} />
-                        </FormControl>
-                        <FormLabel className='font-normal'>Nam</FormLabel>
-                      </FormItem>
-                      <FormItem className='flex items-center space-x-3 space-y-0'>
-                        <FormControl>
-                          <RadioGroupItem value={Gender.FEMALE} />
-                        </FormControl>
-                        <FormLabel className='font-normal'>Nữ</FormLabel>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={leftForm.control}
-              name='phone'
-              render={({ field }) => (
-                <FormItem className='my-2'>
+          <FormField
+            control={leftForm.control}
+            name='phone'
+            render={({ field }) => (
+              <FormItem>
+                <div className=''>
                   <FormLabel className='text-base'>Số điện thoại</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='VD: 0123456789'
-                      className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-5 rounded-full focus:outline-none focus:border-[2px] border-[1px] ${
-                        !!leftForm.formState.errors['phone'] && 'border-red-500'
-                      }`}
-                      {...field}
-                    />
-                  </FormControl>
                   <FormDescription>
                     Số điện thoại này được dùng để liên lạc với người vận
                     chuyển.
                   </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+                </div>
+                <FormControl>
+                  <Input
+                    placeholder='VD: 0123456789'
+                    className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-5 rounded-full focus:outline-none focus:border-[2px] border-[1px] ${
+                      !!leftForm.formState.errors['phone'] && 'border-red-500'
+                    }`}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={leftForm.control}
-            name='defaultBuyerAddressId'
+            name='default_buyer_address_id'
             render={({ field }) => (
               <FormItem className='mb-6'>
                 <FormLabel>Địa chỉ mặc định</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className='w-full overflow-hidden'>
-                    <SelectValue placeholder='Chọn địa chỉ mặc định' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {buyerAddresses.length ? (
-                        buyerAddresses.map((addr) => (
+                {buyerAddresses.length ? (
+                  <Select
+                    onValueChange={field.onChange}
+                    value={String(field.value)}
+                  >
+                    <SelectTrigger className='w-full overflow-hidden'>
+                      <SelectValue placeholder='Chọn địa chỉ mặc định' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {buyerAddresses.map((addr) => (
                           <SelectItem key={addr.id} value={addr.id}>
                             {addr.addressString}
                           </SelectItem>
-                        ))
-                      ) : (
-                        <SelectItem key={Math.random()} value='0' disabled>
-                          Không có địa chỉ. Hãy thêm địa chỉ!
-                        </SelectItem>
-                      )}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <div className='text-muted-foreground text-sm'>
+                    Không có địa chỉ. Hãy thêm địa chỉ!
+                  </div>
+                )}
+
                 <FormMessage />
               </FormItem>
             )}

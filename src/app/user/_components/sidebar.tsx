@@ -46,7 +46,7 @@ export default function UserSidebar() {
   ]
   return (
     <Sidebar className='px-4 pb-4 bg-sidebar border-none'>
-      <SidebarHeader className='p-0 bg-sidebar'>
+      <SidebarHeader className='p-0 bg-transparent'>
         <span
           className='my-10 text-4xl font-medium transition-transform cursor-pointer text-primary-foreground hover:scale-105 hover:duration-500'
           onClick={() => router.push('/')}
@@ -55,7 +55,7 @@ export default function UserSidebar() {
         </span>
       </SidebarHeader>
 
-      <SidebarContent className='bg-sidebar'>
+      <SidebarContent className='bg-transparent'>
         <SidebarGroup className='p-0'>
           <SidebarGroupContent>
             <SidebarMenu>

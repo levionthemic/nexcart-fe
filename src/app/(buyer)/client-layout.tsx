@@ -1,6 +1,6 @@
 'use client'
 
-import { useLoading } from '@/contexts/LoadingContext'
+import { useLoading } from '@/contexts/loading-context'
 import React, { useEffect, useState } from 'react'
 import NProgress from '@/components/n-progress/progress'
 import { usePathname } from 'next/navigation'

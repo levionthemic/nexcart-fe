@@ -1,7 +1,13 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../store'
 import { Cart } from '@/types/entities/cart'
-import { addCartItemApi, deleteCartItemApi, getCartApi, updateCartItemQuantityApi } from '@/apis/cart.api'
+import {
+  addCartItemApi,
+  deleteCartItemApi,
+  getCartApi,
+  updateCartItemQuantityApi
+} from '@/apis/cart.api'
+import { asyncHandler } from '@/utils/asyncHandler'
 
 // -----------------------------
 // Types
@@ -23,7 +29,7 @@ export type AddCartItemPayload = {
 export const fetchCurrentCartAPI = createAsyncThunk<Cart | undefined>(
   'cart/fetchCurrentCartAPI',
   async () => {
-    return await getCartApi()
+    return asyncHandler(getCartApi())
   }
 )
 
@@ -34,12 +40,12 @@ export const addToCartAPI = createAsyncThunk<
   return await addCartItemApi(data)
 })
 
-export const updateCartQuantityAPI = createAsyncThunk<
-  void,
-  AddCartItemPayload
->('cart/updateCartQuantityAPI', async (data) => {
-  await updateCartItemQuantityApi(data)
-})
+export const updateCartQuantityAPI = createAsyncThunk<void, AddCartItemPayload>(
+  'cart/updateCartQuantityAPI',
+  async (data) => {
+    await updateCartItemQuantityApi(data)
+  }
+)
 
 export const deleteItemAPI = createAsyncThunk<
   void,
@@ -54,7 +60,7 @@ export const deleteItemAPI = createAsyncThunk<
 const initialState: CartState = {
   currentCart: {
     id: 0,
-    cart_items: [],
+    cart_items: []
   }
 }
 
@@ -66,7 +72,10 @@ const cartSlice = createSlice({
       state.currentCart = action.payload
     },
     clearCart: (state) => {
-      state.currentCart = undefined
+      state.currentCart = {
+        id: 0,
+        cart_items: []
+      }
     }
   },
   extraReducers: (builder) => {

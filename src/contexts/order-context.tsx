@@ -18,8 +18,8 @@ import {
 export interface ClusterOrderListItem {
   seller: Seller
   shop: Shop
-  originalPrice: number
-  orderItems: OrderItem[]
+  original_price: number
+  order_items: OrderItem[]
 }
 
 export interface ShippingDataType {
@@ -57,9 +57,7 @@ type OrderProviderProps = {
 }
 
 export const OrderProvider = ({ children }: OrderProviderProps) => {
-  const [orderItems, setOrderItems] = useState<OrderItem[]>(
-    JSON.parse(String(sessionStorage.getItem('orderItems'))) || []
-  )
+  const [orderItems, setOrderItems] = useState<OrderItem[]>([])
   const [checkoutInfo, setCheckoutInfo] = useState<CheckoutInfoType | null>(
     null
   )

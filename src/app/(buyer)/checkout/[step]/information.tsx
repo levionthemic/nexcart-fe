@@ -49,10 +49,7 @@ const formSchema = z.object({
     .string({ required_error: FIELD_REQUIRED_MESSAGE })
     .min(1, { message: FIELD_REQUIRED_MESSAGE })
     .regex(PHONE_NUMBER_RULE, { message: PHONE_NUMBER_RULE_MESSAGE }),
-  defaultBuyerAddressId: z
-    .string()
-    .uuid()
-    .min(1, { message: FIELD_REQUIRED_MESSAGE })
+  defaultBuyerAddressId: z.number().int({ message: FIELD_REQUIRED_MESSAGE })
 })
 
 export type InformationFormSchemaType = z.infer<typeof formSchema>
@@ -68,7 +65,9 @@ export default function Information() {
   const currentUser = useSelector(selectCurrentUser)
   const router = useRouter()
 
-  const { checkoutInfo, setCheckoutInfo } = useOrder()
+  const { checkoutInfo, setCheckoutInfo, orderItems } = useOrder()
+
+  console.log(orderItems)
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -89,15 +88,15 @@ export default function Information() {
     defaultValues: {
       defaultBuyerAddressId:
         checkoutInfo?.information?.buyerAddress.id ||
-        currentUser?.buyer?.addresses.find((a) => a.isDefault)?.id,
+        currentUser?.buyer?.addresses.find((a) => a.is_default)?.id,
       email: checkoutInfo?.information?.email || currentUser?.email || '',
-      name: checkoutInfo?.information?.name || currentUser?.name || '',
+      name: checkoutInfo?.information?.name || currentUser?.buyer?.name || '',
       phone: checkoutInfo?.information?.phone || currentUser?.phone || ''
     }
   })
 
   const [buyerAddresses, setBuyerAddresses] = useState<
-    { id: string; addressString: string }[]
+    { id: number; addressString: string }[]
   >([])
   useEffect(() => {
     if (currentUser?.buyer?.addresses)
@@ -106,7 +105,7 @@ export default function Information() {
       ).then((addressStrings) => {
         setBuyerAddresses(
           addressStrings.map((addressString, index) => ({
-            id: String(currentUser.buyer?.addresses[index].id),
+            id: Number(currentUser.buyer?.addresses[index].id),
             addressString: addressString
           }))
         )
@@ -219,7 +218,7 @@ export default function Information() {
             render={({ field }) => (
               <FormItem className='mb-6'>
                 <FormLabel>Địa chỉ mặc định</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select onValueChange={field.onChange} value={String(field.value)}>
                   <SelectTrigger className='w-full overflow-hidden'>
                     <SelectValue placeholder='Chọn địa chỉ mặc định' />
                   </SelectTrigger>
@@ -227,7 +226,7 @@ export default function Information() {
                     <SelectGroup>
                       {buyerAddresses.length ? (
                         buyerAddresses.map((addr) => (
-                          <SelectItem key={addr.id} value={addr.id}>
+                          <SelectItem key={addr.id} value={String(addr.id)}>
                             {addr.addressString}
                           </SelectItem>
                         ))

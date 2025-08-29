@@ -17,7 +17,8 @@ export const getListProvincesApi = async () => {
       headers: {
         token: envConfig.NEXT_PUBLIC_GHN_TOKEN_API
       },
-      baseUrl: GHN_BASE_URL
+      baseUrl: GHN_BASE_URL,
+      credentials: 'same-origin'
     }
   )
   return response.data
@@ -31,7 +32,8 @@ export const getListDistrictsByProvinceIdApi = async (provinceId: number) => {
       headers: {
         token: envConfig.NEXT_PUBLIC_GHN_TOKEN_API
       },
-      baseUrl: GHN_BASE_URL
+      baseUrl: GHN_BASE_URL,
+      credentials: 'omit'
     }
   )
   return response.data
@@ -43,7 +45,8 @@ export const getListWardsByDistrictIdApi = async (districtId: number) => {
     { district_id: districtId },
     {
       headers: { token: envConfig.NEXT_PUBLIC_GHN_TOKEN_API },
-      baseUrl: GHN_BASE_URL
+      baseUrl: GHN_BASE_URL,
+      credentials: 'omit'
     }
   )
   return response.data
@@ -59,7 +62,8 @@ export const getAvailableServicesApi = async (data: Record<string, number>) => {
     },
     {
       headers: { token: envConfig.NEXT_PUBLIC_GHN_TOKEN_API },
-      baseUrl: GHN_BASE_URL
+      baseUrl: GHN_BASE_URL,
+      credentials: 'omit'
     }
   )
   return response.data
@@ -75,7 +79,8 @@ export const getFeeApi = async (data: Record<string, unknown>) => {
         'Content-Type': 'application/json',
         shop_id: envConfig.NEXT_PUBLIC_GHN_SHOP_ID
       },
-      baseUrl: GHN_BASE_URL
+      baseUrl: GHN_BASE_URL,
+      credentials: 'omit'
     }
   )
   return response.data

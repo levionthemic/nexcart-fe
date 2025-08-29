@@ -39,9 +39,9 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 const addAddressFormSchema = z.object({
-  provinceId: z.number({ message: FIELD_REQUIRED_MESSAGE }),
-  districtId: z.number({ message: FIELD_REQUIRED_MESSAGE }),
-  wardCode: z
+  province_id: z.number({ message: FIELD_REQUIRED_MESSAGE }),
+  district_id: z.number({ message: FIELD_REQUIRED_MESSAGE }),
+  ward_code: z
     .string({ required_error: FIELD_REQUIRED_MESSAGE })
     .min(1, { message: FIELD_REQUIRED_MESSAGE }),
   address: z
@@ -58,16 +58,23 @@ export default function AddAddress({
   triggerParentRender: () => void
 }) {
   const addAddressForm = useForm<AddAddressFormSchemaType>({
-    resolver: zodResolver(addAddressFormSchema)
+    resolver: zodResolver(addAddressFormSchema),
+    defaultValues: {
+      province_id: 0,
+      district_id: 0,
+      ward_code: '',
+      address: ''
+    }
   })
+
   const [listProvinces, setListProvinces] = useState<GhnProvince[]>([])
   const [listDistricts, setListDistricts] = useState<GhnDistrict[]>([])
   const [listWards, setListWards] = useState<GhnWard[]>([])
 
-  const [provinceId, setProvinceId] = useState<number>(0)
+  const [province_id, setProvince_id] = useState<number>(0)
 
-  const [districtId, setDistrictId] = useState<number>(0)
-  const [wardCode, setWardCode] = useState<string>('')
+  const [district_id, setDistrict_id] = useState<number>(0)
+  const [ward_code, setWard_code] = useState<string>('')
 
   const [open, setOpen] = useState(false)
 
@@ -83,32 +90,32 @@ export default function AddAddress({
 
   useEffect(() => {
     setListWards([])
-    if (provinceId) {
-      getListDistrictsByProvinceIdApi(provinceId).then((data) => {
+    if (province_id) {
+      getListDistrictsByProvinceIdApi(province_id).then((data) => {
         if (data && data.length) setListDistricts(data)
       })
     }
-  }, [provinceId])
+  }, [province_id])
 
   useEffect(() => {
-    if (districtId) {
-      getListWardsByDistrictIdApi(districtId).then((data) => {
+    if (district_id) {
+      getListWardsByDistrictIdApi(district_id).then((data) => {
         if (data && data.length) setListWards(data)
       })
     }
-  }, [districtId])
+  }, [district_id])
 
   useEffect(() => {
-    if (provinceId && districtId && wardCode) {
-      addAddressForm.setValue('provinceId', provinceId)
-      addAddressForm.setValue('districtId', districtId)
-      addAddressForm.setValue('wardCode', wardCode)
+    if (province_id && district_id && ward_code) {
+      addAddressForm.setValue('province_id', province_id)
+      addAddressForm.setValue('district_id', district_id)
+      addAddressForm.setValue('ward_code', ward_code)
       addAddressForm.setValue('address', addAddressForm.watch('address'))
     }
   }, [
-    provinceId,
-    districtId,
-    wardCode,
+    province_id,
+    district_id,
+    ward_code,
     addAddressForm,
     listProvinces,
     listDistricts,
@@ -116,9 +123,9 @@ export default function AddAddress({
   ])
 
   const getDetails = (data: { type: string; id: number | string }) => {
-    if (data.type === 'province') setProvinceId(data.id as number)
-    else if (data.type === 'district') setDistrictId(data.id as number)
-    else setWardCode(data.id as string)
+    if (data.type === 'province') setProvince_id(data.id as number)
+    else if (data.type === 'district') setDistrict_id(data.id as number)
+    else setWard_code(data.id as string)
   }
 
   const onSubmit = (data: AddAddressFormSchemaType) => {
@@ -163,7 +170,7 @@ export default function AddAddress({
             <div className='grid grid-cols-3 gap-4 mb-4'>
               <FormField
                 control={addAddressForm.control}
-                name='provinceId'
+                name='province_id'
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -176,7 +183,7 @@ export default function AddAddress({
                         title={'Tỉnh/thành'}
                         getDetails={getDetails}
                         flag={'province'}
-                        error={!!addAddressForm.formState.errors?.provinceId}
+                        error={!!addAddressForm.formState.errors?.province_id}
                         defaultValue={field.value}
                         onChange={field.onChange}
                       />
@@ -188,7 +195,7 @@ export default function AddAddress({
 
               <FormField
                 control={addAddressForm.control}
-                name='districtId'
+                name='district_id'
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -201,7 +208,7 @@ export default function AddAddress({
                         title={'Quận/huyện'}
                         getDetails={getDetails}
                         flag={'district'}
-                        error={!!addAddressForm.formState.errors?.districtId}
+                        error={!!addAddressForm.formState.errors?.district_id}
                         defaultValue={field.value}
                         onChange={field.onChange}
                       />
@@ -213,7 +220,7 @@ export default function AddAddress({
 
               <FormField
                 control={addAddressForm.control}
-                name='wardCode'
+                name='ward_code'
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -226,7 +233,7 @@ export default function AddAddress({
                         title={'Phường/xã'}
                         getDetails={getDetails}
                         flag={'ward'}
-                        error={!!addAddressForm.formState.errors?.wardCode}
+                        error={!!addAddressForm.formState.errors?.ward_code}
                         defaultValue={field.value}
                         onChange={field.onChange}
                       />

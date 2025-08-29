@@ -81,7 +81,7 @@ export default function BuyerHeader() {
 
   useEffect(() => {
     if (currentUser) {
-      if (currentCart && !currentCart.cart_items.length) {
+      if (currentCart && currentCart.id === 0) {
         Promise.all(
           currentCart?.cart_items?.map((item) =>
             dispatch(

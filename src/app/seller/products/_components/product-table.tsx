@@ -77,7 +77,7 @@ import {
   TrashIcon
 } from 'lucide-react'
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
-import { useLoading } from '@/contexts/LoadingContext'
+import { useLoading } from '@/contexts/loading-context'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { ProductListItem } from '@/types/entities/product'

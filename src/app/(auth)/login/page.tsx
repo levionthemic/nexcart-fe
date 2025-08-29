@@ -1,5 +1,5 @@
 import LoginForm from '@/app/(auth)/login/login-form'
-import WithGoogleOAuthProvider from '@/components/providers/WithGoogleOAuthProvider'
+import MyGoogleOAuthProvider from '@/components/providers/my-google-oauth-provider'
 
 export default function LoginPage() {
   return (
@@ -10,9 +10,9 @@ export default function LoginPage() {
       }}
     >
       <div className='flex items-center justify-center w-full h-full bg-white/10 dark:bg-gray-900/40'>
-        <WithGoogleOAuthProvider>
+        <MyGoogleOAuthProvider>
           <LoginForm />
-        </WithGoogleOAuthProvider>
+        </MyGoogleOAuthProvider>
       </div>
     </div>
   )

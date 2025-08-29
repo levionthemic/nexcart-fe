@@ -1,4 +1,3 @@
-import { OrderProvider } from '@/contexts/order-context'
 import TimelineComponent from './[step]/_components/timeline-component'
 
 export default function CheckoutLayout({ children }: { children: React.ReactNode }) {
@@ -33,8 +32,7 @@ export default function CheckoutLayout({ children }: { children: React.ReactNode
 
       <div className=''>
         <TimelineComponent items={timelineItems} />
-
-        <OrderProvider>{children}</OrderProvider>
+        {children}
       </div>
     </div>
   )

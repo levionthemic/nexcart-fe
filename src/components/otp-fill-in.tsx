@@ -12,7 +12,7 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog'
 import { OTPInput } from 'input-otp'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { asyncHandler } from '@/utils/asyncHandler'
 import { useRouter } from 'next/navigation'
@@ -25,7 +25,7 @@ export default function OtpFillIn({
   trigger
 }: {
   open?: boolean
-  setOpen?: (open: boolean) => void | undefined
+  setOpen?: Dispatch<SetStateAction<boolean>>
   email?: string
   trigger?: React.ReactNode
 }) {

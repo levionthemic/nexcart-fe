@@ -5,7 +5,9 @@ type CustomOptions = RequestInit & {
   baseUrl?: string | undefined
 }
 
-class HttpError extends Error {
+type RequestBodyType = Record<string, unknown> | FormData
+
+export class HttpError extends Error {
   status: number
   message: string
   constructor(apiResponse: ApiResponse) {
@@ -30,7 +32,7 @@ const request = async <T>(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',
   url: string,
   options?: CustomOptions,
-  requestBody?: Record<string, unknown>
+  requestBody?: RequestBodyType
 ) => {
   const body = requestBody ? JSON.stringify(requestBody) : undefined
   const baseHeaders = {
@@ -47,7 +49,7 @@ const request = async <T>(
     ...options,
     method,
     headers: { ...baseHeaders, ...options?.headers },
-    credentials: 'include'
+    credentials: options?.credentials || 'include'
   }
 
   if (requestBody && method !== 'GET' && method !== 'DELETE') {
@@ -104,14 +106,14 @@ const http = {
   },
   post<T>(
     url: string,
-    body: Record<string, unknown>,
+    body: RequestBodyType,
     options?: Omit<CustomOptions, 'body'> | undefined
   ) {
     return request<T>('POST', url, options, body)
   },
   put<T>(
     url: string,
-    body: Record<string, unknown>,
+    body: RequestBodyType,
     options?: Omit<CustomOptions, 'body'> | undefined
   ) {
     return request<T>('PUT', url, options, body)

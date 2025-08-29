@@ -5,11 +5,12 @@ import { Button } from '@/components/ui/button'
 import { CircleUserRoundIcon, ImageUp, XIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectCurrentUser, updateUserAPI } from '@/redux/user/userSlice'
+import { selectCurrentUser, updateUserAction } from '@/redux/user/userSlice'
 import { useState } from 'react'
 import { AppDispatch } from '@/redux/store'
 import { AccountStatus } from '@/types/enums/account'
 import Image from 'next/image'
+import { DEFAULT_IMAGE_URL } from '@/utils/constants'
 
 interface UploadAvatarProps {
   avatar?: string
@@ -36,16 +37,13 @@ export default function UploadAvatar({ avatar, className }: UploadAvatarProps) {
     reqData.append('status', AccountStatus.ACTIVE)
     reqData.append('role', currentUser?.role as string)
 
-    toast.promise(dispatch(updateUserAPI(reqData)), {
+    toast.promise(dispatch(updateUserAction(reqData)), {
       loading: 'Đang tải hình ảnh lên...',
-      success: (res) => {
-        if (!res.error) {
-          handleRemove()
-          return 'Tải hình ảnh lên thành công!'
-        }
-        throw res
+      success: () => {
+        handleRemove()
+        return 'Tải hình ảnh lên thành công!'
       },
-      error: 'Đã có lỗi!'
+      error: (err) => err.message
     })
   }
 
@@ -80,8 +78,8 @@ export default function UploadAvatar({ avatar, className }: UploadAvatarProps) {
           ) : (
             <div aria-hidden='true'>
               {avatar ? (
-                <img
-                  src={avatar || '/assets/background-auth.jpg'}
+                <Image
+                  src={avatar || DEFAULT_IMAGE_URL}
                   alt=''
                   className='w-full object-cover'
                   width={64}

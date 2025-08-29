@@ -7,22 +7,22 @@ import { Address } from '@/types/entities/address'
 import { NotificationType } from '@/types/enums/notification-type'
 
 export const getAddressString = async (addr: Address) => {
-  const { provinceId, districtId, wardCode, address } = addr
+  const { province_id, district_id, ward_code, address } = addr
 
   const listProvinces = await getListProvincesApi()
   const listDistrictsByProvinceId = await getListDistrictsByProvinceIdApi(
-    provinceId
+    province_id
   )
-  const listWardsByDistrictId = await getListWardsByDistrictIdApi(districtId)
+  const listWardsByDistrictId = await getListWardsByDistrictIdApi(district_id)
 
   const provinceName = listProvinces?.find(
-    (p) => p.ProvinceID === provinceId
+    (p) => p.ProvinceID === province_id
   )?.ProvinceName
   const districtName = listDistrictsByProvinceId?.find(
-    (d) => d.DistrictID === districtId
+    (d) => d.DistrictID === district_id
   )?.DistrictName
   const wardName = listWardsByDistrictId?.find(
-    (w) => w.WardCode === wardCode
+    (w) => w.WardCode === ward_code
   )?.WardName
 
   return `${address}, ${wardName}, ${districtName}, ${provinceName}`

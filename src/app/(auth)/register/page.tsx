@@ -1,5 +1,5 @@
 import RegisterForm from '@/app/(auth)/register/register-form'
-import WithGoogleOAuthProvider from '@/components/providers/WithGoogleOAuthProvider'
+import MyGoogleOAuthProvider from '@/components/providers/my-google-oauth-provider'
 
 export default function RegisterPage() {
   return (
@@ -10,9 +10,9 @@ export default function RegisterPage() {
       }}
     >
       <div className='flex items-center justify-center w-full h-full bg-gray-500/10 dark:bg-gray-900/30'>
-        <WithGoogleOAuthProvider>
+        <MyGoogleOAuthProvider>
           <RegisterForm />
-        </WithGoogleOAuthProvider>
+        </MyGoogleOAuthProvider>
       </div>
     </div>
   )

@@ -24,8 +24,8 @@ export default function Confirmation() {
   const router = useRouter()
 
   const totalPrice = (clusterOrder: ClusterOrderListItem) => {
-    return clusterOrder.orderItems?.reduce(
-      (sum, item) => sum + item.quantity * item.product.type.price,
+    return clusterOrder.order_items?.reduce(
+      (sum, item) => sum + item.quantity * item.product_variant.price,
       0
     )
   }
@@ -35,28 +35,24 @@ export default function Confirmation() {
       Promise.all(
         clusterOrders.map((clusterOrder, index) => {
           const data: AddOrderPayload = {
-            sellerId: clusterOrder.seller.id,
-            shopId: clusterOrder.shop.id,
-            buyerAddressId: String(checkoutInfo?.information?.buyerAddress.id),
-            discountCode: checkoutInfo?.discountCode?.[index] || '',
+            seller_id: clusterOrder.seller.seller_id,
+            shop_id: clusterOrder.shop.id,
+            buyer_address_id: Number(
+              checkoutInfo?.information?.buyerAddress.id
+            ),
+            discount_code: checkoutInfo?.discountCode?.[index] || '',
             note: checkoutInfo?.note?.[index] || '',
-            originalPrice: clusterOrder.originalPrice,
-            finalPrice:
-              clusterOrder.originalPrice +
-              Number(checkoutInfo?.shipping?.[index].detail.total),
-            shippingFee: Number(checkoutInfo?.shipping?.[index].detail.total),
-            shippingMethod:
+            original_price: clusterOrder.original_price,
+            final_price:
+              clusterOrder.original_price +
+              Number(checkoutInfo?.shipping?.[index].detail.total || 0),
+            shipping_fee: Number(checkoutInfo?.shipping?.[index].detail.total || 0),
+            shipping_method:
               checkoutInfo?.shipping?.[index].type || ShippingMethod.GHN,
-            orderItems: clusterOrder.orderItems.map((orderItem) => ({
-              productId: orderItem.product.id,
-              typeId: orderItem.product.type.id,
-              quantity: orderItem.quantity,
-              unitPrice: orderItem.product.type.price,
-              discount: orderItem.product.type.discount,
-              finalPrice:
-                (orderItem.product.type.price *
-                  (100 - orderItem.product.type.discount)) /
-                100
+            order_items: clusterOrder.order_items.map((item) => ({
+              product_variant_id: item.product_variant.id,
+              quantity: item.quantity,
+              price_at_purchase: item.product_variant.price
             }))
           }
           return addOrderApi(data)
@@ -151,14 +147,14 @@ export default function Confirmation() {
                   <div className='text-md text-mainColor1-800 font-medium'>
                     Danh sách sản phẩm
                   </div>
-                  {clusterOrder.orderItems?.map(
-                    ({ product, quantity }, index) => (
+                  {clusterOrder.order_items?.map(
+                    ({ product_variant, quantity }, index) => (
                       <div
                         key={index}
                         className='flex items-center gap-4 my-4 overflow-hidden'
                       >
                         <Image
-                          src={product.avatar || DEFAULT_IMAGE_URL}
+                          src={product_variant.image_url || DEFAULT_IMAGE_URL}
                           alt=''
                           width={80}
                           height={80}
@@ -170,16 +166,16 @@ export default function Confirmation() {
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <span className='text-lg line-clamp-1 text-mainColor2-800 leading-none'>
-                                    {product.name}
+                                    {product_variant.name}
                                   </span>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                  <p>{product.name}</p>
+                                  <p>{product_variant.name}</p>
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
                             <p className='line-clamp-1 text-sm text-gray-400 mb-0.5'>
-                              Loại: {product.type.name}
+                              Loại: {product_variant.name}
                             </p>
                           </div>
                           <div className='flex flex-col lg:flex-row lg:items-center lg:gap-4'>
@@ -187,7 +183,7 @@ export default function Confirmation() {
                               {quantity} sản phẩm
                             </Badge>
                             <span className='text-muted-foreground'>
-                              x {product.type.price.toLocaleString('vi-VN')}
+                              x {product_variant.price.toLocaleString('vi-VN')}
                               <sup>đ</sup>
                             </span>
                           </div>

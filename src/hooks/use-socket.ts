@@ -1,4 +1,4 @@
-import { useSocketContext } from '@/components/providers/SocketProvider'
+import { useSocketContext } from '@/components/providers/socket-provider'
 
 export const useSocket = () => {
   const { notificationSocket } = useSocketContext()

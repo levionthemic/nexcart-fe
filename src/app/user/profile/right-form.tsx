@@ -1,6 +1,6 @@
 'use client'
 
-import OTP from '@/components/otp-fill-in'
+import OtpFillIn from '@/components/otp-fill-in'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -18,7 +18,9 @@ import { AccountStatus } from '@/types/enums/account'
 import {
   EMAIL_RULE,
   EMAIL_RULE_MESSAGE,
-  FIELD_REQUIRED_MESSAGE
+  FIELD_REQUIRED_MESSAGE,
+  PASSWORD_RULE,
+  PASSWORD_RULE_MESSAGE
 } from '@/utils/validators'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Pencil } from 'lucide-react'
@@ -32,7 +34,10 @@ const RightFormSchema = z.object({
     .string()
     .min(1, { message: FIELD_REQUIRED_MESSAGE })
     .regex(EMAIL_RULE, { message: EMAIL_RULE_MESSAGE }),
-  username: z.string()
+  password: z
+    .string()
+    .min(1, { message: FIELD_REQUIRED_MESSAGE })
+    .regex(PASSWORD_RULE, { message: PASSWORD_RULE_MESSAGE })
 })
 type RightFormSchemaType = z.infer<typeof RightFormSchema>
 
@@ -42,8 +47,8 @@ export default function ProfileRightForm() {
   const rightForm = useForm<RightFormSchemaType>({
     resolver: zodResolver(RightFormSchema),
     defaultValues: {
-      username: currentUser?.username,
-      email: currentUser?.email
+      email: currentUser?.email,
+      password: ''
     }
   })
 
@@ -68,26 +73,6 @@ export default function ProfileRightForm() {
       <form action='#' onSubmit={rightForm.handleSubmit(righFormHandleSubmit)}>
         <FormField
           control={rightForm.control}
-          name='username'
-          render={({ field }) => (
-            <FormItem className='mt-2 mb-4'>
-              <FormLabel className='text-base'>Tên tài khoản</FormLabel>
-              <FormControl>
-                <Input
-                  className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-full focus:outline-none focus:border-[2px] border-[1px] ${
-                    !!rightForm.formState.errors['username'] && 'border-red-500'
-                  }`}
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>Tên tài khoản của bạn.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={rightForm.control}
           name='email'
           render={({ field }) => (
             <FormItem className='my-4'>
@@ -101,7 +86,7 @@ export default function ProfileRightForm() {
                     }`}
                     {...field}
                   />
-                  <OTP
+                  <OtpFillIn
                     trigger={
                       <Button
                         variant='outline'
@@ -140,7 +125,7 @@ export default function ProfileRightForm() {
                     } ${showPasswordInput && 'hidden'}`}
                     {...field}
                   />
-                  <OTP
+                  <OtpFillIn
                     trigger={
                       <Button
                         variant='outline'
@@ -151,7 +136,7 @@ export default function ProfileRightForm() {
                         Thay đổi mật khẩu
                       </Button>
                     }
-                    setState={setShowPasswordInput}
+                    setOpen={setShowPasswordInput}
                   />
                 </div>
               </FormControl>
@@ -169,12 +154,12 @@ export default function ProfileRightForm() {
               onCheckedChange={setChecked}
               className='peer data-[state=unchecked]:bg-input/50 absolute inset-0 h-[inherit] w-auto rounded-lg [&_span]:z-10 [&_span]:h-full [&_span]:w-1/2 [&_span]:rounded-sm [&_span]:transition-transform [&_span]:duration-300 [&_span]:[transition-timing-function:cubic-bezier(0.16,1,0.3,1)] [&_span]:data-[state=checked]:translate-x-full [&_span]:data-[state=checked]:rtl:-translate-x-full'
             />
-            <span className='min-w-78flex pointer-events-none relative ms-0.5 items-center justify-center px-2 text-center transition-transform duration-300 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] peer-data-[state=checked]:invisible peer-data-[state=unchecked]:translate-x-full peer-data-[state=unchecked]:rtl:-translate-x-full'>
+            <span className='flex pointer-events-none relative ms-0.5 items-center justify-center px-2 text-center transition-transform duration-300 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] peer-data-[state=checked]:invisible peer-data-[state=unchecked]:translate-x-full peer-data-[state=unchecked]:rtl:-translate-x-full'>
               <span className='text-[10px] font-medium uppercase'>
                 Tạm khóa
               </span>
             </span>
-            <span className='min-w-78flex peer-data-[state=checked]:text-background pointer-events-none relative me-0.5 items-center justify-center px-2 text-center transition-transform duration-300 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] peer-data-[state=checked]:-translate-x-full peer-data-[state=unchecked]:invisible peer-data-[state=checked]:rtl:translate-x-full'>
+            <span className='flex peer-data-[state=checked]:text-background pointer-events-none relative me-0.5 items-center justify-center px-2 text-center transition-transform duration-300 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] peer-data-[state=checked]:-translate-x-full peer-data-[state=unchecked]:invisible peer-data-[state=checked]:rtl:translate-x-full'>
               <span className='text-[10px] font-medium uppercase'>
                 Bình thường
               </span>

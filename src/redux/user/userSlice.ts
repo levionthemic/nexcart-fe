@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../store'
 import { User } from '@/types/entities/user'
 import { Address } from '@/types/entities/address'
-import { Gender } from '@/types/enums/account'
 import http from '@/lib/http'
 import { LoginPayload, loginUserApi, logoutUserApi } from '@/apis/auth.api'
 
@@ -12,12 +11,11 @@ interface UserState {
 }
 
 //  Define payload types
-interface UpdatePayload {
+type UpdatePayload = {
   name?: string
   phone?: string
-  gender?: Gender
-  buyerAddress?: Address
-  defaultBuyerAddressId?: string
+  buyer_address?: Address
+  default_buyer_address_id?: number
 }
 
 //  Async Thunks

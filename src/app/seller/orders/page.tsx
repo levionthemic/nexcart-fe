@@ -3,7 +3,7 @@ import { Banknote, CircleX, NotepadText, Truck } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import CountUp from 'react-countup'
 
-import { useLoading } from '@/contexts/LoadingContext'
+import { useLoading } from '@/contexts/loading-context'
 import PageHeader from '../_components/page-header'
 import OrderTable from './order-table'
 import { getOrdersApi } from '@/apis/order.api'

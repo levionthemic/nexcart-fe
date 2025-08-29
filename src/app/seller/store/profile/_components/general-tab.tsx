@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/popover'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Textarea } from '@/components/ui/textarea'
-import UploadAvatar from '@/components/UploadAvatar'
+import UploadAvatar from '@/components/upload-avatar'
 import UploadImage from '@/components/UploadImage'
 import { cn } from '@/lib/utils'
 import { selectCurrentUser, updateUserAPI } from '@/redux/user/userSlice'
