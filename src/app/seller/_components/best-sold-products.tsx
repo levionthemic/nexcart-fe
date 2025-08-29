@@ -1,17 +1,32 @@
 'use client'
 
-import { getProductsApi } from '@/apis/product.api'
+import { getSellerProductsApi } from '@/apis/product.api'
+import { selectCurrentUser } from '@/redux/user/userSlice'
 import { ProductListItem } from '@/types/entities/product'
 import { DEFAULT_IMAGE_URL } from '@/utils/constants'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 
 export default function BestSoldProducts() {
-  const [bestSoldProducts, setBestSoldProducts] = useState<ProductListItem[]>([])
+  const [bestSoldProducts, setBestSoldProducts] = useState<ProductListItem[]>(
+    []
+  )
+
+  const currentUser = useSelector(selectCurrentUser)
 
   useEffect(() => {
-    getProductsApi().then(data => setBestSoldProducts(data?.data || []))
+    getSellerProductsApi(String(currentUser?.seller?.seller_id)).then((data) =>
+      setBestSoldProducts(data?.data || [])
+    )
   }, [])
+
+  const calculateAveragePrice = (product: ProductListItem) => {
+    return Math.ceil(
+      product.product_variants.reduce((sum, item) => sum + item.price, 0) /
+        product.product_variants.length
+    )
+  }
 
   return (
     <ul className='space-y-2'>
@@ -19,7 +34,7 @@ export default function BestSoldProducts() {
         <li key={product?.id} className='flex items-center gap-4'>
           <div className='flex items-center gap-3 flex-1'>
             <Image
-              src={product?.avatar || DEFAULT_IMAGE_URL}
+              src={product?.thumbnail_url || DEFAULT_IMAGE_URL}
               alt='Ảnh'
               width={40}
               height={40}
@@ -28,7 +43,7 @@ export default function BestSoldProducts() {
             <div className='flex flex-col'>
               <span className='line-clamp-1'>{product?.name}</span>
               <span className='text-sm text-muted-foreground'>
-                {product?.averagePrice.toLocaleString('vi-vn')}
+                {calculateAveragePrice(product).toLocaleString('vi-vn')}
                 <sup>đ</sup>
               </span>
             </div>

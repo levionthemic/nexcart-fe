@@ -58,7 +58,7 @@ export default function SellerHeader() {
           </Avatar>
           <div>
             <div className='text-sm font-semibold'>
-              {currentUser?.buyer?.name || 'Chưa có tên'}
+              {currentUser?.seller?.name || 'Chưa có tên'}
             </div>
             <div className='text-xs text-gray-400'>Người bán</div>
           </div>

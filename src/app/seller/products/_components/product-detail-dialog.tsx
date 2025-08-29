@@ -12,10 +12,20 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
-import { Product } from '@/types/entities/product'
+import { Product, ProductVariant } from '@/types/entities/product'
 import Link from 'next/link'
 
 function ProductDetailDialog({ product }: { product: Product }) {
+  const averagePrice = Math.ceil(
+    product.product_variants.reduce((sum, item) => sum + item.price, 0) /
+      product.product_variants.length
+  )
+  const totalStock = (product_variant: ProductVariant) => {
+    return product_variant.shop_product_variants.reduce(
+      (sum, item) => sum + item.stock_quantity,
+      0
+    )
+  }
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -40,7 +50,7 @@ function ProductDetailDialog({ product }: { product: Product }) {
         {/* Hình ảnh sản phẩm */}
         <div className='flex justify-center py-4'>
           <Image
-            src={product.avatar}
+            src={product.thumbnail_url}
             alt={product.name}
             width={160}
             height={160}
@@ -57,8 +67,7 @@ function ProductDetailDialog({ product }: { product: Product }) {
             <strong>Danh mục:</strong> {product.category.name}
           </p>
           <p>
-            <strong>Giá trung bình:</strong> {product.averagePrice.toLocaleString()}{' '}
-            đ
+            <strong>Giá trung bình:</strong> {averagePrice.toLocaleString()} đ
           </p>
           <p>
             <strong>Đã bán:</strong> {product.sold} sản phẩm
@@ -72,9 +81,10 @@ function ProductDetailDialog({ product }: { product: Product }) {
         <div className='mt-4'>
           <h3 className='font-semibold'>Đặc điểm sản phẩm:</h3>
           <ul className='list-disc list-inside text-sm text-gray-700'>
-            {product.features.map((feature, index) => (
+            {product.specifications.map((specifications, index) => (
               <li key={index}>
-                <strong>{feature.field}:</strong> {feature.content}
+                <strong>{specifications.field}:</strong>{' '}
+                {specifications.content}
               </li>
             ))}
           </ul>
@@ -84,10 +94,9 @@ function ProductDetailDialog({ product }: { product: Product }) {
         <div className='mt-4'>
           <h3 className='font-semibold'>Các phiên bản:</h3>
           <ul className='list-disc list-inside text-sm text-gray-700'>
-            {product.types.map((type) => (
-              <li key={type.typeId}>
-                {type.typeName} - {type.price.toLocaleString()} đ (Còn:{' '}
-                {type.stock})
+            {product.product_variants.map((pv) => (
+              <li key={pv.id}>
+                {pv.name} - {pv.price.toLocaleString()} đ (Còn: {totalStock(pv)})
               </li>
             ))}
           </ul>

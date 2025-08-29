@@ -34,14 +34,14 @@ export default function LatestOrders() {
       </TableHeader>
       <TableBody>
         {latestOrders.map((item) => (
-          <TableRow key={item._id}>
+          <TableRow key={item.order_code}>
             <TableCell>
-              <div>{item._id}</div>
+              <div>{item.order_code}</div>
             </TableCell>
-            <TableCell>{dayjs(item.createdAt).format('DD/MM/YYYY')}</TableCell>
-            <TableCell>{item.buyerName}</TableCell>
+            <TableCell>{dayjs(item.created_at).format('DD/MM/YYYY')}</TableCell>
+            <TableCell>{item.buyer.name}</TableCell>
             <TableCell className='font-bold text-red-500'>
-              {item.finalPrice.toLocaleString('vi-vn')}
+              {item.final_price.toLocaleString('vi-vn')}
               <sup>đ</sup>
             </TableCell>
             <TableCell className='text-right'>
