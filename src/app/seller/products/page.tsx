@@ -4,8 +4,25 @@ import { Banknote, PackageOpen, RotateCcw, Truck } from 'lucide-react'
 import CountUp from 'react-countup'
 import ProductTable from './_components/product-table'
 import PageHeader from '../_components/page-header'
+import { useEffect, useState } from 'react'
+import { ProductListItem } from '@/types/entities/product'
+import { useLoading } from '@/contexts/loading-context'
+import { getSellerProductsApi } from '@/apis/product.api'
+import { useSelector } from 'react-redux'
+import { selectCurrentUser } from '@/redux/user/userSlice'
 
 export default function Products() {
+  const [products, setProducts] = useState<ProductListItem[]>([])
+  const currentUser = useSelector(selectCurrentUser)
+  const { startLoading, endLoading } = useLoading()
+
+  useEffect(() => {
+      startLoading()
+      getSellerProductsApi(String(currentUser?.seller?.seller_id)).then((data) =>
+        setProducts(data || [])
+      ).finally(() => endLoading())
+    }, [])
+  
   return (
     <div className='px-6 py-4'>
       <PageHeader
@@ -30,7 +47,7 @@ export default function Products() {
             </span>
             <span className='text-2xl font-bold flex items-end gap-1'>
               <CountUp
-                end={1461}
+                end={products.length}
                 duration={1.5}
                 separator='.'
                 className='leading-none'
@@ -49,7 +66,7 @@ export default function Products() {
             </span>
             <span className='text-2xl font-bold flex items-end gap-1'>
               <CountUp
-                end={214}
+                end={1}
                 duration={1.5}
                 separator='.'
                 className='leading-none'
@@ -68,7 +85,7 @@ export default function Products() {
             </span>
             <span className='text-2xl font-bold flex items-end gap-1'>
               <CountUp
-                end={148}
+                end={products.filter(p => p.sold > 0).length}
                 duration={1.5}
                 separator='.'
                 className='leading-none'
@@ -87,7 +104,7 @@ export default function Products() {
             </span>
             <span className='text-2xl font-bold flex items-end gap-1'>
               <CountUp
-                end={50}
+                end={0}
                 duration={1.5}
                 separator='.'
                 className='leading-none'
@@ -101,7 +118,7 @@ export default function Products() {
         </div>
       </div>
 
-      <ProductTable />
+      <ProductTable data={products} setData={setProducts}/>
     </div>
   )
 }

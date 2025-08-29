@@ -213,7 +213,7 @@ export default function CreateProductForm({
                   </FormControl>
                   <SelectContent>
                     {categories.map((c) => (
-                      <SelectItem key={c.id} value={c.id}>
+                      <SelectItem key={c.id} value={String(c.id)}>
                         {c.name}
                       </SelectItem>
                     ))}
@@ -250,7 +250,7 @@ export default function CreateProductForm({
                   </FormControl>
                   <SelectContent>
                     {brands.map((b) => (
-                      <SelectItem key={b.id} value={b.id}>
+                      <SelectItem key={b.id} value={String(b.id)}>
                         {b.name}
                       </SelectItem>
                     ))}
@@ -605,7 +605,7 @@ export default function CreateProductForm({
                             </FormControl>
                             <SelectContent>
                               {shops.map((shop, index) => (
-                                <SelectItem key={shop.id} value={shop.id}>
+                                <SelectItem key={shop.id} value={String(shop.id)}>
                                   Cửa hàng {index + 1}
                                 </SelectItem>
                               ))}

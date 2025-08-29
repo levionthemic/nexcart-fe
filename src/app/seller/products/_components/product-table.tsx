@@ -51,12 +51,15 @@ import {
 } from '@/components/ui/table'
 import {
   ColumnDef,
+  ColumnFilter,
   flexRender,
   getCoreRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  HeaderContext,
+  Row,
   useReactTable
 } from '@tanstack/react-table'
 import {
@@ -76,27 +79,42 @@ import {
   Trash,
   TrashIcon
 } from 'lucide-react'
-import { useEffect, useId, useMemo, useRef, useState } from 'react'
+import { useId, useMemo, useRef, useState } from 'react'
 import { useLoading } from '@/contexts/loading-context'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { ProductListItem } from '@/types/entities/product'
-// import ProductDetailDialog from './product-detail-dialog'
-import { DEFAULT_IMAGE_URL } from '@/utils/constants'
-import { getProductsApi } from '@/apis/product.api'
+import ProductDetailDialog from './product-detail-dialog'
+import { DEFAULT_IMAGE_URL, DEFAULT_ITEMS_PER_PAGE } from '@/utils/constants'
+import { CheckedState } from '@radix-ui/react-checkbox'
 
 // Custom filter function for multi-column searching
-const multiColumnFilterFn = (row, columnId, filterValue) => {
+const multiColumnFilterFn = (
+  row: Row<ProductListItem>,
+  columnId: string,
+  filterValue: string
+) => {
   const searchableRowContent =
-    `${row.original.name} ${row.original.email}`.toLowerCase()
+    `${row.original.id} ${row.original.name}`.toLowerCase()
   const searchTerm = (filterValue ?? '').toLowerCase()
   return searchableRowContent.includes(searchTerm)
 }
 
-const statusFilterFn = (row, columnId, filterValue) => {
+const statusFilterFn = (
+  row: Row<ProductListItem>,
+  columnId: string,
+  filterValue: string
+) => {
   if (!filterValue?.length) return true
-  const status = row.getValue(columnId)
+  const status = row.getValue(columnId) as string
   return filterValue.includes(status)
+}
+
+const calculateAveragePrice = (product: ProductListItem) => {
+  return Math.ceil(
+    product.product_variants.reduce((sum, item) => item.price, 0) /
+      product.product_variants.length
+  )
 }
 
 const columns: ColumnDef<ProductListItem>[] = [
@@ -125,12 +143,12 @@ const columns: ColumnDef<ProductListItem>[] = [
     enableResizing: false
   },
   {
-    id: 'avatar',
+    id: 'thumbnail_url',
     header: 'Ảnh',
-    accessorKey: 'avatar',
+    accessorKey: 'thumbnail_url',
     cell: ({ row }) => (
       <Image
-        src={row.getValue('avatar') || DEFAULT_IMAGE_URL}
+        src={row.getValue('thumbnail_url') || DEFAULT_IMAGE_URL}
         alt=''
         width={40}
         height={40}
@@ -152,9 +170,22 @@ const columns: ColumnDef<ProductListItem>[] = [
     size: 200
   },
   {
-    id: 'categoryId',
+    id: 'id',
+    header: 'Mã SP',
+    accessorKey: 'id',
+    cell: ({ row }) => (
+      <div className='line-clamp-4 text-wrap font-medium'>
+        {row.getValue('id')}
+      </div>
+    ),
+    size: 80,
+    filterFn: multiColumnFilterFn,
+    enableSorting: true
+  },
+  {
+    id: 'category_id',
     header: 'Danh mục',
-    accessorKey: 'categoryId',
+    accessorFn: (row) => row.category.id,
     cell: ({ row }) => (
       <div className='line-clamp-4 text-wrap'>{row.original.category.name}</div>
     ),
@@ -162,9 +193,9 @@ const columns: ColumnDef<ProductListItem>[] = [
     enableSorting: false
   },
   {
-    id: 'brandId',
+    id: 'brand_id',
     header: 'Thương hiệu',
-    accessorKey: 'brandId',
+    accessorFn: (row) => row.brand.id,
     cell: ({ row }) => (
       <div className='line-clamp-4 text-wrap'>{row.original.brand.name}</div>
     ),
@@ -172,12 +203,11 @@ const columns: ColumnDef<ProductListItem>[] = [
     enableSorting: false
   },
   {
-    id: 'averagePrice',
+    id: 'average_price',
     header: 'Giá trung bình',
-    accessorKey: 'averagePrice',
     cell: ({ row }) => (
       <span className='font-bold'>
-        {Number(row.getValue('averagePrice')).toLocaleString('vi-vn')}
+        {calculateAveragePrice(row.original).toLocaleString()}
         <sup>đ</sup>
       </span>
     ),
@@ -196,37 +226,42 @@ const columns: ColumnDef<ProductListItem>[] = [
     size: 50
   },
   {
-    id: 'createdAt',
+    id: 'created_at',
     header: 'Ngày tạo',
-    accessorKey: 'createdAt',
+    accessorKey: 'created_at',
     cell: ({ row }) => (
-      <span>{new Date(row.getValue('createdAt')).toLocaleString('vi-vn')}</span>
+      <span>
+        {new Date(row.getValue('created_at')).toLocaleString('vi-vn')}
+      </span>
     ),
     size: 100
   },
   {
-    id: 'updatedAt',
+    id: 'updated_at',
     header: 'Ngày cập nhật',
     cell: ({ row }) => (
-      <span>{new Date(row.getValue('updatedAt')).toLocaleString('vi-vn')}</span>
+      <span>
+        {new Date(row.getValue('updated_at')).toLocaleString('vi-vn')}
+      </span>
     ),
-    accessorKey: 'updatedAt',
+    accessorKey: 'updated_at',
     size: 100
   },
   {
-    id: 'isDeleted',
+    id: 'is_deleted',
     header: 'Trạng thái',
-    accessorKey: 'isDeleted',
+    accessorKey: 'is_deleted',
     cell: ({ row }) => (
-      <Badge>{row.getValue('isDeleted') ? 'Đã xóa' : 'Bình thường'}</Badge>
+      <Badge>{row.getValue('is_deleted') ? 'Đã xóa' : 'Bình thường'}</Badge>
     ),
     size: 85,
     enableResizing: false,
-    enableSorting: false
+    enableSorting: false,
+    filterFn: statusFilterFn
   },
   {
     id: 'actions',
-    header: <div className='text-center'>Thao tác</div>,
+    header: () => <div className='text-center'>Thao tác</div>,
     cell: ({ row }) => <RowActions row={row} />,
     size: 85,
     enableResizing: false,
@@ -235,22 +270,25 @@ const columns: ColumnDef<ProductListItem>[] = [
   }
 ]
 
-export default function ProductTable() {
+export default function ProductTable({
+  data,
+  setData
+}: {
+  data: ProductListItem[]
+  setData: React.Dispatch<React.SetStateAction<ProductListItem[]>>
+}) {
   const router = useRouter()
   const id = useId()
-  const [data, setData] = useState<ProductListItem[]>([])
+  const { apiLoadingCount } = useLoading()
 
-  useEffect(() => {
-    getProductsApi().then((data) => setData(data?.data || []))
-  }, [])
-
-  const { isDataLoading } = useLoading()
-  const [columnFilters, setColumnFilters] = useState([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFilter[]>([])
   const [columnVisibility, setColumnVisibility] = useState({})
+
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 10
+    pageSize: DEFAULT_ITEMS_PER_PAGE
   })
+
   const inputRef = useRef<HTMLInputElement>(null)
 
   const [sorting, setSorting] = useState([
@@ -293,7 +331,7 @@ export default function ProductTable() {
 
   // Get unique status values
   const uniqueStatusValues = useMemo(() => {
-    const statusColumn = table.getColumn('isDeleted')
+    const statusColumn = table.getColumn('is_deleted')
 
     if (!statusColumn) return []
 
@@ -304,18 +342,22 @@ export default function ProductTable() {
 
   // Get counts for each status
   const statusCounts = useMemo(() => {
-    const statusColumn = table.getColumn('isDeleted')
+    const statusColumn = table.getColumn('is_deleted')
     if (!statusColumn) return new Map()
     return statusColumn.getFacetedUniqueValues()
   }, [table])
 
   const selectedStatuses = useMemo(() => {
-    const filterValue = table.getColumn('isDeleted')?.getFilterValue()
+    const filterValue = table
+      .getColumn('is_deleted')
+      ?.getFilterValue() as boolean[]
     return filterValue ?? []
   }, [table])
 
-  const handleStatusChange = (checked, value) => {
-    const filterValue = table.getColumn('isDeleted')?.getFilterValue()
+  const handleStatusChange = (checked: CheckedState, value: boolean) => {
+    const filterValue = table
+      .getColumn('is_deleted')
+      ?.getFilterValue() as boolean[]
     const newFilterValue = filterValue ? [...filterValue] : []
 
     if (checked) {
@@ -328,7 +370,7 @@ export default function ProductTable() {
     }
 
     table
-      .getColumn('_deleted')
+      .getColumn('is_deleted')
       ?.setFilterValue(newFilterValue.length ? newFilterValue : undefined)
   }
 
@@ -350,7 +392,9 @@ export default function ProductTable() {
                 'peer min-w-80 ps-9',
                 Boolean(table.getColumn('name')?.getFilterValue()) && 'pe-9'
               )}
-              value={table.getColumn('name')?.getFilterValue() as string ?? ''}
+              value={
+                (table.getColumn('name')?.getFilterValue() as string) ?? ''
+              }
               onChange={(e) =>
                 table.getColumn('name')?.setFilterValue(e.target.value)
               }
@@ -450,8 +494,12 @@ export default function ProductTable() {
                       }
                       onSelect={(event) => event.preventDefault()}
                     >
-                      {column.columnDef.header?.props?.children ||
-                        column.columnDef.header}
+                      {typeof column.columnDef.header === 'function'
+                        ? flexRender(column.columnDef.header, {
+                            table,
+                            column
+                          } as HeaderContext<ProductListItem, unknown>)
+                        : column.columnDef.header}
                     </DropdownMenuCheckboxItem>
                   )
                 })}
@@ -592,7 +640,8 @@ export default function ProductTable() {
                                 aria-hidden='true'
                               />
                             )
-                          }[header.column.getIsSorted()] ?? null}
+                          }[header.column.getIsSorted() as 'asc' | 'desc'] ??
+                            null}
                         </div>
                       )}
                       {header.column.getCanResize() && (
@@ -636,7 +685,7 @@ export default function ProductTable() {
                   colSpan={columns.length}
                   className='h-24 text-center'
                 >
-                  {isDataLoading ? 'Đang tải dữ liệu...' : 'Không có kết quả'}
+                  {apiLoadingCount ? 'Đang tải dữ liệu...' : 'Không có kết quả'}
                 </TableCell>
               </TableRow>
             )}
@@ -661,7 +710,7 @@ export default function ProductTable() {
               <SelectValue placeholder='Select number of results' />
             </SelectTrigger>
             <SelectContent className='[&_*[role=option]]:ps-2 [&_*[role=option]]:pe-8 [&_*[role=option]>span]:start-auto [&_*[role=option]>span]:end-2'>
-              {[5, 10, 25, 50].map((pageSize) => (
+              {[5, 10, 20, 40].map((pageSize) => (
                 <SelectItem key={pageSize} value={pageSize.toString()}>
                   {pageSize}
                 </SelectItem>
@@ -761,7 +810,7 @@ export default function ProductTable() {
   )
 }
 
-function RowActions({ row }) {
+function RowActions({ row }: { row: Row<ProductListItem> }) {
   return (
     <div className='flex justify-between'>
       <Button
@@ -782,7 +831,7 @@ function RowActions({ row }) {
         <Trash size={10} aria-hidden='true' />
       </Button>
 
-      {/* <ProductDetailDialog product={row.original} /> */}
+      <ProductDetailDialog productProp={row.original} />
     </div>
   )
 }
