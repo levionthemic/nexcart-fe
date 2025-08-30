@@ -79,14 +79,13 @@ import {
   Trash,
   TrashIcon
 } from 'lucide-react'
-import { useEffect, useId, useMemo, useRef, useState } from 'react'
+import { useId, useMemo, useRef, useState } from 'react'
 import { useLoading } from '@/contexts/loading-context'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { Product, ProductListItem } from '@/types/entities/product'
+import { ProductListItem } from '@/types/entities/product'
 import ProductDetailDialog from './product-detail-dialog'
-import { DEFAULT_IMAGE_URL } from '@/utils/constants'
-import { getProductsApi } from '@/apis/product.api'
+import { DEFAULT_IMAGE_URL, DEFAULT_ITEMS_PER_PAGE } from '@/utils/constants'
 import { CheckedState } from '@radix-ui/react-checkbox'
 
 // Custom filter function for multi-column searching
@@ -271,22 +270,25 @@ const columns: ColumnDef<ProductListItem>[] = [
   }
 ]
 
-export default function ProductTable() {
+export default function ProductTable({
+  data,
+  setData
+}: {
+  data: ProductListItem[]
+  setData: React.Dispatch<React.SetStateAction<ProductListItem[]>>
+}) {
   const router = useRouter()
   const id = useId()
-  const [data, setData] = useState<ProductListItem[]>([])
   const { apiLoadingCount } = useLoading()
-
-  useEffect(() => {
-    getProductsApi().then((data) => setData(data?.data || []))
-  }, [])
 
   const [columnFilters, setColumnFilters] = useState<ColumnFilter[]>([])
   const [columnVisibility, setColumnVisibility] = useState({})
+
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 10
+    pageSize: DEFAULT_ITEMS_PER_PAGE
   })
+
   const inputRef = useRef<HTMLInputElement>(null)
 
   const [sorting, setSorting] = useState([
@@ -708,7 +710,7 @@ export default function ProductTable() {
               <SelectValue placeholder='Select number of results' />
             </SelectTrigger>
             <SelectContent className='[&_*[role=option]]:ps-2 [&_*[role=option]]:pe-8 [&_*[role=option]>span]:start-auto [&_*[role=option]>span]:end-2'>
-              {[5, 10, 25, 50].map((pageSize) => (
+              {[5, 10, 20, 40].map((pageSize) => (
                 <SelectItem key={pageSize} value={pageSize.toString()}>
                   {pageSize}
                 </SelectItem>
@@ -808,7 +810,7 @@ export default function ProductTable() {
   )
 }
 
-function RowActions({ row }: { row: Row<Product> }) {
+function RowActions({ row }: { row: Row<ProductListItem> }) {
   return (
     <div className='flex justify-between'>
       <Button
@@ -829,7 +831,7 @@ function RowActions({ row }: { row: Row<Product> }) {
         <Trash size={10} aria-hidden='true' />
       </Button>
 
-      <ProductDetailDialog product={row.original} />
+      <ProductDetailDialog productProp={row.original} />
     </div>
   )
 }

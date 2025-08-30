@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { CircleUserRoundIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectCurrentUser, updateUserAPI } from '@/redux/user/userSlice'
+import { selectCurrentUser, updateUserAction } from '@/redux/user/userSlice'
 import Image from 'next/image'
 import { AccountStatus } from '@/types/enums/account'
 import { AppDispatch } from '@/redux/store'
@@ -29,15 +29,13 @@ export default function UploadImage({ fieldName }: { fieldName: string }) {
     reqData.append('status', AccountStatus.ACTIVE)
     reqData.append('role', currentUser?.role as string)
 
-    toast.promise(dispatch(updateUserAPI(reqData)), {
+    toast.promise(dispatch(updateUserAction(reqData)), {
       loading: 'Đang tải hình ảnh lên...',
-      success: (res) => {
-        if (!res.error) {
-          handleRemove()
-          return 'Tải hình ảnh lên thành công!'
-        }
-        throw res
-      }
+      success: () => {
+        handleRemove()
+        return 'Tải hình ảnh lên thành công!'
+      },
+      error: (err) => `Lỗi: ${err.message || 'Không thể tải hình ảnh lên'}`
     })
   }
 
