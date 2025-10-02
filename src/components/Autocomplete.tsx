@@ -29,11 +29,11 @@ interface AutocompleteProps {
   data?: DataType[]
   label?: string
   title?: string
-  getDetails: ({ id, type }: { id: string | number; type: string }) => void
   flag: string
   error: boolean
   defaultValue: string | number
   onChange: (value: string | number) => void
+  getDetails?: ({ id, type }: { id: string | number; type: string }) => void
 }
 
 export default function Autocomplete({
@@ -93,7 +93,7 @@ export default function Autocomplete({
                     key={i.id}
                     value={String(i.value)}
                     onSelect={(currentValue) => {
-                      getDetails({ id: i.id, type: flag })
+                      getDetails?.({ id: i.id, type: flag })
                       const newValue =
                         currentValue === i.label ||
                         currentValue === String(i.value)

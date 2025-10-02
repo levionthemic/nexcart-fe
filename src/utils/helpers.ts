@@ -70,3 +70,28 @@ export const categorizeDate = (inputDate: Date) => {
   }
 }
 
+export function generateSKU(): string {
+  // Lấy 12 số đầu ngẫu nhiên
+  const base = Array.from({ length: 12 }, () =>
+    Math.floor(Math.random() * 10).toString()
+  ).join('')
+
+  // Tính số kiểm tra (check digit) theo chuẩn EAN-13
+  const digits = base.split('').map(Number)
+  const sum = digits.reduce((acc, d, i) => acc + (i % 2 === 0 ? d : d * 3), 0)
+
+  const checkDigit = (10 - (sum % 10)) % 10
+
+  return base + checkDigit.toString()
+}
+
+export function objectToFormData(obj: Record<string, any>): FormData {
+  const formData = new FormData();
+  for (const key in obj) {
+    if (obj[key] !== undefined && obj[key] !== null) {
+      formData.append(key, obj[key]);
+    }
+  }
+  return formData;
+}
+

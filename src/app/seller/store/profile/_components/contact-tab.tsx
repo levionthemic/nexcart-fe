@@ -16,7 +16,7 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { selectCurrentUser, updateUserAPI } from '@/redux/user/userSlice'
+import { selectCurrentUser, updateUserAction } from '@/redux/user/userSlice'
 import {
   EMAIL_RULE,
   EMAIL_RULE_MESSAGE,
@@ -50,8 +50,8 @@ export default function ContactTab() {
     defaultValues: {
       phone: currentUser?.phone || '',
       email: currentUser?.email || '',
-      address: currentUser?.address || '',
-      socialNetworks: currentUser?.socialNetworks || ['', '', '']
+      address: currentUser?.seller?.address || '',
+      socialNetworks: currentUser?.seller.socialNetworks || ['', '', '']
     }
   })
 
@@ -59,7 +59,7 @@ export default function ContactTab() {
     delete data['email']
     toast.promise(
       dispatch(
-        updateUserAPI({
+        updateUserAction({
           ...data,
           status: AccountStatus.ACTIVE,
           role: currentUser?.role

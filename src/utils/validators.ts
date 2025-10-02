@@ -6,6 +6,8 @@ export const PASSWORD_RULE_MESSAGE = 'Mật khẩu phải có ít nhất 8 kí t
 export const PASSWORD_CONFIRMATION_MESSAGE = 'Mật khẩu Xác nhận không trùng khớp!'
 export const PHONE_NUMBER_RULE = /^(0|\+84)(3[2-9]|5[2689]|7[0-9]|8[1-9]|9[0-9])\d{7}$/
 export const PHONE_NUMBER_RULE_MESSAGE = 'Số điện thoại không hợp lệ.'
+export const STRING_CONTAIN_NUMBER_RULE = /^\d+$/
+export const STRING_CONTAIN_NUMBER_RULE_MESSAGE = 'Trường này phải là số.'
 
 
 export const LIMIT_COMMON_FILE_SIZE = 10485760 // byte = 10 MB

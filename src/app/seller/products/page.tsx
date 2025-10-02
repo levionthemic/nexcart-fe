@@ -17,12 +17,12 @@ export default function Products() {
   const { startLoading, endLoading } = useLoading()
 
   useEffect(() => {
-      startLoading()
-      getSellerProductsApi(String(currentUser?.seller?.seller_id)).then((data) =>
-        setProducts(data || [])
-      ).finally(() => endLoading())
-    }, [])
-  
+    startLoading()
+    getSellerProductsApi(String(currentUser?.seller?.seller_id))
+      .then((data) => setProducts(data || []))
+      .finally(() => endLoading())
+  }, [])
+
   return (
     <div className='px-6 py-4'>
       <PageHeader
@@ -85,7 +85,7 @@ export default function Products() {
             </span>
             <span className='text-2xl font-bold flex items-end gap-1'>
               <CountUp
-                end={products.filter(p => p.sold > 0).length}
+                end={products.filter((p) => p.sold > 0).length}
                 duration={1.5}
                 separator='.'
                 className='leading-none'
@@ -118,7 +118,7 @@ export default function Products() {
         </div>
       </div>
 
-      <ProductTable data={products} setData={setProducts}/>
+      <ProductTable data={products} setData={setProducts} />
     </div>
   )
 }

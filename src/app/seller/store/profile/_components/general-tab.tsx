@@ -26,23 +26,53 @@ import {
 } from '@/components/ui/popover'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Textarea } from '@/components/ui/textarea'
-import UploadAvatar from '@/components/upload-avatar'
-import UploadImage from '@/components/UploadImage'
 import { cn } from '@/lib/utils'
-import { selectCurrentUser, updateUserAPI } from '@/redux/user/userSlice'
+import { selectCurrentUser, updateUserAction } from '@/redux/user/userSlice'
 import { FIELD_REQUIRED_MESSAGE } from '@/utils/validators'
 import { z } from 'zod'
 import { AccountStatus } from '@/types/enums/account'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AppDispatch } from '@/redux/store'
+import UploadCoverPhoto from './upload-cover-photo'
+import UploadAvatar from './upload-avatar'
+import { objectToFormData } from '@/utils/helpers'
 
 const formSchema = z.object({
   name: z
     .string({ required_error: FIELD_REQUIRED_MESSAGE })
     .min(1, { message: FIELD_REQUIRED_MESSAGE }),
-  foundedDate: z.date({ required_error: FIELD_REQUIRED_MESSAGE }),
+  foundedDate: z.coerce.date(),
   status: z.nativeEnum(AccountStatus),
-  description: z.string()
+  description: z.string().optional(),
+  avatar: z.union([
+    z
+      .custom<File>((file) => file instanceof File, {
+        message: 'Bắt buộc cung cấp ảnh!'
+      })
+      .refine((file) => file.size <= 2 * 1024 * 1024, {
+        message: 'Ảnh tối đa 2MB'
+      })
+      .refine(
+        (file) => {
+          return file ? ['image/jpeg', 'image/png'].includes(file.type) : false
+        },
+        { message: 'Chỉ chấp nhận JPG/PNG' }
+      ),
+    z.string().optional()
+  ]),
+  cover_photo: z
+    .custom<File>((file) => file instanceof File, {
+      message: 'Bắt buộc cung cấp ảnh!'
+    })
+    .refine((file) => file.size <= 2 * 1024 * 1024, {
+      message: 'Ảnh tối đa 2MB'
+    })
+    .refine(
+      (file) => {
+        return file ? ['image/jpeg', 'image/png'].includes(file.type) : false
+      },
+      { message: 'Chỉ chấp nhận JPG/PNG' }
+    )
 })
 
 export type GeneralTabFormSchemaType = z.infer<typeof formSchema>
@@ -55,35 +85,28 @@ export default function GeneralTab() {
   const form = useForm<GeneralTabFormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: currentUser?.name || 'LEVI Store',
-      foundedDate: currentUser?.foundedDate || undefined,
+      name: currentUser?.seller?.name || 'LEVI Store',
+      foundedDate: currentUser?.seller?.foundedDate || undefined,
       status: AccountStatus.ACTIVE,
-      description:
-        currentUser?.description ||
-        `
-        ✨ LEVI Store - Thời Trang Đẳng Cấp, Phong Cách Bền Vững ✨
-        Chào mừng bạn đến với LEVI Store, nơi mang đến những sản phẩm thời trang chất lượng cao, thiết kế tinh tế và đậm chất cá tính. Chúng tôi tự hào cung cấp các bộ sưu tập mới nhất, từ quần jeans, áo thun, sơ mi đến phụ kiện cao cấp, giúp bạn tự tin thể hiện phong cách riêng.
-        💎 Cam kết của chúng tôi: <br />
-        ✔ Sản phẩm chính hãng, chất lượng cao <br />
-        ✔ Chính sách đổi trả linh hoạt, bảo hành uy tín <br />
-        ✔ Giao hàng nhanh chóng, tiện lợi
-      `
+      description: currentUser?.seller?.description || '',
+      avatar: currentUser?.avatar
     }
   })
 
   const items = [
-    { value: 'active', label: 'Đang hoạt động' },
-    { value: 'inactive', label: 'Ngừng hoạt động' }
+    { value: AccountStatus.ACTIVE, label: 'Bình thường' },
+    { value: AccountStatus.BANNED, label: 'Bị cấm' },
+    { value: AccountStatus.PENDING_VERIFICATION, label: 'Chờ xác thực' },
+    { value: AccountStatus.DEACTIVATED, label: 'Ngừng hoạt động' }
   ]
 
-  const handleUpdateStoreGeneralInformation = (data: GeneralTabFormSchemaType) => {
-    data.role = currentUser?.role
-    toast.promise(dispatch(updateUserAPI(data)), {
-      loading: 'Đang cập nhật...',
-      success: (res) => {
-        if (!res.error) return 'Cập nhật thành công!'
-        throw res
-      }
+  const handleUpdateStoreGeneralInformation = (
+    data: GeneralTabFormSchemaType
+  ) => {
+    toast.promise(dispatch(updateUserAction(objectToFormData(data))).unwrap(), {
+      loading: 'Đang xử lý',
+      success: 'Cập nhật thành công',
+      error: (err) => err.message
     })
   }
 
@@ -91,7 +114,7 @@ export default function GeneralTab() {
     <div className='bg-section rounded-lg p-4'>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleUpdateStoreGeneralInformation)}>
-          <div className='grid grid-cols-3 gap-4 mb-4'>
+          <div className='grid grid-cols-3 gap-8 mb-4'>
             <div className='space-y-3'>
               <FormField
                 control={form.control}
@@ -159,9 +182,6 @@ export default function GeneralTab() {
                   </FormItem>
                 )}
               />
-            </div>
-
-            <div className='space-y-3'>
               <FormField
                 control={form.control}
                 name='status'
@@ -201,19 +221,50 @@ export default function GeneralTab() {
                   </FormItem>
                 )}
               />
-
-              <div className='space-y-2'>
-                <FormLabel className='text-base'>Ảnh bìa</FormLabel>
-                <UploadImage fieldName='coverPhoto' />
-              </div>
             </div>
 
             <div>
-              <Label className='text-base'>Ảnh đại diện</Label>
-              <FormDescription>Click vào để tải ảnh lên.</FormDescription>
-              <UploadAvatar
-                className='mt-2 flex items-center justify-center flex-col'
-                avatar={currentUser?.avatar}
+              <FormField
+                control={form.control}
+                name='cover_photo'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-base'>
+                      Ảnh nền<span className='text-destructive'>*</span>
+                    </FormLabel>
+
+                    <FormControl className='col-span-2'>
+                      <UploadCoverPhoto
+                        fieldName={field.name}
+                        onValueChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div>
+              <FormField
+                control={form.control}
+                name='avatar'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-base'>
+                      Ảnh đại diện<span className='text-destructive'>*</span>
+                    </FormLabel>
+
+                    <FormControl className='col-span-2'>
+                      <UploadAvatar
+                        fieldName={field.name}
+                        defaultImageUrl={field.value as string}
+                        onValueChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
           </div>

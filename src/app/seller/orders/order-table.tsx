@@ -55,12 +55,14 @@ import {
 } from '@/components/ui/table'
 import {
   ColumnDef,
+  ColumnFilter,
   flexRender,
   getCoreRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  HeaderContext,
   Row,
   useReactTable
 } from '@tanstack/react-table'
@@ -98,6 +100,7 @@ import { DEFAULT_IMAGE_URL, MAP_ORDER_STATUS } from '@/utils/constants'
 import { OrderStatus } from '@/types/enums/order-status'
 import { getOrdersApi, updateOrderStatusApi } from '@/apis/order.api'
 import { PopoverClose } from '@radix-ui/react-popover'
+import { CheckedState } from '@radix-ui/react-checkbox'
 
 // Custom filter function for multi-column searching
 const multiColumnFilterFn = (
@@ -106,7 +109,7 @@ const multiColumnFilterFn = (
   filterValue: string
 ) => {
   const searchableRowContent =
-    `${row.original.buyer.user.name} ${row.original.buyer.user.email}`.toLowerCase()
+    `${row.original.buyer.name} ${row.original.buyer.user.email}`.toLowerCase()
   const searchTerm = (filterValue ?? '').toLowerCase()
   return searchableRowContent.includes(searchTerm)
 }
@@ -128,7 +131,7 @@ interface OrderTableProps {
 
 export default function OrderTable({ data, setData }: OrderTableProps) {
   const id = useId()
-  const [columnFilters, setColumnFilters] = useState([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFilter[]>([])
   const [columnVisibility, setColumnVisibility] = useState({})
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -145,7 +148,7 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
 
   const handleConfirmOrder = (row: Row<Order>) => {
     const data = {
-      orderId: row.original.id,
+      orderId: row.original.order_code,
       status: OrderStatus.SHIPPING
     }
     toast.promise(updateOrderStatusApi(data), {
@@ -163,7 +166,8 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
   const handleDeleteRows = () => {
     const selectedRows = table.getSelectedRowModel().rows
     const updatedData = data.filter(
-      (item) => !selectedRows.some((row) => row.original.id === item.id)
+      (item) =>
+        !selectedRows.some((row) => row.original.order_code === item.order_code)
     )
     setData(updatedData)
     table.resetRowSelection()
@@ -194,12 +198,12 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
       enableHiding: false
     },
     {
-      id: 'id',
+      id: 'order_code',
       header: 'Mã đơn hàng',
-      accessorKey: 'id',
+      accessorKey: 'order_code',
       cell: ({ row }) => (
         <div className='text-ellipsis overflow-hidden'>
-          {row.getValue('id')}
+          {row.getValue('order_code')}
         </div>
       )
     },
@@ -216,9 +220,9 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
     {
       id: 'buyerName',
       header: 'Người đặt',
-      accessorFn: (row) => row.buyer.user.name,
+      accessorFn: (row) => row.buyer.name,
       cell: ({ row }) => (
-        <div className='font-medium'>{row.original.buyer.user.name}</div>
+        <div className='font-medium'>{row.original.buyer.name}</div>
       ),
       size: 160,
       filterFn: multiColumnFilterFn,
@@ -241,16 +245,16 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
       size: 200,
       cell: ({ row }) => (
         <div>
-          {row.original.orderItems.slice(0, 2).map((item, index) => (
+          {row.original.order_items.slice(0, 2).map((item, index) => (
             <div
               key={Math.random()}
               className={`flex items-center gap-2 ${
-                index != row.original.orderItems.length - 1 && 'mb-2'
+                index != row.original.order_items.length - 1 && 'mb-2'
               }`}
             >
               <div>
                 <Image
-                  src={item.product.avatar || DEFAULT_IMAGE_URL}
+                  src={item.product_variant.image_url || DEFAULT_IMAGE_URL}
                   alt=''
                   width={40}
                   height={40}
@@ -258,16 +262,16 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
                 />
               </div>
               <div className='flex-1'>
-                <div className='line-clamp-1'>{item.product.name}</div>
+                <div className='line-clamp-1'>{item.product_variant.name}</div>
                 <div className='line-clamp-1 text-xs text-muted-foreground'>
-                  Loại: {item.product.type.name}
+                  Loại: {item.product_variant.name}
                 </div>
               </div>
             </div>
           ))}
-          {row.original.orderItems.length > 2 && (
+          {row.original.order_items.length > 2 && (
             <div className='mt-2 text-muted-foreground'>
-              + {row.original.orderItems.length - 2} sản phẩm
+              + {row.original.order_items.length - 2} sản phẩm
             </div>
           )}
         </div>
@@ -279,7 +283,7 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
       cell: ({ row }) => {
         return (
           <div className='font-bold text-red-500'>
-            {row.original.finalPrice.toLocaleString('vi-vn')}
+            {row.original.final_price.toLocaleString('vi-vn')}
             <sup>đ</sup>
           </div>
         )
@@ -367,12 +371,16 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
   }, [table])
 
   const selectedStatuses = useMemo(() => {
-    const filterValue = table.getColumn('status')?.getFilterValue()
+    const filterValue = table
+      .getColumn('status')
+      ?.getFilterValue() as OrderStatus
     return filterValue ?? []
   }, [table])
 
-  const handleStatusChange = (checked: boolean, value: OrderStatus) => {
-    const filterValue = table.getColumn('status')?.getFilterValue()
+  const handleStatusChange = (checked: CheckedState, value: OrderStatus) => {
+    const filterValue = table
+      .getColumn('status')
+      ?.getFilterValue() as OrderStatus
     const newFilterValue = filterValue ? [...filterValue] : []
 
     if (checked) {
@@ -408,7 +416,9 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
                 Boolean(table.getColumn('buyerName')?.getFilterValue()) &&
                   'pe-9'
               )}
-              value={table.getColumn('buyerName')?.getFilterValue() ?? ''}
+              value={
+                (table.getColumn('buyerName')?.getFilterValue() as string) ?? ''
+              }
               onChange={(e) =>
                 table.getColumn('buyerName')?.setFilterValue(e.target.value)
               }
@@ -509,8 +519,12 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
                       }
                       onSelect={(event) => event.preventDefault()}
                     >
-                      {column.columnDef.header?.props?.children ||
-                        column.columnDef.header}
+                      {typeof column.columnDef.header === 'function'
+                        ? flexRender(column.columnDef.header, {
+                            table,
+                            column
+                          } as HeaderContext<Order, unknown>)
+                        : column.columnDef.header}
                     </DropdownMenuCheckboxItem>
                   )
                 })}
@@ -629,7 +643,8 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
                                 aria-hidden='true'
                               />
                             )
-                          }[header.column.getIsSorted()] ?? null}
+                          }[header.column.getIsSorted() as 'asc' | 'desc'] ??
+                            null}
                         </div>
                       ) : (
                         flexRender(

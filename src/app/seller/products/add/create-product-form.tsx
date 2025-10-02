@@ -21,75 +21,108 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import UploadImage from '@/components/UploadImage'
-import { FIELD_REQUIRED_MESSAGE } from '@/utils/validators'
+import UploadImage from './upload-image'
+import {
+  FIELD_REQUIRED_MESSAGE,
+  STRING_CONTAIN_NUMBER_RULE,
+  STRING_CONTAIN_NUMBER_RULE_MESSAGE
+} from '@/utils/validators'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Category } from '@/types/entities/category'
 import { Brand } from '@/types/entities/brand'
 import { useEffect, useState } from 'react'
 import { Shop } from '@/types/entities/shop'
-import { v4 as uuidv4 } from 'uuid'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { getShopsApi } from '@/apis/shop.api'
 import { createProductApi } from '@/apis/product.api'
+import { Separator } from '@/components/ui/separator'
+import { generateSKU } from '@/utils/helpers'
+import Autocomplete from '@/components/Autocomplete'
 
 const formSchema = z.object({
-  name: z
-    .string({ required_error: FIELD_REQUIRED_MESSAGE })
-    .min(1, { message: FIELD_REQUIRED_MESSAGE }),
-  categoryId: z
-    .string({ required_error: FIELD_REQUIRED_MESSAGE })
-    .min(1, { message: FIELD_REQUIRED_MESSAGE }),
-  brandId: z
-    .string({ required_error: FIELD_REQUIRED_MESSAGE })
-    .min(1, { message: FIELD_REQUIRED_MESSAGE }),
-  types: z
-    .array(
-      z.object({
-        typeId: z
-          .string({ required_error: FIELD_REQUIRED_MESSAGE })
-          .min(1, { message: FIELD_REQUIRED_MESSAGE }),
-        typeName: z
-          .string({ required_error: FIELD_REQUIRED_MESSAGE })
-          .min(1, { message: FIELD_REQUIRED_MESSAGE }),
-        discount: z.coerce.number({ message: FIELD_REQUIRED_MESSAGE }).int(),
-        price: z.coerce.number({ message: FIELD_REQUIRED_MESSAGE }).int()
-      })
-    )
-    .min(1, { message: FIELD_REQUIRED_MESSAGE }),
-  shopTypes: z
-    .array(
-      z.object({
-        shopId: z
-          .string({ required_error: FIELD_REQUIRED_MESSAGE })
-          .min(1, { message: FIELD_REQUIRED_MESSAGE }),
-        typeId: z
-          .string({ required_error: FIELD_REQUIRED_MESSAGE })
-          .min(1, { message: FIELD_REQUIRED_MESSAGE }),
-        stock: z.coerce.number({ message: FIELD_REQUIRED_MESSAGE }).int()
-      })
-    )
-    .min(1, { message: FIELD_REQUIRED_MESSAGE }),
-  description: z.string(),
-  // avatar: z.string().required(),
-  features: z.array(
+  name: z.string().min(1, { message: FIELD_REQUIRED_MESSAGE }),
+  description: z.string().min(1, { message: FIELD_REQUIRED_MESSAGE }),
+  category_id: z.coerce.number({ message: FIELD_REQUIRED_MESSAGE }).int(),
+  brand_id: z.coerce.number({ message: FIELD_REQUIRED_MESSAGE }).int(),
+  thumbnail_url: z
+    .custom<File>((file) => file instanceof File, {
+      message: 'Bắt buộc cung cấp ảnh!'
+    })
+    .refine((file) => file.size <= 2 * 1024 * 1024, {
+      message: 'Ảnh tối đa 2MB'
+    })
+    .refine(
+      (file) => {
+        return file ? ['image/jpeg', 'image/png'].includes(file.type) : false
+      },
+      { message: 'Chỉ chấp nhận JPG/PNG' }
+    ),
+  specifications: z.array(
     z.object({
-      field: z
-        .string({ required_error: FIELD_REQUIRED_MESSAGE })
-        .min(1, { message: FIELD_REQUIRED_MESSAGE }),
-      content: z
-        .string({ required_error: FIELD_REQUIRED_MESSAGE })
-        .min(1, { message: FIELD_REQUIRED_MESSAGE })
+      field: z.string().min(1, { message: FIELD_REQUIRED_MESSAGE }),
+      content: z.string().min(1, { message: FIELD_REQUIRED_MESSAGE })
     })
   ),
-  width: z.coerce.number({ message: FIELD_REQUIRED_MESSAGE }).int(),
-  length: z.coerce.number({ message: FIELD_REQUIRED_MESSAGE }).int(),
-  height: z.coerce.number({ message: FIELD_REQUIRED_MESSAGE }).int(),
-  weight: z.coerce.number({ message: FIELD_REQUIRED_MESSAGE }).int()
+  product_variants: z
+    .array(
+      z.object({
+        sku: z.string().min(13).max(13),
+        name: z.string().min(1, { message: FIELD_REQUIRED_MESSAGE }),
+        discount: z
+          .string()
+          .min(1, { message: FIELD_REQUIRED_MESSAGE })
+          .regex(STRING_CONTAIN_NUMBER_RULE, {
+            message: STRING_CONTAIN_NUMBER_RULE_MESSAGE
+          }),
+        price: z
+          .string()
+          .min(1, { message: FIELD_REQUIRED_MESSAGE })
+          .regex(STRING_CONTAIN_NUMBER_RULE, {
+            message: STRING_CONTAIN_NUMBER_RULE_MESSAGE
+          }),
+        width: z
+          .string()
+          .min(1, { message: FIELD_REQUIRED_MESSAGE })
+          .regex(STRING_CONTAIN_NUMBER_RULE, {
+            message: STRING_CONTAIN_NUMBER_RULE_MESSAGE
+          }),
+        length: z
+          .string()
+          .min(1, { message: FIELD_REQUIRED_MESSAGE })
+          .regex(STRING_CONTAIN_NUMBER_RULE, {
+            message: STRING_CONTAIN_NUMBER_RULE_MESSAGE
+          }),
+        height: z
+          .string()
+          .min(1, { message: FIELD_REQUIRED_MESSAGE })
+          .regex(STRING_CONTAIN_NUMBER_RULE, {
+            message: STRING_CONTAIN_NUMBER_RULE_MESSAGE
+          }),
+        weight: z
+          .string()
+          .min(1, { message: FIELD_REQUIRED_MESSAGE })
+          .regex(STRING_CONTAIN_NUMBER_RULE, {
+            message: STRING_CONTAIN_NUMBER_RULE_MESSAGE
+          })
+      })
+    )
+    .min(1, { message: FIELD_REQUIRED_MESSAGE }),
+  shop_product_variants: z
+    .array(
+      z.object({
+        shop_id: z.number().int(),
+        product_variant_sku: z
+          .string()
+          .min(1, { message: FIELD_REQUIRED_MESSAGE }),
+        stock_quantity: z.coerce
+          .number({ message: FIELD_REQUIRED_MESSAGE })
+          .int()
+      })
+    )
+    .min(1, { message: FIELD_REQUIRED_MESSAGE })
 })
-
 export type CreateProductFormSchemaType = z.infer<typeof formSchema>
 
 export type CreateProductFormPropTypes = {
@@ -112,628 +145,597 @@ export default function CreateProductForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
-      categoryId: '',
-      brandId: '',
-      types: [
+      description: '',
+      specifications: [{ field: '', content: '' }],
+      product_variants: [
         {
-          typeId: uuidv4(),
-          typeName: '',
-          discount: undefined,
-          price: undefined
+          sku: generateSKU(),
+          name: '',
+          discount: '',
+          price: '',
+          width: '',
+          height: '',
+          weight: '',
+          length: ''
         }
       ],
-      shopTypes: [{ shopId: '', typeId: '', stock: undefined }],
-      features: [{ field: '', content: '' }],
-      description: ''
+      shop_product_variants: []
     }
   })
 
-  const formFieldArrayForTypes = useFieldArray({
+  const formFieldArrayForProductVariants = useFieldArray({
     control: form.control,
-    name: 'types'
+    name: 'product_variants'
   })
 
-  const formFieldArrayForFeatures = useFieldArray({
+  const formFieldArrayForSpecifications = useFieldArray({
     control: form.control,
-    name: 'features'
+    name: 'specifications'
   })
 
-  const formFieldArrayForShopTypes = useFieldArray({
+  const formFieldArrayForShopProductVariants = useFieldArray({
     control: form.control,
-    name: 'shopTypes'
+    name: 'shop_product_variants'
   })
 
   const handleAddProduct = (data: CreateProductFormSchemaType) => {
-    toast.promise(createProductApi(data), {
-      loading: 'Đang tạo sản phẩm...',
-      success: () => {
-        router.back()
-        return 'Tạo sản phẩm thành công!'
-      },
-      error: 'Đã có lỗi!'
-    })
+    // toast.promise(createProductApi(data), {
+    //   loading: 'Đang tạo sản phẩm...',
+    //   success: () => {
+    //     router.back()
+    //     return 'Tạo sản phẩm thành công!'
+    //   },
+    //   error: 'Đã có lỗi!'
+    // })
+    console.log(data)
   }
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(handleAddProduct)}
         className='space-y-4!'
+        onSubmit={form.handleSubmit(handleAddProduct)}
       >
-        <FormField
-          control={form.control}
-          name='name'
-          render={({ field }) => (
-            <FormItem className='grid grid-cols-3 gap-2 mb-2'>
-              <div className=''>
-                <FormLabel>
-                  Tên sản phẩm<span className='text-destructive'>*</span>
-                </FormLabel>
-                <FormDescription className=''>
-                  Điền tên sản phẩm
-                </FormDescription>
-              </div>
-              <div className='col-span-2'>
-                <FormControl>
-                  <Input
-                    placeholder='Vd: Cửa hàng ABC'
-                    className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] ${
-                      !!form.formState.errors['name'] && 'border-red-500'
-                    }`}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage className='mt-2' />
-              </div>
-            </FormItem>
-          )}
-        />
+        <div className='font-medium text-mainColor1-600 text-lg mb-2'>
+          Phần 1: Thông tin về sản phẩm
+        </div>
 
-        <FormField
-          control={form.control}
-          name='categoryId'
-          render={({ field }) => (
-            <FormItem className='grid grid-cols-3 mb-2'>
-              <div className=''>
-                <FormLabel>
-                  Danh mục sản phẩm<span className='text-destructive'>*</span>
-                </FormLabel>
-                <FormDescription>Chọn danh mục sản phẩm</FormDescription>
-              </div>
-
-              <div className='col-span-2'>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+        <div className='grid grid-cols-2 gap-8'>
+          <div className='space-y-4'>
+            <FormField
+              control={form.control}
+              name='name'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Tên sản phẩm<span className='text-destructive'>*</span>
+                  </FormLabel>
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder='Chọn danh mục sản phẩm' />
-                    </SelectTrigger>
+                    <Input
+                      placeholder='Vd: Cửa hàng ABC'
+                      className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] ${
+                        !!form.formState.errors['name'] && 'border-red-500'
+                      }`}
+                      {...field}
+                    />
                   </FormControl>
-                  <SelectContent>
-                    {categories.map((c) => (
-                      <SelectItem key={c.id} value={String(c.id)}>
-                        {c.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                  <FormMessage className='mt-2' />
-                </Select>
-              </div>
-            </FormItem>
-          )}
-        />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className='grid grid-cols-2 gap-8'>
+              <div className='space-y-4'>
+                <FormField
+                  control={form.control}
+                  name='category_id'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Danh mục sản phẩm
+                        <span className='text-destructive'>*</span>
+                      </FormLabel>
 
-        <FormField
-          control={form.control}
-          name='brandId'
-          render={({ field }) => (
-            <FormItem className='grid grid-cols-3 mb-2'>
+                      <FormControl>
+                        <Autocomplete
+                          data={categories?.map((i) => ({
+                            value: i.name,
+                            label: i.name,
+                            id: i.id
+                          }))}
+                          title={'Chọn danh mục...'}
+                          flag={'brand_id'}
+                          error={!!form.formState.errors.category_id}
+                          defaultValue={field.value}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name='brand_id'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Thương hiệu sản phẩm
+                        <span className='text-destructive'>*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Autocomplete
+                          data={brands?.map((i) => ({
+                            value: i.name,
+                            label: i.name,
+                            id: i.id
+                          }))}
+                          title={'Chọn thương hiệu...'}
+                          flag={'brand_id'}
+                          error={!!form.formState.errors.brand_id}
+                          defaultValue={field.value}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <div className=''>
-                <FormLabel>
-                  Thương hiệu sản phẩm
-                  <span className='text-destructive'>*</span>
-                </FormLabel>
-                <FormDescription>Chọn thương hiệu sản phẩm</FormDescription>
-              </div>
+                <FormField
+                  control={form.control}
+                  name='thumbnail_url'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className='text-base'>
+                        Hình ảnh<span className='text-destructive'>*</span>
+                      </FormLabel>
 
-              <div className='col-span-2'>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder='Chọn thương hiệu sản phẩm' />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {brands.map((b) => (
-                      <SelectItem key={b.id} value={String(b.id)}>
-                        {b.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage className='mt-2' />
+                      <FormControl className='col-span-2'>
+                        <UploadImage
+                          fieldName={field.name}
+                          onValueChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
-            </FormItem>
-          )}
-        />
+            </div>
+          </div>
 
-        <FormField
-          control={form.control}
-          name='features'
-          render={() => (
-            <FormItem className='grid grid-cols-3 mb-2'>
-              <div className=''>
-                <FormLabel>Đặc điểm sản phẩm</FormLabel>
-                <FormDescription>
-                  Thêm các đặc điểm sản phẩm theo cặp. <br />
-                  Nếu không có, vui lòng bấm &quot;Xóa&quot;.
-                </FormDescription>
-              </div>
-
-              <div className='col-span-2'>
-                {formFieldArrayForFeatures.fields.map((field, index) => (
-                  <div key={field.id} className='flex gap-2 items-start mb-2'>
-                    <FormField
-                      control={form.control}
-                      name={`features.${index}.field`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input placeholder='Tên đặc điểm...' {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name={`features.${index}.content`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input placeholder='Giá trị...' {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button
-                      variant='destructive'
-                      type='button'
-                      onClick={() => formFieldArrayForFeatures.remove(index)}
-                    >
-                      Xóa
-                    </Button>
+          <div className=''>
+            <FormField
+              control={form.control}
+              name='specifications'
+              render={() => (
+                <FormItem className='grid grid-cols-3 mb-2'>
+                  <div className=''>
+                    <FormLabel>Đặc điểm sản phẩm</FormLabel>
+                    <FormDescription>
+                      Thêm các đặc điểm sản phẩm theo cặp. <br />
+                      Nếu không có, vui lòng bấm &quot;Xóa&quot;.
+                    </FormDescription>
                   </div>
-                ))}
 
-                <Button
-                  type='button'
-                  onClick={() =>
-                    formFieldArrayForFeatures.append({
-                      field: '',
-                      content: ''
-                    })
-                  }
-                  className={clsx({
-                    'mt-1': formFieldArrayForFeatures.fields.length > 0
-                  })}
-                >
-                  Thêm
-                </Button>
-                <FormMessage className='mt-2' />
-              </div>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name='weight'
-          render={({ field }) => (
-            <FormItem className='grid grid-cols-3 mb-2'>
-              <div className=''>
-                <FormLabel>
-                  Cân nặng của sản phẩm
-                  <span className='text-destructive'>*</span>
-                </FormLabel>
-                <FormDescription className=''>
-                  Cung cấp cho việc tính toán phí vận chuyển. <br />
-                  Tính bằng gram.
-                </FormDescription>
-              </div>
-              <div className='col-span-2'>
-                <FormControl>
-                  <Input
-                    type='number'
-                    placeholder='Cân nặng (kg)'
-                    className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] w-1/2 ${
-                      !!form.formState.errors.weight && 'border-red-500'
-                    }`}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage className='mt-2' />
-              </div>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name='width'
-          render={({ field }) => (
-            <FormItem className='grid grid-cols-3 mb-2'>
-              <div className=''>
-                <FormLabel>
-                  Kích thước chiều rộng của sản phẩm
-                  <span className='text-destructive'>*</span>
-                </FormLabel>
-                <FormDescription className=''>
-                  Cung cấp cho việc tính toán phí vận chuyển. <br />
-                  Tính bằng cm.
-                </FormDescription>
-              </div>
-              <div className='col-span-2'>
-                <FormControl>
-                  <Input
-                    type='number'
-                    placeholder='Chiều rộng (cm)'
-                    className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] w-1/2 ${
-                      !!form.formState.errors.width && 'border-red-500'
-                    }`}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage className='mt-2' />
-              </div>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name='length'
-          render={({ field }) => (
-            <FormItem className='grid grid-cols-3 mb-2'>
-              <div className=''>
-                <FormLabel>
-                  Kích thước chiều dài của sản phẩm
-                  <span className='text-destructive'>*</span>
-                </FormLabel>
-                <FormDescription className=''>
-                  Cung cấp cho việc tính toán phí vận chuyển. <br />
-                  Tính bằng cm.
-                </FormDescription>
-              </div>
-              <div className='col-span-2'>
-                <FormControl>
-                  <Input
-                    type='number'
-                    placeholder='Chiều dài (cm)'
-                    className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] w-1/2 ${
-                      !!form.formState.errors.length && 'border-red-500'
-                    }`}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage className='mt-2' />
-              </div>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name='height'
-          render={({ field }) => (
-            <FormItem className='grid grid-cols-3 mb-2'>
-              <div className=''>
-                <FormLabel>
-                  Kích thước chiều cao của sản phẩm
-                  <span className='text-destructive'>*</span>
-                </FormLabel>
-                <FormDescription className=''>
-                  Cung cấp cho việc tính toán phí vận chuyển. <br />
-                  Tính bằng cm.
-                </FormDescription>
-              </div>
-              <div className='col-span-2'>
-                <FormControl>
-                  <Input
-                    type='number'
-                    placeholder='Chiều cao (cm)'
-                    className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] w-1/2 ${
-                      !!form.formState.errors.height && 'border-red-500'
-                    }`}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage className='mt-2' />
-              </div>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name='types'
-          render={() => (
-            <FormItem className='grid grid-cols-3 mb-2'>
-              <div className=''>
-                <FormLabel>
-                  Thông tin loại sản phẩm
-                  <span className='text-destructive'>*</span>
-                </FormLabel>
-                <FormDescription>
-                  Thêm các loại sản phẩm với các trường tương ứng.
-                  <br />Ô đầu tiên là mã loại tự sinh.
-                </FormDescription>
-              </div>
-
-              <div className='col-span-2'>
-                {formFieldArrayForTypes.fields.map((field, index) => (
-                  <div key={field.id} className='flex gap-2 items-start mb-2'>
-                    <FormField
-                      control={form.control}
-                      name={`types.${index}.typeId`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              placeholder='Mã loại...'
-                              {...field}
-                              disabled
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name={`types.${index}.typeName`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input placeholder='Tên loại...' {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name={`types.${index}.discount` as const}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              type='number'
-                              placeholder='Giảm giá...'
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name={`types.${index}.price`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              type='number'
-                              placeholder='Đơn giá...'
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button
-                      variant='destructive'
-                      type='button'
-                      onClick={() => formFieldArrayForTypes.remove(index)}
-                    >
-                      Xóa
-                    </Button>
-                  </div>
-                ))}
-
-                <Button
-                  type='button'
-                  onClick={() =>
-                    formFieldArrayForTypes.append({
-                      typeId: uuidv4(),
-                      typeName: '',
-                      discount: 0,
-                      price: 0
-                    })
-                  }
-                  className={clsx({
-                    'mt-1': formFieldArrayForTypes.fields.length > 0
-                  })}
-                >
-                  Thêm
-                </Button>
-                <FormMessage className='mt-2' />
-              </div>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name='shopTypes'
-          render={() => (
-            <FormItem className='grid grid-cols-3 mb-2'>
-              <div className=''>
-                <FormLabel>
-                  Quản lý loại sản phẩm trong từng shop
-                  <span className='text-destructive'>*</span>
-                </FormLabel>
-                <FormDescription>
-                  Thêm các loại sản phẩm vào các shop với số lượng tương ứng
-                </FormDescription>
-              </div>
-
-              <div className='col-span-2'>
-                {formFieldArrayForShopTypes.fields.map((field, index) => (
-                  <div key={field.id} className='flex gap-2 items-start mb-2'>
-                    <FormField
-                      control={form.control}
-                      name={`shopTypes.${index}.shopId`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
+                  <div className='col-span-2'>
+                    {formFieldArrayForSpecifications.fields.map(
+                      (field, index) => (
+                        <div
+                          key={field.id}
+                          className='flex gap-2 items-start mb-2'
+                        >
+                          <FormField
+                            control={form.control}
+                            name={`specifications.${index}.field`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormControl>
+                                  <Input
+                                    placeholder='Tên đặc điểm...'
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name={`specifications.${index}.content`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormControl>
+                                  <Input placeholder='Giá trị...' {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <Button
+                            variant='destructive'
+                            type='button'
+                            onClick={() =>
+                              formFieldArrayForSpecifications.remove(index)
+                            }
                           >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder='Tên shop...' />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {shops.map((shop, index) => (
-                                <SelectItem key={shop.id} value={String(shop.id)}>
-                                  Cửa hàng {index + 1}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                            Xóa
+                          </Button>
+                        </div>
+                      )
+                    )}
 
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name={`shopTypes.${index}.typeId`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder='Tên loại...' />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {form.watch('types').map((type) => (
-                                <SelectItem
-                                  key={type.typeId}
-                                  value={type.typeId || 'Chưa có loại'}
-                                >
-                                  {type.typeName || 'Chưa có loại'}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name={`shopTypes.${index}.stock`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              type='number'
-                              placeholder='Số lượng...'
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage className='mt-2' />
-                        </FormItem>
-                      )}
-                    />
                     <Button
-                      variant='destructive'
                       type='button'
-                      onClick={() => formFieldArrayForShopTypes.remove(index)}
+                      onClick={() =>
+                        formFieldArrayForSpecifications.append({
+                          field: '',
+                          content: ''
+                        })
+                      }
+                      className={clsx({
+                        'mt-1':
+                          formFieldArrayForSpecifications.fields.length > 0
+                      })}
                     >
-                      Xóa
+                      Thêm
                     </Button>
+                    <FormMessage />
                   </div>
-                ))}
-
-                <Button
-                  type='button'
-                  onClick={() =>
-                    formFieldArrayForShopTypes.append({
-                      shopId: '',
-                      typeId: '',
-                      stock: 0
-                    })
-                  }
-                  className={clsx({
-                    'mt-1': formFieldArrayForShopTypes.fields.length > 0
-                  })}
-                >
-                  Thêm
-                </Button>
-                <FormMessage className='mt-2' />
-              </div>
-            </FormItem>
-          )}
-        />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
 
         <FormField
           control={form.control}
           name='description'
           render={({ field }) => (
-            <FormItem className='grid grid-cols-3 mb-2'>
-              <div className=''>
-                <FormLabel className='text-base'>Mô tả</FormLabel>
-                <FormDescription className=''>
-                  Ghi mô tả sản phẩm
-                </FormDescription>
-              </div>
+            <FormItem>
+              <FormLabel className='text-base'>Mô tả</FormLabel>
+
               <FormControl className='col-span-2'>
                 <Textarea
                   placeholder='Vd: Mô tả của sản phẩm'
+                  rows={10}
                   className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] ${
                     !!form.formState.errors['description'] && 'border-red-500'
                   }`}
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
 
-        <FormItem className='grid grid-cols-3 mb-2'>
-          <div className=''>
-            <FormLabel className='text-base'>Hình ảnh</FormLabel>
-            <FormDescription className=''>
-              Upload hình ảnh mặc định của sản phẩm
-            </FormDescription>
-          </div>
-          <FormControl className='col-span-2'>
-            {/* <Input
-                      type='number'
-                      placeholder="Vd: Cửa hàng ABC"
-                      className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] ${!!form.formState.errors['discount'] && 'border-red-500'}`}
-                      {...field}
-                    /> */}
-            <UploadImage fieldName='' />
-          </FormControl>
-        </FormItem>
+        <Separator className='my-8! border border-mainColor2-300' />
+
+        <div className='font-medium text-mainColor1-600 text-lg mb-2'>
+          Phần 2: Thông tin về các biến thể sản phẩm
+        </div>
+
+        <div className='space-y-10'>
+          <FormField
+            control={form.control}
+            name='product_variants'
+            render={() => (
+              <FormItem>
+                <FormLabel>
+                  Thông tin biến thể sản phẩm
+                  <span className='text-destructive'>*</span>
+                </FormLabel>
+
+                <div>
+                  {formFieldArrayForProductVariants.fields.map(
+                    (field, index) => (
+                      <div
+                        key={field.id}
+                        className='flex gap-2 items-start mb-2'
+                      >
+                        <FormField
+                          control={form.control}
+                          name={`product_variants.${index}.sku`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  placeholder='SKU...'
+                                  {...field}
+                                  disabled
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`product_variants.${index}.name`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input placeholder='Tên loại...' {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`product_variants.${index}.discount` as const}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input placeholder='Giảm giá...' {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`product_variants.${index}.price`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input placeholder='Đơn giá...' {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`product_variants.${index}.weight`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  placeholder='Cân nặng (g)'
+                                  // className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] w-1/2 ${
+                                  //   !!form.formState.errors.product_variants?.weight &&
+                                  //   'border-red-500'
+                                  // }`}
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`product_variants.${index}.width`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  placeholder='Chiều rộng (cm)'
+                                  // className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] w-1/2 ${
+                                  //   !!form.formState.errors.width &&
+                                  //   'border-red-500'
+                                  // }`}
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`product_variants.${index}.length`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  placeholder='Chiều dài (cm)'
+                                  // className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] w-1/2 ${
+                                  //   !!form.formState.errors.length &&
+                                  //   'border-red-500'
+                                  // }`}
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`product_variants.${index}.height`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  placeholder='Chiều cao (cm)'
+                                  // className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] w-1/2 ${
+                                  //   !!form.formState.errors.height &&
+                                  //   'border-red-500'
+                                  // }`}
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <Button
+                          variant='destructive'
+                          type='button'
+                          onClick={() =>
+                            formFieldArrayForProductVariants.remove(index)
+                          }
+                        >
+                          Xóa
+                        </Button>
+                      </div>
+                    )
+                  )}
+
+                  <Button
+                    type='button'
+                    onClick={() =>
+                      formFieldArrayForProductVariants.append({
+                        sku: generateSKU(),
+                        name: '',
+                        discount: '',
+                        price: '',
+                        weight: '',
+                        length: '',
+                        width: '',
+                        height: ''
+                      })
+                    }
+                    className={clsx({
+                      'mt-1': formFieldArrayForProductVariants.fields.length > 0
+                    })}
+                  >
+                    Thêm
+                  </Button>
+                  <FormMessage className='mt-2' />
+                </div>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='shop_product_variants'
+            render={() => (
+              <FormItem>
+                <div className='mb-2'>
+                  <FormLabel>
+                    Quản lý loại sản phẩm trong từng shop
+                    <span className='text-destructive'>*</span>
+                  </FormLabel>
+                  <FormDescription>
+                    Thêm các loại sản phẩm vào các shop với số lượng tương ứng
+                  </FormDescription>
+                </div>
+                <div>
+                  {formFieldArrayForShopProductVariants.fields.map(
+                    (field, index) => (
+                      <div
+                        key={field.id}
+                        className='flex gap-2 items-start mb-2'
+                      >
+                        <FormField
+                          control={form.control}
+                          name={`shop_product_variants.${index}.shop_id`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={String(field.value)}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder='Tên shop...' />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {shops.map((shop, index) => (
+                                    <SelectItem
+                                      key={shop.id}
+                                      value={String(shop.id)}
+                                    >
+                                      Cửa hàng {index + 1}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`shop_product_variants.${index}.product_variant_sku`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder='Tên loại...' />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {form
+                                    .watch('product_variants')
+                                    .map((type) => (
+                                      <SelectItem
+                                        key={type.sku}
+                                        value={type.sku || 'Chưa có loại'}
+                                      >
+                                        {type.name || 'Chưa có loại'}
+                                      </SelectItem>
+                                    ))}
+                                </SelectContent>
+                              </Select>
+
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`shop_product_variants.${index}.stock_quantity`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  type='number'
+                                  placeholder='Số lượng...'
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <Button
+                          variant='destructive'
+                          type='button'
+                          onClick={() =>
+                            formFieldArrayForShopProductVariants.remove(index)
+                          }
+                        >
+                          Xóa
+                        </Button>
+                      </div>
+                    )
+                  )}
+
+                  <Button
+                    type='button'
+                    onClick={() =>
+                      formFieldArrayForShopProductVariants.append({
+                        shop_id: 0,
+                        product_variant_sku: '',
+                        stock_quantity: 0
+                      })
+                    }
+                    className={clsx({
+                      'mt-1':
+                        formFieldArrayForShopProductVariants.fields.length > 0
+                    })}
+                  >
+                    Thêm
+                  </Button>
+                  <FormMessage className='mt-2 ' />
+                </div>
+              </FormItem>
+            )}
+          />
+        </div>
 
         <div>
           <Button type='submit' className='mt-10 w-full'>

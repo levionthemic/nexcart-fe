@@ -16,7 +16,7 @@ export function useImageUpload({
   }, [])
 
   const handleFileChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+    (event: React.ChangeEvent<HTMLInputElement>, onValueChange?: (file: File) => void) => {
       const file = event.target.files?.[0]
       if (file) {
         setFileName(file.name)
@@ -25,12 +25,13 @@ export function useImageUpload({
         setPreviewUrl(url)
         previewRef.current = url
         onUpload?.(url)
+        onValueChange?.(file)
       }
     },
     [onUpload]
   )
 
-  const handleRemove = useCallback(() => {
+  const handleRemove = useCallback((onValueChange: (file: File | null) => void) => {
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl)
     }
@@ -40,6 +41,7 @@ export function useImageUpload({
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
+    onValueChange(null)
   }, [previewUrl])
 
   useEffect(() => {

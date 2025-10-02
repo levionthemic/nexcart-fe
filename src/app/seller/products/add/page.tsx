@@ -1,4 +1,3 @@
-import React from 'react'
 import CreateProductForm from './create-product-form'
 import PageHeader from '../../_components/page-header'
 import { getCategoriesApi } from '@/apis/category.api'
@@ -7,6 +6,8 @@ import { getBrandsApi } from '@/apis/brand.api'
 export default async function CreateProductPage() {
   const categories = await getCategoriesApi() || []
   const brands = await getBrandsApi() || []
+
+  console.log(brands)
   return (
     <div className='px-6 py-4'>
       <PageHeader

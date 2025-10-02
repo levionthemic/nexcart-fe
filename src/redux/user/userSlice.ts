@@ -4,6 +4,7 @@ import { User } from '@/types/entities/user'
 import { Address } from '@/types/entities/address'
 import http from '@/lib/http'
 import { LoginPayload, loginUserApi, logoutUserApi } from '@/apis/auth.api'
+import { AccountStatus } from '@/types/enums/account'
 
 //  Define types
 interface UserState {
@@ -11,12 +12,20 @@ interface UserState {
 }
 
 //  Define payload types
-type UpdatePayload = {
-  name?: string
-  phone?: string
-  buyer_address?: Address
-  default_buyer_address_id?: number
-}
+type UpdateUserPayload =
+  | {
+      name?: string
+      phone?: string
+      buyer_address?: Address
+      default_buyer_address_id?: number
+    }
+  | FormData
+  | Partial<{
+      name: string
+      foundedDate: Date
+      status: AccountStatus
+      description: string
+    }>
 
 //  Async Thunks
 export const loginUserAction = createAsyncThunk<unknown, LoginPayload>(
@@ -41,15 +50,15 @@ export const logoutUserAction = createAsyncThunk<unknown>(
   }
 )
 
-export const updateUserAction = createAsyncThunk<
-  User,
-  FormData | UpdatePayload
->('user/updateUserAction', async (data) => {
-  const response = await http.put<User>('/users/profile', data, {
-    credentials: 'include'
-  })
-  return response.data as User
-})
+export const updateUserAction = createAsyncThunk<User, UpdateUserPayload>(
+  'user/updateUserAction',
+  async (data) => {
+    const response = await http.put<User>('/users/profile', data, {
+      credentials: 'include'
+    })
+    return response.data as User
+  }
+)
 
 // 🔵 Slice
 const initialState: UserState = {
