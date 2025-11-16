@@ -15,6 +15,8 @@ export async function GET(req: NextRequest) {
     }
   })
 
+  console.log('Response:', response)
+
   if (response.status !== 200)
     return NextResponse.json(
       { error: 'Unauthorized' },

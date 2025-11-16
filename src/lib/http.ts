@@ -96,6 +96,7 @@ const request = async <T>(
           )
           resolve(retryResponse)
         } catch (error) {
+          console.log(error)
           reject(error)
         }
       })
