@@ -59,8 +59,9 @@ function ProductDetailDialog({
         <Button
           size='icon'
           variant='ghost'
-          className='shadow-none'
+          className='shadow-none size-7'
           aria-label='More item'
+          title='Xem chi tiết sản phẩm'
         >
           <EllipsisIcon size={16} aria-hidden='true' />
         </Button>

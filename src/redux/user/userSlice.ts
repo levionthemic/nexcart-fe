@@ -60,6 +60,16 @@ export const updateUserAction = createAsyncThunk<User, UpdateUserPayload>(
   }
 )
 
+export const uploadUserAvatarAction = createAsyncThunk<User, FormData>(
+  'user/uploadUserAvatarAction',
+  async (data) => {
+    const response = await http.post<User>('/users/upload-avatar', data, {
+      credentials: 'include'
+    })
+    return response.data as User
+  }
+)
+
 // 🔵 Slice
 const initialState: UserState = {
   currentUser: null
@@ -79,6 +89,12 @@ const userSlice = createSlice({
     })
     builder.addCase(
       updateUserAction.fulfilled,
+      (state, action: PayloadAction<User>) => {
+        state.currentUser = action.payload
+      }
+    )
+    builder.addCase(
+      uploadUserAvatarAction.fulfilled,
       (state, action: PayloadAction<User>) => {
         state.currentUser = action.payload
       }

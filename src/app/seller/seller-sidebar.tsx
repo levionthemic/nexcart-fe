@@ -36,6 +36,7 @@ import { Separator } from '@/components/ui/separator'
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import LogoutComponent from '@/components/logout/logout'
+import Image from 'next/image'
 
 export default function SellerSidebar() {
   const router = useRouter()
@@ -52,10 +53,10 @@ export default function SellerSidebar() {
     >
       <SidebarHeader className='p-0'>
         <div
-          className='text-4xl font-medium text-accent text-center cursor-pointer hover:scale-105 transition-transform hover:duration-500 my-10 flex justify-center'
+          className='text-4xl font-medium text-accent text-center cursor-pointer my-10 flex justify-center'
           onClick={() => router.push('/seller')}
         >
-          {open ? 'LEVI' : <Home />}
+          {open ? <Image src="/mainlogo.png" alt='Logo' width={100} height={100} /> : <Home />}
         </div>
       </SidebarHeader>
 

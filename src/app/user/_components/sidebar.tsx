@@ -18,6 +18,7 @@ import { IoMdHeartEmpty } from 'react-icons/io'
 import { IoSettingsOutline } from 'react-icons/io5'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function UserSidebar() {
   const router = useRouter()
@@ -47,12 +48,12 @@ export default function UserSidebar() {
   return (
     <Sidebar className='px-4 pb-4 bg-sidebar border-none'>
       <SidebarHeader className='p-0 bg-transparent'>
-        <span
-          className='my-10 text-4xl font-medium transition-transform cursor-pointer text-primary-foreground hover:scale-105 hover:duration-500'
+        <div
+          className='my-4 cursor-pointer flex items-center justify-center'
           onClick={() => router.push('/')}
         >
-          LEVI
-        </span>
+          <Image src='/mainlogo.png' alt='NexCart' width={120} height={40} className='w-32 aspect-video object-cover'/>
+        </div>
       </SidebarHeader>
 
       <SidebarContent className='bg-transparent'>

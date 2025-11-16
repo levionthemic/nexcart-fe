@@ -34,10 +34,17 @@ const request = async <T>(
   options?: CustomOptions,
   requestBody?: RequestBodyType
 ) => {
-  const body = requestBody ? JSON.stringify(requestBody) : undefined
-  const baseHeaders = {
-    'Content-Type': 'application/json'
+  let body: string | FormData | undefined = undefined
+  const baseHeaders: Record<string, string> = {}
+
+  if (requestBody instanceof FormData) {
+    body = requestBody
+    // Don't set Content-Type for FormData, let browser set it with boundary
+  } else if (requestBody) {
+    body = JSON.stringify(requestBody)
+    baseHeaders['Content-Type'] = 'application/json'
   }
+
   const baseUrl =
     options?.baseUrl === undefined
       ? envConfig.NEXT_PUBLIC_API_ENDPOINT
@@ -52,7 +59,7 @@ const request = async <T>(
     credentials: options?.credentials || 'include'
   }
 
-  if (requestBody && method !== 'GET' && method !== 'DELETE') {
+  if (body && method !== 'GET' && method !== 'DELETE') {
     fetchOptions.body = body
   }
 

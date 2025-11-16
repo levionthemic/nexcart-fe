@@ -10,7 +10,7 @@ export default function UserLayout({
   return (
     <SidebarProvider
       className='font-nunitoSans'
-      style={{ '--sidebar-width': '14rem' } as React.CSSProperties}
+      style={{ '--sidebar-width': '14rem', '--sidebar': 'transparent' } as React.CSSProperties}
     >
       <UserSidebar />
       <main className='flex-1 overflow-x-auto'>

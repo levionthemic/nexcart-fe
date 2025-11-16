@@ -19,6 +19,8 @@ export async function middleware(request: NextRequest) {
 
     const role = payload.role
     const pathname = request.nextUrl.pathname
+    console.log('User role from token:', role)
+    console.log('Request pathname:', pathname)
     if (
       (pathname.startsWith('/seller') && role !== Role.SELLER) ||
       (role === Role.SELLER && !pathname.startsWith('/seller'))

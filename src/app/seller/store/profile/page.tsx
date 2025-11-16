@@ -34,7 +34,7 @@ export default function StoreProfile() {
 
         <div className='absolute -bottom-[40%] xl:-bottom-[34%] left-44 xl:left-52'>
           <div className='text-xl xl:text-2xl font-semibold mb-1'>
-            Tên cửa hàng
+            { currentUser?.seller?.name || 'Tên cửa hàng' }
           </div>
           <div className='line-clamp-1 text-muted-foreground text-xs xl:text-sm'>
             Mô tả ngắn của cửa hàng

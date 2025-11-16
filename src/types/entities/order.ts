@@ -11,6 +11,7 @@ export interface OrderItem {
 }
 
 export interface Order {
+  id: number
   order_code: string
   final_price: number
   status: OrderStatus

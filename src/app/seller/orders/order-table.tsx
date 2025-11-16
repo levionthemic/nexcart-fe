@@ -1,97 +1,11 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
-} from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem
-} from '@/components/ui/pagination'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger
-} from '@/components/ui/popover'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table'
-import {
-  ColumnDef,
-  ColumnFilter,
-  flexRender,
-  getCoreRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  HeaderContext,
-  Row,
-  useReactTable
-} from '@tanstack/react-table'
-import {
-  CheckIcon,
-  ChevronDownIcon,
-  ChevronFirstIcon,
-  ChevronLastIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ChevronUpIcon,
-  CircleAlertIcon,
-  CircleXIcon,
-  Columns3Icon,
-  DeleteIcon,
-  EllipsisIcon,
-  FilterIcon,
-  ListFilterIcon,
-  PlusIcon,
-  TrashIcon
-} from 'lucide-react'
-import {
-  Dispatch,
-  SetStateAction,
-  useId,
-  useMemo,
-  useRef,
-  useState
-} from 'react'
+import { ColumnDef, Row } from '@tanstack/react-table'
+
+import { Dispatch, SetStateAction } from 'react'
 import dayjs from 'dayjs'
 import { toast } from 'sonner'
 import Image from 'next/image'
@@ -99,8 +13,10 @@ import { Order } from '@/types/entities/order'
 import { DEFAULT_IMAGE_URL, MAP_ORDER_STATUS } from '@/utils/constants'
 import { OrderStatus } from '@/types/enums/order-status'
 import { getOrdersApi, updateOrderStatusApi } from '@/apis/order.api'
-import { PopoverClose } from '@radix-ui/react-popover'
-import { CheckedState } from '@radix-ui/react-checkbox'
+
+import RowActions from './row-actions'
+
+import CustomTable from '@/components/custom-table/custom-table'
 
 // Custom filter function for multi-column searching
 const multiColumnFilterFn = (
@@ -130,22 +46,6 @@ interface OrderTableProps {
 }
 
 export default function OrderTable({ data, setData }: OrderTableProps) {
-  const id = useId()
-  const [columnFilters, setColumnFilters] = useState<ColumnFilter[]>([])
-  const [columnVisibility, setColumnVisibility] = useState({})
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 10
-  })
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  const [sorting, setSorting] = useState([
-    {
-      id: 'buyerName',
-      desc: false
-    }
-  ])
-
   const handleConfirmOrder = (row: Row<Order>) => {
     const data = {
       orderId: row.original.order_code,
@@ -161,16 +61,6 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
       },
       error: 'Đã có lỗi!'
     })
-  }
-
-  const handleDeleteRows = () => {
-    const selectedRows = table.getSelectedRowModel().rows
-    const updatedData = data.filter(
-      (item) =>
-        !selectedRows.some((row) => row.original.order_code === item.order_code)
-    )
-    setData(updatedData)
-    table.resetRowSelection()
   }
 
   const columns: ColumnDef<Order>[] = [
@@ -208,41 +98,46 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
       )
     },
     {
-      id: 'createdAt',
+      id: 'created_at',
       header: 'Ngày đặt hàng',
-      accessorKey: 'createdAt',
+      accessorKey: 'created_at',
       cell: ({ row }) => (
         <div className='text-ellipsis overflow-hidden'>
-          {dayjs(row.getValue('createdAt')).format('DD-MM-YYYY')}
+          {dayjs(row.getValue('created_at')).format('DD-MM-YYYY')}
         </div>
-      )
+      ),
+      size: 110,
+      enableResizing: false
     },
     {
-      id: 'buyerName',
+      id: 'buyer_name',
       header: 'Người đặt',
       accessorFn: (row) => row.buyer.name,
       cell: ({ row }) => (
         <div className='font-medium'>{row.original.buyer.name}</div>
       ),
-      size: 160,
+      size: 120,
       filterFn: multiColumnFilterFn,
-      enableHiding: false
+      enableHiding: false,
+      enableResizing: false
     },
     {
-      id: 'shopId',
+      id: 'shop_id',
       header: 'Mã cửa hàng',
       accessorFn: (row) => row.shop.id,
       cell: ({ row }) => (
         <div className='text-ellipsis overflow-hidden'>
-          {row.getValue('shopId')}
+          {row.getValue('shop_id')}
         </div>
-      )
+      ),
+      size: 100,
+      enableResizing: false
     },
     {
-      id: 'orderItems',
+      id: 'order_items',
       header: 'Danh sách sản phẩm',
-      accessorKey: 'orderItems',
-      size: 200,
+      accessorKey: 'order_items',
+      size: 300,
       cell: ({ row }) => (
         <div>
           {row.original.order_items.slice(0, 2).map((item, index) => (
@@ -261,7 +156,7 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
                   className='rounded-md border border-gray-300 p-0.5 size-10'
                 />
               </div>
-              <div className='flex-1'>
+              <div className='flex-1 text-ellipsis overflow-hidden'>
                 <div className='line-clamp-1'>{item.product_variant.name}</div>
                 <div className='line-clamp-1 text-xs text-muted-foreground'>
                   Loại: {item.product_variant.name}
@@ -288,7 +183,8 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
           </div>
         )
       },
-      size: 120
+      size: 70,
+      enableResizing: false
     },
     {
       id: 'status',
@@ -311,14 +207,8 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
         </div>
       ),
       size: 100,
-      filterFn: statusFilterFn
-    },
-    {
-      id: 'note',
-      header: 'Ghi chú',
-      accessorKey: 'note',
-      cell: ({ row }) => <div>{row.getValue('note')}</div>,
-      size: 150
+      filterFn: statusFilterFn,
+      enableResizing: false
     },
     {
       id: 'actions',
@@ -327,553 +217,18 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
         <RowActions row={row} handleConfirmOrder={handleConfirmOrder} />
       ),
       size: 80,
-      enableHiding: false
+      enableHiding: false,
+      enableResizing: false
     }
   ]
 
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
-    enableSortingRemoval: false,
-    getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setPagination,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
-    getFilteredRowModel: getFilteredRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    state: {
-      sorting,
-      pagination,
-      columnFilters,
-      columnVisibility
-    }
-  })
-
-  // Get unique status values
-  const uniqueStatusValues = useMemo(() => {
-    const statusColumn = table.getColumn('status')
-
-    if (!statusColumn) return []
-
-    const values = Array.from(statusColumn.getFacetedUniqueValues().keys())
-
-    return values.sort()
-  }, [table])
-
-  // Get counts for each status
-  const statusCounts = useMemo(() => {
-    const statusColumn = table.getColumn('status')
-    if (!statusColumn) return new Map()
-    return statusColumn.getFacetedUniqueValues()
-  }, [table])
-
-  const selectedStatuses = useMemo(() => {
-    const filterValue = table
-      .getColumn('status')
-      ?.getFilterValue() as OrderStatus
-    return filterValue ?? []
-  }, [table])
-
-  const handleStatusChange = (checked: CheckedState, value: OrderStatus) => {
-    const filterValue = table
-      .getColumn('status')
-      ?.getFilterValue() as OrderStatus
-    const newFilterValue = filterValue ? [...filterValue] : []
-
-    if (checked) {
-      newFilterValue.push(value)
-    } else {
-      const index = newFilterValue.indexOf(value)
-      if (index > -1) {
-        newFilterValue.splice(index, 1)
-      }
-    }
-
-    table
-      .getColumn('status')
-      ?.setFilterValue(newFilterValue.length ? newFilterValue : undefined)
-  }
-
   return (
-    <div className='space-y-1'>
-      {/* Filters */}
-      <div className='flex flex-wrap items-center justify-between gap-3 bg-section p-3 rounded-lg'>
-        <div className='font-semibold text-mainColor1-600'>
-          Danh sách đơn hàng
-        </div>
-
-        <div className='flex items-center gap-3'>
-          {/* Filter by name or email */}
-          <div className='relative'>
-            <Input
-              id={`${id}-input`}
-              ref={inputRef}
-              className={cn(
-                'peer min-w-80 ps-9',
-                Boolean(table.getColumn('buyerName')?.getFilterValue()) &&
-                  'pe-9'
-              )}
-              value={
-                (table.getColumn('buyerName')?.getFilterValue() as string) ?? ''
-              }
-              onChange={(e) =>
-                table.getColumn('buyerName')?.setFilterValue(e.target.value)
-              }
-              placeholder='Lọc theo mã đơn hàng...'
-              type='text'
-              aria-label='Lọc theo mã đơn hàng'
-            />
-            <div className='text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50'>
-              <ListFilterIcon size={16} aria-hidden='true' />
-            </div>
-            {Boolean(table.getColumn('buyerName')?.getFilterValue()) && (
-              <button
-                className='text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50'
-                aria-label='Clear filter'
-                onClick={() => {
-                  table.getColumn('buyerName')?.setFilterValue('')
-                  if (inputRef.current) {
-                    inputRef.current.focus()
-                  }
-                }}
-              >
-                <CircleXIcon size={16} aria-hidden='true' />
-              </button>
-            )}
-          </div>
-          {/* Filter by status */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant='outline'>
-                <FilterIcon
-                  className='-ms-1 opacity-60'
-                  size={16}
-                  aria-hidden='true'
-                />
-                Trạng thái
-                {selectedStatuses.length > 0 && (
-                  <span className='bg-background text-muted-foreground/70 -me-1 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium'>
-                    {selectedStatuses.length}
-                  </span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className='w-auto min-w-36 p-3' align='start'>
-              <div className='space-y-3'>
-                <div className='text-muted-foreground text-xs font-medium'>
-                  Filters
-                </div>
-                <div className='space-y-3'>
-                  {uniqueStatusValues.map((value, i) => (
-                    <div key={value} className='flex items-center gap-2'>
-                      <Checkbox
-                        id={`${id}-${i}`}
-                        checked={selectedStatuses.includes(value)}
-                        onCheckedChange={(checked) =>
-                          handleStatusChange(checked, value)
-                        }
-                      />
-                      <Label
-                        htmlFor={`${id}-${i}`}
-                        className='flex grow justify-between gap-2 font-normal'
-                      >
-                        {value}{' '}
-                        <span className='text-muted-foreground ms-2 text-xs'>
-                          {statusCounts.get(value)}
-                        </span>
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
-          {/* Toggle columns visibility */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant='outline'>
-                <Columns3Icon
-                  className='-ms-1 opacity-60'
-                  size={16}
-                  aria-hidden='true'
-                />
-                Hiển thị
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align='end'>
-              <DropdownMenuLabel>Hiển thị cột</DropdownMenuLabel>
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      // className='capitalize'
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                      onSelect={(event) => event.preventDefault()}
-                    >
-                      {typeof column.columnDef.header === 'function'
-                        ? flexRender(column.columnDef.header, {
-                            table,
-                            column
-                          } as HeaderContext<Order, unknown>)
-                        : column.columnDef.header}
-                    </DropdownMenuCheckboxItem>
-                  )
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-
-        <div className='flex items-center gap-3'>
-          {/* Delete button */}
-          {table.getSelectedRowModel().rows.length > 0 && (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button className='ml-auto' variant='outline'>
-                  <TrashIcon
-                    className='-ms-1 opacity-60'
-                    size={16}
-                    aria-hidden='true'
-                  />
-                  Xóa
-                  <span className='bg-background text-muted-foreground/70 -me-1 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium'>
-                    {table.getSelectedRowModel().rows.length}
-                  </span>
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <div className='flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4'>
-                  <div
-                    className='flex size-9 shrink-0 items-center justify-center rounded-full border'
-                    aria-hidden='true'
-                  >
-                    <CircleAlertIcon className='opacity-80' size={16} />
-                  </div>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you absolutely sure?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete{' '}
-                      {table.getSelectedRowModel().rows.length} selected{' '}
-                      {table.getSelectedRowModel().rows.length === 1
-                        ? 'row'
-                        : 'rows'}
-                      .
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                </div>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Hủy</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDeleteRows}>
-                    Xóa
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          )}
-          {/* Add user button */}
-          <Button className='ml-auto' variant='outline'>
-            <PlusIcon
-              className='-ms-1 opacity-60'
-              size={16}
-              aria-hidden='true'
-            />
-            Thêm đơn hàng
-          </Button>
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className='bg-background overflow-hidden rounded-md border'>
-        <Table className='table-fixed'>
-          <TableHeader className='bg-muted/50'>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className='hover:bg-transparent'>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      style={{ width: `${header.getSize()}px` }}
-                      className='h-11'
-                    >
-                      {header.isPlaceholder ? null : header.column.getCanSort() ? (
-                        <div
-                          className={cn(
-                            header.column.getCanSort() &&
-                              'flex h-full cursor-pointer items-center justify-between gap-2 select-none'
-                          )}
-                          onClick={header.column.getToggleSortingHandler()}
-                          onKeyDown={(e) => {
-                            // Enhanced keyboard handling for sorting
-                            if (
-                              header.column.getCanSort() &&
-                              (e.key === 'Enter' || e.key === ' ')
-                            ) {
-                              e.preventDefault()
-                              header.column.getToggleSortingHandler()?.(e)
-                            }
-                          }}
-                          tabIndex={header.column.getCanSort() ? 0 : undefined}
-                        >
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                          {{
-                            asc: (
-                              <ChevronUpIcon
-                                className='shrink-0 opacity-60'
-                                size={16}
-                                aria-hidden='true'
-                              />
-                            ),
-                            desc: (
-                              <ChevronDownIcon
-                                className='shrink-0 opacity-60'
-                                size={16}
-                                aria-hidden='true'
-                              />
-                            )
-                          }[header.column.getIsSorted() as 'asc' | 'desc'] ??
-                            null}
-                        </div>
-                      ) : (
-                        flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )
-                      )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className='last:py-0'>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className='h-24 text-center'
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-
-      {/* Pagination */}
-      <div className='flex items-center justify-between gap-8'>
-        {/* Results per page */}
-        <div className='flex items-center gap-3'>
-          <Label htmlFor={id} className='max-sm:sr-only'>
-            Số dòng / trang
-          </Label>
-          <Select
-            value={table.getState().pagination.pageSize.toString()}
-            onValueChange={(value) => {
-              table.setPageSize(Number(value))
-            }}
-          >
-            <SelectTrigger id={id} className='w-fit whitespace-nowrap'>
-              <SelectValue placeholder='Select number of results' />
-            </SelectTrigger>
-            <SelectContent className='[&_*[role=option]]:ps-2 [&_*[role=option]]:pe-8 [&_*[role=option]>span]:start-auto [&_*[role=option]>span]:end-2'>
-              {[5, 10, 25, 50].map((pageSize) => (
-                <SelectItem key={pageSize} value={pageSize.toString()}>
-                  {pageSize}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        {/* Page number information */}
-        <div className='text-muted-foreground flex grow justify-end text-sm whitespace-nowrap'>
-          <p
-            className='text-muted-foreground text-sm whitespace-nowrap'
-            aria-live='polite'
-          >
-            <span className='text-foreground'>
-              {table.getState().pagination.pageIndex *
-                table.getState().pagination.pageSize +
-                1}
-              -
-              {Math.min(
-                Math.max(
-                  table.getState().pagination.pageIndex *
-                    table.getState().pagination.pageSize +
-                    table.getState().pagination.pageSize,
-                  0
-                ),
-                table.getRowCount()
-              )}
-            </span>{' '}
-            trong{' '}
-            <span className='text-foreground'>
-              {table.getRowCount().toString()}
-            </span>
-          </p>
-        </div>
-
-        {/* Pagination buttons */}
-        <div>
-          <Pagination>
-            <PaginationContent>
-              {/* First page button */}
-              <PaginationItem>
-                <Button
-                  size='icon'
-                  variant='outline'
-                  className='disabled:pointer-events-none disabled:opacity-50'
-                  onClick={() => table.firstPage()}
-                  disabled={!table.getCanPreviousPage()}
-                  aria-label='Go to first page'
-                >
-                  <ChevronFirstIcon size={16} aria-hidden='true' />
-                </Button>
-              </PaginationItem>
-              {/* Previous page button */}
-              <PaginationItem>
-                <Button
-                  size='icon'
-                  variant='outline'
-                  className='disabled:pointer-events-none disabled:opacity-50'
-                  onClick={() => table.previousPage()}
-                  disabled={!table.getCanPreviousPage()}
-                  aria-label='Go to previous page'
-                >
-                  <ChevronLeftIcon size={16} aria-hidden='true' />
-                </Button>
-              </PaginationItem>
-              {/* Next page button */}
-              <PaginationItem>
-                <Button
-                  size='icon'
-                  variant='outline'
-                  className='disabled:pointer-events-none disabled:opacity-50'
-                  onClick={() => table.nextPage()}
-                  disabled={!table.getCanNextPage()}
-                  aria-label='Go to next page'
-                >
-                  <ChevronRightIcon size={16} aria-hidden='true' />
-                </Button>
-              </PaginationItem>
-              {/* Last page button */}
-              <PaginationItem>
-                <Button
-                  size='icon'
-                  variant='outline'
-                  className='disabled:pointer-events-none disabled:opacity-50'
-                  onClick={() => table.lastPage()}
-                  disabled={!table.getCanNextPage()}
-                  aria-label='Go to last page'
-                >
-                  <ChevronLastIcon size={16} aria-hidden='true' />
-                </Button>
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function RowActions({
-  row,
-  handleConfirmOrder
-}: {
-  row: Row<Order>
-  handleConfirmOrder: (row: Row<Order>) => void
-}) {
-  return (
-    <div className='flex items-center justify-center gap-0.5'>
-      {row.getValue('status') === OrderStatus.PENDING && (
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              size='icon'
-              variant='ghost'
-              className='shadow-none text-green-600 hover:bg-green-100 hover:text-green-700 size-6'
-              aria-label='Edit item'
-            >
-              <CheckIcon size={20} />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent>
-            <div className='text-sm mb-4'>Xác nhận đơn hàng?</div>
-            <div className='flex items-center justify-end gap-2'>
-              <PopoverClose asChild>
-                <Button variant='outline'>Hủy</Button>
-              </PopoverClose>
-              <PopoverClose asChild>
-                <Button onClick={() => handleConfirmOrder(row)}>
-                  Xác nhận
-                </Button>
-              </PopoverClose>
-            </div>
-          </PopoverContent>
-        </Popover>
-      )}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <div className='flex justify-end'>
-            <Button
-              size='icon'
-              variant='ghost'
-              className='shadow-none size-6'
-              aria-label='Edit item'
-            >
-              <EllipsisIcon size={16} aria-hidden='true' />
-            </Button>
-          </div>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align='end'>
-          <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <span>Chi tiết</span>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-
-          <DropdownMenuSeparator />
-
-          <DropdownMenuGroup>
-            <DropdownMenuItem className='text-destructive focus:text-destructive'>
-              <span>Hủy đơn hàng</span>
-              <DropdownMenuShortcut>
-                <DeleteIcon size={16} />
-              </DropdownMenuShortcut>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+    <CustomTable
+      data={data}
+      setData={setData}
+      columns={columns}
+      title='Danh sách đơn hàng'
+      inputSearchPlaceholder='Lọc theo mã đơn hàng...'
+    />
   )
 }

@@ -1,6 +1,5 @@
 'use client'
 
-import { CiSearch } from 'react-icons/ci'
 import { BsHandbag } from 'react-icons/bs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useDispatch, useSelector } from 'react-redux'
@@ -33,6 +32,8 @@ import Notification from '@/components/notification/notification'
 import { useEffect } from 'react'
 import { AppDispatch } from '@/redux/store'
 import { fetchCurrentNotificationListAPI } from '@/redux/notification/notificationSlice'
+import LogoutComponent from '@/components/logout/logout'
+import { IoIosLogOut } from 'react-icons/io'
 
 export default function UserHeader() {
   const currentUser = useSelector(selectCurrentUser)
@@ -44,13 +45,12 @@ export default function UserHeader() {
   }, [dispatch])
 
   const router = useRouter()
-  
+
   return (
-    <div className='flex items-center justify-between my-10'>
+    <div className='flex items-center justify-between my-6'>
       <Link href='/'>
         <House className='cursor-pointer text-mainColor1-800' />
       </Link>
-      <CiSearch className='text-2xl font-bold cursor-pointer text-mainColor1-800' />
       <div className='flex items-center justify-between gap-8'>
         <Notification />
 
@@ -76,43 +76,45 @@ export default function UserHeader() {
               </SheetDescription>
             </SheetHeader>
             <div className='p-4 max-h-[89%] overflow-auto'>
-              {currentCart?.cart_items?.map(({ product_variant, quantity }, index) => (
-                <div key={index} className='flex items-center gap-2 my-6'>
-                  <Image
-                    src={product_variant?.image_url || DEFAULT_IMAGE_URL}
-                    alt=''
-                    width={40}
-                    height={40}
-                    className='size-10 rounded'
-                  />
-                  <div className='flex flex-col gap-1'>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <span className='text-sm leading-none line-clamp-1 text-mainColor2-800'>
-                            {product_variant.product.name}
-                          </span>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>{product_variant.product.name}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                    <p className='line-clamp-1 text-xs text-gray-400 mb-0.5'>
-                      Loại: {product_variant.name}
-                    </p>
-                    <div className='flex flex-col lg:flex-row lg:items-center lg:gap-4'>
-                      <Badge className='bg-mainColor2-800/90'>
-                        {quantity} sản phẩm
-                      </Badge>
-                      <span className='text-[0.8rem] text-muted-foreground'>
-                        x {product_variant.price.toLocaleString('vi-VN')}
-                        <sup>đ</sup>
-                      </span>
+              {currentCart?.cart_items?.map(
+                ({ product_variant, quantity }, index) => (
+                  <div key={index} className='flex items-center gap-2 my-6'>
+                    <Image
+                      src={product_variant?.image_url || DEFAULT_IMAGE_URL}
+                      alt=''
+                      width={40}
+                      height={40}
+                      className='size-10 rounded'
+                    />
+                    <div className='flex flex-col gap-1'>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className='text-sm leading-none line-clamp-1 text-mainColor2-800'>
+                              {product_variant.product.name}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{product_variant.product.name}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      <p className='line-clamp-1 text-xs text-gray-400 mb-0.5'>
+                        Loại: {product_variant.name}
+                      </p>
+                      <div className='flex flex-col lg:flex-row lg:items-center lg:gap-4'>
+                        <Badge className='bg-mainColor2-800/90'>
+                          {quantity} sản phẩm
+                        </Badge>
+                        <span className='text-[0.8rem] text-muted-foreground'>
+                          x {product_variant.price.toLocaleString('vi-VN')}
+                          <sup>đ</sup>
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                )
+              )}
             </div>
             <SheetFooter>
               <SheetClose asChild>
@@ -136,6 +138,12 @@ export default function UserHeader() {
             Xin chào, <b>{currentUser?.buyer?.name || 'Ẩn danh'}</b>!
           </div>
         </div>
+
+        <LogoutComponent
+          icon={
+            <IoIosLogOut className='text-xl cursor-pointer right-3 text-mainColor1-800' />
+          }
+        />
       </div>
     </div>
   )

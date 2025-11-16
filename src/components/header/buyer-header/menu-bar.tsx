@@ -1,6 +1,5 @@
 import { IoMenu } from 'react-icons/io5'
 import Link from 'next/link'
-import { ModeToggle } from '@/components/mode-toggle'
 import {
   Popover,
   PopoverContent,
@@ -17,7 +16,7 @@ export default function MenuBar() {
   }, [])
   return (
     <div
-      className='bg-mainColor1-400 rounded-full'
+      className='bg-mainColor1-400'
       style={{
         boxShadow:
           'rgba(0, 0, 0, 0.15) 0px 15px 25px, rgba(0, 0, 0, 0.05) 0px 5px 10px'
@@ -84,10 +83,6 @@ export default function MenuBar() {
               Liên hệ
             </li>
           </ul>
-          <div className='flex items-center gap-4'>
-            <span>Chế độ: </span>
-            <ModeToggle />
-          </div>
         </div>
       </div>
     </div>

@@ -66,8 +66,8 @@ export default async function ProductDetail({
           <ReviewProvider>
             <div className='relative grid grid-cols-4 gap-6'>
               <div className='col-span-3'>
-                <div className='relative grid grid-cols-3 gap-6 mb-6 h-fit'>
-                  <div className='sticky left-0 p-4 bg-white dark:bg-section rounded-lg h-fit top-36'>
+                <div className='relative grid grid-cols-3 gap-6 mb-6'>
+                  <div className='sticky top-36 p-4 bg-white dark:bg-section rounded-lg h-fit self-start'>
                     <div className='overflow-hidden border rounded-2xl'>
                       <Image
                         width={350}
