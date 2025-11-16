@@ -2,7 +2,7 @@ import http from '@/lib/http'
 import { Review } from '@/types/entities/review'
 
 export const getReviewsByProductIdApi = async (
-  productId: string,
+  productId: number,
   searchPath = ''
 ) => {
   const response = await http.get<{ reviewList: Review[]; total: number }>(
@@ -12,7 +12,7 @@ export const getReviewsByProductIdApi = async (
 }
 
 export const addReviewApi = async (reviewData: {
-  productId: string
+  productId: number
   rating: number
   content: string
 }) => {

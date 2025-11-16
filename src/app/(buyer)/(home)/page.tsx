@@ -19,13 +19,19 @@ import CarouselCategories from './carousel-categories'
 import { getProductsApi } from '@/apis/product.api'
 import { getCategoriesApi } from '@/apis/category.api'
 import Link from 'next/link'
-
+export const dynamic = 'force-dynamic'
 export default async function HomePage() {
-  const productsData = await getProductsApi()
-  const bestSellingProducts = productsData?.data || []
-  const recommendedProducts = productsData?.data || []
-
-  const categories = (await getCategoriesApi()) || []
+  let categories = []
+  let bestSellingProducts = []
+  let recommendedProducts = []
+  try {
+    const productsData = await getProductsApi()
+    bestSellingProducts = productsData?.data || []
+    recommendedProducts = productsData?.data || []
+    categories = (await getCategoriesApi()) || []
+  } catch (error) {
+    throw error
+  }
 
   return (
     <div className='bg-[#F5F5FA] dark:bg-background'>

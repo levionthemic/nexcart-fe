@@ -132,7 +132,6 @@ const columns: ColumnDef<ProductListItem>[] = [
     header: () => <div className='text-end'>Thao tác</div>,
     cell: ({ row }) => (
       <RowActions
-        row={row}
         editModal={<ProductDetailDialog productProp={row.original} />}
       />
     ),

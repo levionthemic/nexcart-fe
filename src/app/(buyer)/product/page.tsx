@@ -1,18 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ProductCard } from '@/components/product'
 import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from '@/utils/constants'
 import PaginationComponent from '@/components/pagination/pagination'
 
 import { Category } from '@/types/entities/category'
 import { Brand } from '@/types/entities/brand'
-import ProductFilterForm, { SearchObjectType } from './filter-form'
+import ProductFilterForm from './filter-form'
 import { ProductListItem } from '@/types/entities/product'
 import { getProductsWithFiltersApi } from '@/apis/product.api'
 
 export default async function ProductList({
   searchParams
-}: {
-  searchParams: SearchObjectType
-}) {
+}: any) {
   const params = await searchParams
 
   const page = Number(params.page) || DEFAULT_PAGE

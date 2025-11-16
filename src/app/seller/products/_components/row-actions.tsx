@@ -1,10 +1,9 @@
 'use client'
 
 import { Button } from "@/components/ui/button"
-import { Row } from "@tanstack/react-table"
 import { Pencil, Trash } from "lucide-react"
 
-export default function RowActions<T>({ row, editModal }: { row: Row<T>, editModal: React.ReactNode }) {
+export default function RowActions({ editModal }: { editModal: React.ReactNode }) {
   return (
     <div className='flex justify-end'>
       <Button

@@ -96,10 +96,10 @@ const items = [
 ]
 
 export default function Comments() {
-  const [comments, setComments] = useState(mockComments)
+  const [comments] = useState(mockComments)
 
   const [replication, setReplication] = useState('')
-  const handleSendReplication = (event) => {
+  const handleSendReplication = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     console.log(replication)
   }
@@ -110,7 +110,7 @@ export default function Comments() {
     }
   })
 
-  const onSendReport = (data) => {
+  const onSendReport = (data: unknown) => {
     console.log(data)
   }
 
@@ -252,7 +252,7 @@ export default function Comments() {
                                               <FormControl>
                                                 <Checkbox
                                                   checked={field.value?.includes(
-                                                    item.id
+                                                    item.id as never
                                                   )}
                                                   onCheckedChange={(
                                                     checked

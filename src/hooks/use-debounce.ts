@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useCallback } from 'react'
+import React, { useCallback } from 'react'
 import { debounce } from 'lodash'
 
-export const useDebounceFn = (fnToDebounce: (e: any) => void, delay = 500) => {
+export const useDebounceFn = (fnToDebounce: (e: React.ChangeEvent<HTMLInputElement>) => void, delay = 500) => {
   if (isNaN(delay)) {
     throw new Error('Delay value should be a number.')
   }

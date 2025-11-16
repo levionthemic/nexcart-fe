@@ -1,6 +1,5 @@
 "use client"
 
-import type React from "react"
 import {
   useCallback,
   useRef,
@@ -55,7 +54,7 @@ export type FileUploadActions = {
     props?: InputHTMLAttributes<HTMLInputElement>
   ) => InputHTMLAttributes<HTMLInputElement> & {
     // Use `any` here to avoid cross-React ref type conflicts across packages
-    ref: any
+    ref: unknown
   }
 }
 
@@ -377,7 +376,7 @@ export const useFileUpload = (
         accept: props.accept || accept,
         multiple: props.multiple !== undefined ? props.multiple : multiple,
         // Cast to `any` to prevent mismatched React ref type errors across workspaces
-        ref: inputRef as any,
+        ref: inputRef as unknown,
       }
     },
     [accept, multiple, handleFileChange]

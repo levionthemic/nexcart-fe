@@ -23,7 +23,7 @@ interface RatingsProps extends React.HTMLAttributes<HTMLDivElement> {
   totalStars?: number
   size?: number
   fill?: boolean
-  Icon?: React.ReactElement
+  Icon?: React.ReactElement<{ size?: number; className?: string }>
   variant?: keyof typeof ratingVariants
 }
 
@@ -76,7 +76,7 @@ interface PartialStarProps {
   fillPercentage: number
   size: number
   className?: string
-  Icon: React.ReactElement
+  Icon: React.ReactElement<{ size?: number; className?: string }>
 }
 const PartialStar = ({ ...props }: PartialStarProps) => {
   const { fillPercentage, size, className, Icon } = props

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import { useState } from 'react'
@@ -35,10 +36,10 @@ const chartConfig = {
   }
 }
 
-const CustomLegend = ({ payload, hoverKey, setHoverKey }) => {
+const CustomLegend = ({ payload, hoverKey, setHoverKey }: any) => {
   return (
     <ul className="flex flex-wrap justify-end gap-6">
-      {payload.map((entry) => {
+      {payload.map((entry: any) => {
         const isHovered = hoverKey === entry.dataKey
 
         return (

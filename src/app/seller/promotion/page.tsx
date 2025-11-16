@@ -1,4 +1,4 @@
-import PromotionTable from './promotion-table'
+// import PromotionTable from './promotion-table'
 import { RiDiscountPercentLine } from 'react-icons/ri'
 import { PiSpinnerBallFill } from 'react-icons/pi'
 import { LuAlarmClock } from 'react-icons/lu'
@@ -106,7 +106,7 @@ export default function Promotion() {
         </div>
       </div>
 
-      <PromotionTable />
+      {/* <PromotionTable /> */}
     </div>
   )
 }

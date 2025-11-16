@@ -28,7 +28,7 @@ function AccountVerification() {
         router.replace(`/login?verifiedEmail=${email}`)
       })
     }
-  }, [email, token, roleValue])
+  }, [email, token, roleValue, router])
 
   if (!isVerified) {
     return <Loader />

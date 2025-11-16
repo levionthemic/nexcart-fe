@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
@@ -112,17 +113,17 @@ export default function ReviewSection({ product }: { product: Product }) {
                         </Avatar>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>{review.buyer.user.name || "Ẩn danh"}</p>
+                        <p>{review.buyer.name || "Ẩn danh"}</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                   <div className='flex flex-col'>
                     <span className='mr-2 font-bold'>
-                      {review.buyer.user.name || "Ẩn danh"}
+                      {review.buyer.name || "Ẩn danh"}
                     </span>
 
                     <span className='text-xs text-gray-400'>
-                      {new Date(review.createdAt!).toLocaleDateString('vi-VN', {
+                      {new Date(review.created_at!).toLocaleDateString('vi-VN', {
                         weekday: 'long',
                         year: 'numeric',
                         month: 'long',

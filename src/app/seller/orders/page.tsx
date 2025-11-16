@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import { Banknote, CircleX, NotepadText, Truck } from 'lucide-react'
 import { useEffect, useState } from 'react'

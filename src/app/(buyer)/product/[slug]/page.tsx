@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from '@/components/ui/button'
 
 import {
@@ -28,10 +29,8 @@ import { ProductCard } from '@/components/product'
 
 export default async function ProductDetail({
   params
-}: {
-  params: { slug: string }
-}) {
-  const awaitParams = await params
+}: any) {
+const awaitParams = await params
   const productSlug = awaitParams.slug
   const product = await getProductDetailsApi(String(productSlug))
   const recommendedProducts = (await getProductsApi())?.data

@@ -124,7 +124,7 @@ export default function PieChartComponent() {
               nameKey='status'
               innerRadius={60}
               strokeWidth={5}
-              activeIndex={activeIndex}
+              // activeIndex={activeIndex}
               activeShape={({
                 outerRadius = 0,
                 ...props

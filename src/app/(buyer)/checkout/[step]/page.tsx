@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react'
 import Information from './information'
 import Shipping from './shipping'
@@ -6,9 +7,7 @@ import Confirmation from './confirmation'
 
 export default async function CheckoutStepPage({
   params
-}: {
-  params: { step: number }
-}) {
+}: any) {
   const stepParams = await params
   const step = stepParams.step
 

@@ -51,26 +51,31 @@ export default function ContactTab() {
       phone: currentUser?.phone || '',
       email: currentUser?.email || '',
       address: currentUser?.seller?.address || '',
-      socialNetworks: currentUser?.seller.socialNetworks || ['', '', '']
+      socialNetworks: [
+        currentUser?.seller?.facebook_link || '',
+        currentUser?.seller?.instagram_link || '',
+        currentUser?.seller?.twitter_link || ''
+      ]
     }
   })
 
-  const handleUpdateStoreGeneralInformation = (data: ContactTabFormSchemaType) => {
-    delete data['email']
+  const handleUpdateStoreGeneralInformation = (
+    data: ContactTabFormSchemaType
+  ) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { email, ...rest } = data
     toast.promise(
       dispatch(
         updateUserAction({
-          ...data,
+          ...rest,
           status: AccountStatus.ACTIVE,
           role: currentUser?.role
         })
       ),
       {
         loading: 'Đang cập nhật...',
-        success: (res) => {
-          if (!res.error) return 'Cập nhật thành công!'
-          throw res
-        }
+        success: 'Cập nhật thành công!',
+        error: 'Có lỗi xảy ra. Vui lòng thử lại.'
       }
     )
   }

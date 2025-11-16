@@ -33,10 +33,7 @@ import { Category } from '@/types/entities/category'
 import { Brand } from '@/types/entities/brand'
 import { useEffect, useState } from 'react'
 import { Shop } from '@/types/entities/shop'
-import { useRouter } from 'next/navigation'
-import { toast } from 'sonner'
 import { getShopsApi } from '@/apis/shop.api'
-import { createProductApi } from '@/apis/product.api'
 import { Separator } from '@/components/ui/separator'
 import { generateSKU } from '@/utils/helpers'
 import Autocomplete from '@/components/Autocomplete'
@@ -138,8 +135,6 @@ export default function CreateProductForm({
   useEffect(() => {
     getShopsApi().then((data) => setShops(data || []))
   }, [])
-
-  const router = useRouter()
 
   const form = useForm<CreateProductFormSchemaType>({
     resolver: zodResolver(formSchema),

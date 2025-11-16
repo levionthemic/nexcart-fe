@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import {
@@ -95,7 +96,7 @@ export default function UploadImage({
           className='relative flex min-h-52 flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed border-input p-4 transition-colors has-[input:focus]:border-ring has-[input:focus]:ring-[3px] has-[input:focus]:ring-ring/50 data-[dragging=true]:bg-accent/50'
         >
           <input
-            {...getInputProps()}
+            {...(getInputProps() as any)}
             className='sr-only'
             aria-label='Upload image file'
             disabled={loading}

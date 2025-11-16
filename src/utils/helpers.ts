@@ -85,11 +85,11 @@ export function generateSKU(): string {
   return base + checkDigit.toString()
 }
 
-export function objectToFormData(obj: Record<string, any>): FormData {
+export function objectToFormData(obj: Record<string, string | Date | File>): FormData {
   const formData = new FormData();
   for (const key in obj) {
     if (obj[key] !== undefined && obj[key] !== null) {
-      formData.append(key, obj[key]);
+      formData.append(key, obj[key] instanceof Date ? obj[key].toISOString() : obj[key]);
     }
   }
   return formData;

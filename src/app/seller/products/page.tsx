@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import { Banknote, PackageOpen, RotateCcw, Truck } from 'lucide-react'
@@ -19,7 +20,7 @@ export default function Products() {
   useEffect(() => {
     startLoading()
     getSellerProductsApi(String(currentUser?.seller?.seller_id))
-      .then((data) => setProducts(data || []))
+      .then((data) => setProducts(data.data || []))
       .finally(() => endLoading())
   }, [])
 

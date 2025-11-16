@@ -8,27 +8,12 @@ import { combineReducers } from 'redux'
 import { PersistConfig, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
-// Create a noop storage for server-side rendering
-const createNoopStorage = () => {
-  return {
-    getItem(_key: string) {
-      return Promise.resolve(null)
-    },
-    setItem(_key: string, value: any) {
-      return Promise.resolve(value)
-    },
-    removeItem(_key: string) {
-      return Promise.resolve()
-    }
-  }
-}
-
 // Use noop storage on server, regular storage on client
-const persistStorage = typeof window !== 'undefined' ? storage : createNoopStorage()
+// const persistStorage = typeof window !== 'undefined' ?
 
 const rootPersistConfig: PersistConfig<ReturnType<typeof reducers>> = {
   key: 'root',
-  storage: persistStorage,
+  storage: storage,
   whitelist: ['user', 'cart', 'notification']
 }
 

@@ -21,10 +21,10 @@ export default function StoreList() {
       if (data)
         for (const d of data) {
           const shortAddress = await getAddressString({
-            provinceId: d.provinceId,
-            districtId: d.districtId,
-            wardCode: d.wardCode,
-            address: d.address
+            province_id: d.address.province_id,
+            district_id: d.address.district_id,
+            ward_code: d.address.ward_code,
+            address: d.address.address
           })
           shopsResult.push({ ...d, shortAddress: shortAddress })
         }
@@ -82,6 +82,7 @@ export default function StoreList() {
         {shops.map((shop, index) => (
           <StoreCard
             {...shop}
+            createdAt={shop.created_at}
             key={shop.id}
             logoUrl={banner}
             name={`Cửa hàng ${index + 1}`}

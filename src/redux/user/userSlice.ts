@@ -5,6 +5,7 @@ import { Address } from '@/types/entities/address'
 import http from '@/lib/http'
 import { LoginPayload, loginUserApi, logoutUserApi } from '@/apis/auth.api'
 import { AccountStatus } from '@/types/enums/account'
+import { Role } from '@/types/enums/role'
 
 //  Define types
 interface UserState {
@@ -25,6 +26,7 @@ type UpdateUserPayload =
       foundedDate: Date
       status: AccountStatus
       description: string
+      role: Role
     }>
 
 //  Async Thunks

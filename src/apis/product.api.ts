@@ -24,7 +24,7 @@ export const getProductsApi = async () => {
 }
 
 export const getSellerProductsApi = async (sellerId: string) => {
-  const response = await http.get<ProductListItem[]>(`${PRODUCT_API_PREFIX}/seller/${sellerId}`)
+  const response = await http.get<GetProductsResponseType>(`${PRODUCT_API_PREFIX}/seller/${sellerId}`)
   return response.data
 }
 

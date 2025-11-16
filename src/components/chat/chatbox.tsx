@@ -22,7 +22,6 @@ import {
 import EmojiPicker, { EmojiClickData, EmojiStyle, Theme } from 'emoji-picker-react'
 import {
   Popover,
-  PopoverAnchor,
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover'

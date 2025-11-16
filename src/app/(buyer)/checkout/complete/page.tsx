@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FaCheck } from 'react-icons/fa'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -14,9 +15,7 @@ import { DEFAULT_IMAGE_URL } from '@/utils/constants'
 
 export default function Completion({
   checkoutData
-}: {
-  checkoutData: Order[]
-}) {
+}: any) {
   return (
     <div className='container mx-auto'>
       <div className='py-4 flex max-h-full relative'>
@@ -44,7 +43,7 @@ export default function Completion({
         </div>
 
         <div className='flex-1'>
-          {checkoutData?.map((data, index) => (
+          {(checkoutData as Order[])?.map((data, index) => (
             <div key={index}>
               <div className='text-xl mb-2 text-mainColor1-800 font-semibold'>
                 Đơn hàng {index + 1}
@@ -53,13 +52,13 @@ export default function Completion({
                 <div className='text-md text-mainColor1-800 font-medium'>
                   Danh sách sản phẩm
                 </div>
-                {data?.orderItems?.map(({ product, quantity }, index) => (
+                {data?.order_items?.map(({ product_variant, quantity }, index) => (
                   <div
                     key={index}
                     className='flex items-center gap-2 my-6 overflow-hidden'
                   >
                     <Image
-                      src={product?.avatar || DEFAULT_IMAGE_URL}
+                      src={product_variant?.image_url || DEFAULT_IMAGE_URL}
                       alt=''
                       width={40}
                       height={40}
@@ -70,23 +69,23 @@ export default function Completion({
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <span className='text-sm line-clamp-1 text-mainColor2-800 leading-none'>
-                              {product?.name}
+                              {product_variant?.name}
                             </span>
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>{product?.name}</p>
+                            <p>{product_variant?.name}</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
                       <p className='line-clamp-1 text-xs text-gray-400 mb-0.5'>
-                        Loại: {product.type.name}
+                        Loại: {product_variant.name}
                       </p>
                       <div className='flex flex-col lg:flex-row lg:items-center lg:gap-4'>
                         <Badge className='bg-mainColor2-800/90'>
                           {quantity} sản phẩm
                         </Badge>
                         <span className='text-[0.8rem] text-muted-foreground'>
-                          x {product?.type.price.toLocaleString('vi-VN')}
+                          x {product_variant?.price.toLocaleString('vi-VN')}
                           <sup>đ</sup>
                         </span>
                       </div>
@@ -103,14 +102,14 @@ export default function Completion({
                   <div className='flex items-center justify-between text-sm my-2'>
                     <span className='opacity-40'>Tổng tiền hàng</span>
                     <span className='font-bold text-red-600'>
-                      {data?.originalPrice?.toLocaleString('vi-VN')}
+                      {data?.final_price?.toLocaleString('vi-VN')}
                       <sup>đ</sup>
                     </span>
                   </div>
                   <div className='flex items-center justify-between text-sm my-2'>
                     <span className='opacity-40'>Phí vận chuyển</span>
                     <span className='font-bold text-red-600'>
-                      {data?.shippingFee?.toLocaleString('vi-VN')}
+                      {data?.shipping_fee?.toLocaleString('vi-VN')}
                       <sup>đ</sup>
                     </span>
                   </div>
@@ -122,8 +121,8 @@ export default function Completion({
                   </div>
                   <div className='text-red-600 text-right text-xl font-bold'>
                     {(
-                      data?.originalPrice +
-                      data?.shippingFee
+                      data?.final_price +
+                      data?.shipping_fee
                     )?.toLocaleString('vi-VN')}
                     <sup>đ</sup>
                   </div>

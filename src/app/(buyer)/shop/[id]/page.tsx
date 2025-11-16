@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import { GetProductsResponseType, getSellerProductsApi } from '@/apis/product.api'

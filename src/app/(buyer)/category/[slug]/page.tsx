@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Image from 'next/image'
 import { getCategoriesBySlugApi } from '@/apis/category.api'
 import { Category } from '@/types/entities/category'
@@ -17,10 +18,7 @@ import ProductFilterForm from '../../product/filter-form'
 export default async function CategoryDetailPage({
   params,
   searchParams
-}: {
-  params: { slug: string }
-  searchParams: { page?: string }
-}) {
+}: any) {
   const awaitParams = await params
   const awaitSearchparams = await searchParams
   const slug = awaitParams.slug

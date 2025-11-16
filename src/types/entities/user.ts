@@ -29,6 +29,7 @@ export interface SellerMinimal {
   seller_id: string
 
   name: string
+  address: string
   cover_photo: string | null
   foundedDate: Date | null
   description: string | null

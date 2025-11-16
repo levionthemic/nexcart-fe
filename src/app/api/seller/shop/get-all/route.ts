@@ -1,4 +1,5 @@
 import http from '@/lib/http'
+import { Shop } from '@/types/entities/shop'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(req: NextRequest) {
@@ -10,7 +11,7 @@ export async function GET(req: NextRequest) {
   if (!accessToken && !sessionId)
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const response = await http.get('/shop', {
+  const response = await http.get<Shop>('/shop', {
     headers: {
       cookie: `accessToken=${accessToken};sessionId=${sessionId}`,
       'User-Agent': userAgent,
@@ -24,5 +25,5 @@ export async function GET(req: NextRequest) {
       { status: response.status }
     )
 
-  return NextResponse.json(response.payload)
+  return NextResponse.json(response.data)
 }
