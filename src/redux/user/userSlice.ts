@@ -3,7 +3,7 @@ import { RootState } from '../store'
 import { User } from '@/types/entities/user'
 import { Address } from '@/types/entities/address'
 import http from '@/lib/http'
-import { LoginPayload, loginUserApi, logoutUserApi } from '@/apis/auth.api'
+import { LoginPayload, LoginResponse, loginUserApi, logoutUserApi } from '@/apis/auth.api'
 import { AccountStatus } from '@/types/enums/account'
 import { Role } from '@/types/enums/role'
 
@@ -30,11 +30,11 @@ type UpdateUserPayload =
     }>
 
 //  Async Thunks
-export const loginUserAction = createAsyncThunk<unknown, LoginPayload>(
+export const loginUserAction = createAsyncThunk<LoginResponse, LoginPayload>(
   'user/loginUserAction',
   async (userData) => {
     try {
-      await loginUserApi(userData)
+      return await loginUserApi(userData)
     } catch (error) {
       return Promise.reject(error)
     }

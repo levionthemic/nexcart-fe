@@ -14,12 +14,18 @@ export type LoginPayload =
     }
   | Omit<TokenResponse, 'error' | 'error_description' | 'error_uri'>
 
+export interface LoginResponse {
+  access_token: string
+  session_id: string
+  remember_me: boolean
+}
+
 export const loginUserApi = async (data: LoginPayload) => {
   let response
   if (data.access_token) {
-    response = await http.post(`${AUTH_API_PREFIX}/login/google/callback`, data)
+    response = await http.post<LoginResponse>(`${AUTH_API_PREFIX}/login/google/callback`, data)
   } else {
-    response = await http.post(`${AUTH_API_PREFIX}/login`, data)
+    response = await http.post<LoginResponse>(`${AUTH_API_PREFIX}/login`, data)
   }
   return response.data
 }

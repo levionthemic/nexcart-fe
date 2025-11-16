@@ -32,6 +32,7 @@ import { Input } from '@/components/ui/input'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/redux/store'
 import { loginUserAction, setUser } from '@/redux/user/userSlice'
+import Cookies from 'js-cookie'
 
 export default function LoginForm() {
   const dispatch = useDispatch<AppDispatch>()
@@ -64,7 +65,10 @@ export default function LoginForm() {
       ).unwrap(),
       {
         loading: 'Đang đăng nhập...',
-        success: async () => {
+        success: async (res) => {
+          Cookies.set('access_token', res.access_token, { expires: res.remember_me ? 14 : undefined })
+          Cookies.set('session_id', res.session_id, { expires: res.remember_me ? 14 : undefined })
+          
           const userData = await fetch('/api/me', {
             credentials: 'include'
           }).then((res) => res.json())
