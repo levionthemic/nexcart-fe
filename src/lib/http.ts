@@ -1,5 +1,6 @@
 import { refreshTokenApi } from '@/apis/auth.api'
 import envConfig from '@/config'
+import Cookies from 'js-cookie'
 
 type CustomOptions = RequestInit & {
   baseUrl?: string | undefined
@@ -43,6 +44,14 @@ const request = async <T>(
   } else if (requestBody) {
     body = JSON.stringify(requestBody)
     baseHeaders['Content-Type'] = 'application/json'
+  }
+
+  if (Cookies.get('access_token')) {
+    baseHeaders['Authorization'] = `Bearer ${Cookies.get('access_token')}`
+  }
+
+  if (Cookies.get('session_id')) {
+    baseHeaders['X-Session-ID'] = Cookies.get('session_id') as string
   }
 
   const baseUrl =
