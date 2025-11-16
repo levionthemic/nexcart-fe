@@ -46,12 +46,18 @@ const request = async <T>(
     baseHeaders['Content-Type'] = 'application/json'
   }
 
-  if (Cookies.get('access_token')) {
-    baseHeaders['Authorization'] = `Bearer ${Cookies.get('access_token')}`
+  // Only access cookies in the browser (js-cookie relies on document)
+  const accessToken =
+    typeof window !== 'undefined' ? Cookies.get('access_token') : undefined
+  const sessionId =
+    typeof window !== 'undefined' ? Cookies.get('session_id') : undefined
+
+  if (accessToken) {
+    baseHeaders['Authorization'] = `Bearer ${accessToken}`
   }
 
-  if (Cookies.get('session_id')) {
-    baseHeaders['X-Session-ID'] = Cookies.get('session_id') as string
+  if (sessionId) {
+    baseHeaders['X-Session-ID'] = sessionId
   }
 
   const baseUrl =
