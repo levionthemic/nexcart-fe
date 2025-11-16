@@ -6,6 +6,9 @@ export async function GET(req: NextRequest) {
   const accessToken = req.cookies.get('access_token')?.value
   const sessionId = req.cookies.get('session_id')?.value
 
+  console.log('Access Token:', accessToken)
+  console.log('Session ID:', sessionId)
+
   if (!accessToken && !sessionId)
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
