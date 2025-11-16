@@ -3,22 +3,25 @@ import { User } from '@/types/entities/user'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(req: NextRequest) {
-  const accessToken = req.cookies.get('access_token')?.value
-  const sessionId = req.cookies.get('session_id')?.value
+ // Prefer header fallback because req.cookies may be undefined in some runtimes
+  const cookieHeader =
+    req.headers.get('cookie') ??
+    (() => {
+      const accessToken = req.cookies?.get?.('access_token')?.value
+      const sessionId = req.cookies?.get?.('session_id')?.value
+      if (!accessToken && !sessionId) return null
+      return `access_token=${accessToken || ''}; session_id=${sessionId || ''}`
+    })()
 
-  console.log('Access Token:', accessToken)
-  console.log('Session ID:', sessionId)
-
-  if (!accessToken && !sessionId)
+  if (!cookieHeader) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
   const response = await http.get<User>('/users/profile', {
     headers: {
-      Cookie: `access_token=${accessToken}; session_id=${sessionId}`
+      Cookie: cookieHeader
     }
   })
-
-  console.log('Response:', response)
 
   if (response.status !== 200)
     return NextResponse.json(
