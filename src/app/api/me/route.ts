@@ -5,17 +5,13 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function GET(req: NextRequest) {
   const accessToken = req.cookies.get('access_token')?.value
   const sessionId = req.cookies.get('session_id')?.value
-  const userAgent = req.headers.get('user-agent') || ''
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]
 
   if (!accessToken && !sessionId)
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const response = await http.get<User>('/users/profile', {
     headers: {
-      Cookie: `access_token=${accessToken}; session_id=${sessionId}`,
-      'User-Agent': userAgent,
-      'X-Forwarded-For': ip!
+      Cookie: `access_token=${accessToken}; session_id=${sessionId}`
     }
   })
 
