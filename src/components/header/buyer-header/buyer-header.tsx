@@ -167,13 +167,19 @@ export default function BuyerHeader() {
   return (
     <>
       <div className='fixed top-0 left-0 bg-background w-full z-50'>
-        <div className='container mx-auto pt-6 pb-4'>
+        <div className='container mx-auto'>
           <div className='flex items-center justify-between'>
             <div
               className='text-4xl font-medium text-mainColor1-600 cursor-pointer hover:scale-105 transition-transform hover:duration-500'
               onClick={() => router.push('/')}
             >
-              LEVI
+              <Image
+                src='/mainlogo.png'
+                alt='NexCart Logo'
+                width={80}
+                height={80}
+                className='w-32 aspect-video object-cover'
+              />
             </div>
             <div className='flex-1'>
               <form

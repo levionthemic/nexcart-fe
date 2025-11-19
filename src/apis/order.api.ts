@@ -55,3 +55,11 @@ export const updateOrderStatusApi = async (data: {
   const response = await http.put<Order>(`${ORDER_API_PREFIX}/update`, data)
   return response.data
 }
+
+export const createMomoPaymentApi = async (data: AddOrderPayload[]) => {
+  const response = await http.post<{ payUrl: string }>(
+    `${ORDER_API_PREFIX}/create-momo-payment`,
+    data
+  )
+  return response.data
+}

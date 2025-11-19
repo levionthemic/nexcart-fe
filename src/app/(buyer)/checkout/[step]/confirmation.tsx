@@ -1,6 +1,6 @@
 'use client'
 
-import { addOrderApi, AddOrderPayload } from '@/apis/order.api'
+import { AddOrderPayload, createMomoPaymentApi } from '@/apis/order.api'
 import ghnLogo from '@/assets/ghn-logo.png'
 import ghtkLogo from '@/assets/ghtk-logo.png'
 import { Badge } from '@/components/ui/badge'
@@ -19,7 +19,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
 export default function Confirmation() {
-  const { clusterOrders, checkoutInfo, setCheckoutData } = useOrder()
+  const { clusterOrders, checkoutInfo } = useOrder()
 
   const router = useRouter()
 
@@ -30,44 +30,38 @@ export default function Confirmation() {
     )
   }
 
-  const handleCheckout = () => {
-    toast.promise(
-      Promise.all(
-        clusterOrders.map((clusterOrder, index) => {
-          const data: AddOrderPayload = {
-            seller_id: clusterOrder.seller.seller_id,
-            shop_id: clusterOrder.shop.id,
-            buyer_address_id: Number(
-              checkoutInfo?.information?.buyerAddress.id
-            ),
-            discount_code: checkoutInfo?.discountCode?.[index] || '',
-            note: checkoutInfo?.note?.[index] || '',
-            original_price: clusterOrder.original_price,
-            final_price:
-              clusterOrder.original_price +
-              Number(checkoutInfo?.shipping?.[index].detail.total || 0),
-            shipping_fee: Number(checkoutInfo?.shipping?.[index].detail.total || 0),
-            shipping_method:
-              checkoutInfo?.shipping?.[index].type || ShippingMethod.GHN,
-            order_items: clusterOrder.order_items.map((item) => ({
-              product_variant_id: item.product_variant.id,
-              quantity: item.quantity,
-              price_at_purchase: item.product_variant.price
-            }))
-          }
-          return addOrderApi(data)
-        })
-      ),
-      {
-        loading: 'Đang xử lý...',
-        success: (res) => {
-          router.push('/checkout/complete')
-          setCheckoutData(res)
-          return 'Thành công!'
-        },
-        error: 'Đã có lỗi!'
+  const handleCheckout = async () => {
+    const toastId = toast.loading('Đang xử lý...')
+    const data = clusterOrders.map((clusterOrder, index) => {
+      const data: AddOrderPayload = {
+        seller_id: clusterOrder.seller.seller_id,
+        shop_id: clusterOrder.shop.id,
+        buyer_address_id: Number(checkoutInfo?.information?.buyerAddress.id),
+        discount_code: checkoutInfo?.discountCode?.[index] || '',
+        note: checkoutInfo?.note?.[index] || '',
+        original_price: clusterOrder.original_price,
+        final_price:
+          clusterOrder.original_price +
+          Number(checkoutInfo?.shipping?.[index].detail.total || 0),
+        shipping_fee: Number(checkoutInfo?.shipping?.[index].detail.total || 0),
+        shipping_method:
+          checkoutInfo?.shipping?.[index].type || ShippingMethod.GHN,
+        order_items: clusterOrder.order_items.map((item) => ({
+          product_variant_id: item.product_variant.id,
+          quantity: item.quantity,
+          price_at_purchase: item.product_variant.price
+        }))
       }
-    )
+      return data
+    })
+    try {
+      const { payUrl } = await createMomoPaymentApi(data)
+      router.push(payUrl)
+    } catch {
+      toast.error('da co loi')
+    } finally {
+      toast.dismiss(toastId)
+    }
   }
 
   return (

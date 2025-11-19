@@ -6,7 +6,7 @@ type CustomOptions = RequestInit & {
   baseUrl?: string | undefined
 }
 
-type RequestBodyType = Record<string, unknown> | FormData
+type RequestBodyType = Record<string, unknown> | FormData | unknown[]
 
 export class HttpError extends Error {
   status: number
