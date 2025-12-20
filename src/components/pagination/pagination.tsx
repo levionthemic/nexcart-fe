@@ -1,13 +1,5 @@
 'use client'
 
-import { usePagination } from '@/hooks/use-pagination'
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink
-} from '@/components/ui/pagination'
 import {
   ChevronFirstIcon,
   ChevronLastIcon,
@@ -15,6 +7,15 @@ import {
   ChevronRightIcon
 } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
+
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink
+} from '@/components/ui/pagination'
+import { usePagination } from '@/hooks/use-pagination'
 
 interface PaginationProps {
   currentPage: number

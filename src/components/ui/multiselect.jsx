@@ -4,8 +4,13 @@ import { XIcon } from 'lucide-react'
 import * as React from 'react'
 import { useEffect } from 'react'
 
-import { cn } from '~/lib/utils'
-import { Command, CommandGroup, CommandItem, CommandList } from '~/components/ui/command'
+import {
+  Command,
+  CommandGroup,
+  CommandItem,
+  CommandList
+} from '@/components/ui/command'
+import { cn } from '@/lib/utils'
 
 export function useDebounce(value, delay) {
   const [debouncedValue, setDebouncedValue] = React.useState(value)
@@ -33,7 +38,7 @@ function transToGroupOption(options, groupBy) {
 
   const groupOption = {}
   options.forEach((option) => {
-    const key = (option[groupBy]) || ''
+    const key = option[groupBy] || ''
     if (!groupOption[key]) {
       groupOption[key] = []
     }
@@ -46,24 +51,25 @@ function removePickedOption(groupOption, picked) {
   const cloneOption = JSON.parse(JSON.stringify(groupOption))
 
   for (const [key, value] of Object.entries(cloneOption)) {
-    cloneOption[key] = value.filter((val) => !picked.find((p) => p.value === val.value))
+    cloneOption[key] = value.filter(
+      (val) => !picked.find((p) => p.value === val.value)
+    )
   }
   return cloneOption
 }
 
 function isOptionsExist(groupOption, targetOption) {
   for (const [, value] of Object.entries(groupOption)) {
-    if (value.some((option) => targetOption.find((p) => p.value === option.value))) {
+    if (
+      value.some((option) => targetOption.find((p) => p.value === option.value))
+    ) {
       return true
     }
   }
   return false
 }
 
-const CommandEmpty = ({
-  className,
-  ...props
-}) => {
+const CommandEmpty = ({ className, ...props }) => {
   const render = useCommandState((state) => state.filtered.count === 0)
 
   if (!render) return null
@@ -71,9 +77,10 @@ const CommandEmpty = ({
   return (
     <div
       className={cn('px-2 py-4 text-center text-sm', className)}
-      cmdk-empty=""
-      role="presentation"
-      {...props} />
+      cmdk-empty=''
+      role='presentation'
+      {...props}
+    />
   )
 }
 
@@ -111,7 +118,9 @@ const MultipleSelector = ({
   const dropdownRef = React.useRef(null) // Added this
 
   const [selected, setSelected] = React.useState(value || [])
-  const [options, setOptions] = React.useState(transToGroupOption(arrayDefaultOptions, groupBy))
+  const [options, setOptions] = React.useState(
+    transToGroupOption(arrayDefaultOptions, groupBy)
+  )
   const [inputValue, setInputValue] = React.useState('')
   const debouncedSearchTerm = useDebounce(inputValue, delay || 500)
 
@@ -127,30 +136,36 @@ const MultipleSelector = ({
     }
   }
 
-  const handleUnselect = React.useCallback((option) => {
-    const newOptions = selected.filter((s) => s.value !== option.value)
-    setSelected(newOptions)
-    onChange?.(newOptions)
-  }, [onChange, selected])
+  const handleUnselect = React.useCallback(
+    (option) => {
+      const newOptions = selected.filter((s) => s.value !== option.value)
+      setSelected(newOptions)
+      onChange?.(newOptions)
+    },
+    [onChange, selected]
+  )
 
-  const handleKeyDown = React.useCallback((e) => {
-    const input = inputRef.current
-    if (input) {
-      if (e.key === 'Delete' || e.key === 'Backspace') {
-        if (input.value === '' && selected.length > 0) {
-          const lastSelectOption = selected[selected.length - 1]
-          // If last item is fixed, we should not remove it.
-          if (!lastSelectOption.fixed) {
-            handleUnselect(selected[selected.length - 1])
+  const handleKeyDown = React.useCallback(
+    (e) => {
+      const input = inputRef.current
+      if (input) {
+        if (e.key === 'Delete' || e.key === 'Backspace') {
+          if (input.value === '' && selected.length > 0) {
+            const lastSelectOption = selected[selected.length - 1]
+            // If last item is fixed, we should not remove it.
+            if (!lastSelectOption.fixed) {
+              handleUnselect(selected[selected.length - 1])
+            }
           }
         }
+        // This is not a default behavior of the <input /> field
+        if (e.key === 'Escape') {
+          input.blur()
+        }
       }
-      // This is not a default behavior of the <input /> field
-      if (e.key === 'Escape') {
-        input.blur()
-      }
-    }
-  }, [handleUnselect, selected])
+    },
+    [handleUnselect, selected]
+  )
 
   useEffect(() => {
     if (open) {
@@ -246,7 +261,7 @@ const MultipleSelector = ({
     const Item = (
       <CommandItem
         value={inputValue}
-        className="cursor-pointer"
+        className='cursor-pointer'
         onMouseDown={(e) => {
           e.preventDefault()
           e.stopPropagation()
@@ -260,7 +275,8 @@ const MultipleSelector = ({
           const newOptions = [...selected, { value, label: value }]
           setSelected(newOptions)
           onChange?.(newOptions)
-        }}>
+        }}
+      >
         {`Create "${inputValue}"`}
       </CommandItem>
     )
@@ -284,7 +300,7 @@ const MultipleSelector = ({
     // For async search that showing emptyIndicator
     if (onSearch && !creatable && Object.keys(options).length === 0) {
       return (
-        <CommandItem value="-" disabled>
+        <CommandItem value='-' disabled>
           {emptyIndicator}
         </CommandItem>
       )
@@ -293,7 +309,10 @@ const MultipleSelector = ({
     return <CommandEmpty>{emptyIndicator}</CommandEmpty>
   }, [creatable, emptyIndicator, onSearch, options])
 
-  const selectables = React.useMemo(() => removePickedOption(options, selected), [options, selected])
+  const selectables = React.useMemo(
+    () => removePickedOption(options, selected),
+    [options, selected]
+  )
 
   /** Avoid Creatable Selector freezing or lagging when paste a long string. */
   const commandFilter = React.useCallback(() => {
@@ -318,12 +337,18 @@ const MultipleSelector = ({
         handleKeyDown(e)
         commandProps?.onKeyDown?.(e)
       }}
-      className={cn('h-auto overflow-visible bg-transparent', commandProps?.className)}
+      className={cn(
+        'h-auto overflow-visible bg-transparent',
+        commandProps?.className
+      )}
       // When onSearch is provided, we don&lsquo;t want to filter the options. You can still override it.
       shouldFilter={
-        commandProps?.shouldFilter !== undefined ? commandProps.shouldFilter : !onSearch
+        commandProps?.shouldFilter !== undefined
+          ? commandProps.shouldFilter
+          : !onSearch
       }
-      filter={commandFilter()}>
+      filter={commandFilter()}
+    >
       <div
         className={cn(
           'border-input focus-within:border-ring focus-within:ring-ring/50 has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive relative min-h-[38px] rounded-md border text-sm transition-[color,box-shadow] outline-none focus-within:ring-[3px] has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50',
@@ -337,8 +362,9 @@ const MultipleSelector = ({
         onClick={() => {
           if (disabled) return
           inputRef?.current?.focus()
-        }}>
-        <div className="flex flex-wrap gap-1">
+        }}
+      >
+        <div className='flex flex-wrap gap-1'>
           {selected.map((option) => {
             return (
               <div
@@ -348,10 +374,11 @@ const MultipleSelector = ({
                   badgeClassName
                 )}
                 data-fixed={option.fixed}
-                data-disabled={disabled || undefined}>
+                data-disabled={disabled || undefined}
+              >
                 {option.label}
                 <button
-                  className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute -inset-y-px -end-px flex size-7 items-center justify-center rounded-e-md border border-transparent p-0 outline-hidden transition-[color,box-shadow] outline-none focus-visible:ring-[3px]"
+                  className='text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute -inset-y-px -end-px flex size-7 items-center justify-center rounded-e-md border border-transparent p-0 outline-hidden transition-[color,box-shadow] outline-none focus-visible:ring-[3px]'
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       handleUnselect(option)
@@ -362,8 +389,9 @@ const MultipleSelector = ({
                     e.stopPropagation()
                   }}
                   onClick={() => handleUnselect(option)}
-                  aria-label="Remove">
-                  <XIcon size={14} aria-hidden="true" />
+                  aria-label='Remove'
+                >
+                  <XIcon size={14} aria-hidden='true' />
                 </button>
               </div>
             )
@@ -391,7 +419,11 @@ const MultipleSelector = ({
               }
               inputProps?.onFocus?.(event)
             }}
-            placeholder={hidePlaceholderWhenSelected && selected.length !== 0 ? '' : placeholder}
+            placeholder={
+              hidePlaceholderWhenSelected && selected.length !== 0
+                ? ''
+                : placeholder
+            }
             className={cn(
               'placeholder:text-muted-foreground/70 flex-1 bg-transparent outline-hidden disabled:cursor-not-allowed',
               {
@@ -400,9 +432,10 @@ const MultipleSelector = ({
                 'ml-1': selected.length !== 0
               },
               inputProps?.className
-            )} />
+            )}
+          />
           <button
-            type="button"
+            type='button'
             onClick={() => {
               setSelected(selected.filter((s) => s.fixed))
               onChange?.(selected.filter((s) => s.fixed))
@@ -415,22 +448,24 @@ const MultipleSelector = ({
                 selected.filter((s) => s.fixed).length === selected.length) &&
                 'hidden'
             )}
-            aria-label="Clear all">
-            <XIcon size={16} aria-hidden="true" />
+            aria-label='Clear all'
+          >
+            <XIcon size={16} aria-hidden='true' />
           </button>
         </div>
       </div>
-      <div className="relative">
+      <div className='relative'>
         <div
           className={cn(
             'border-input absolute top-2 z-10 w-full overflow-hidden rounded-md border',
             'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
             !open && 'hidden'
           )}
-          data-state={open ? 'open' : 'closed'}>
+          data-state={open ? 'open' : 'closed'}
+        >
           {open && (
             <CommandList
-              className="bg-popover text-popover-foreground shadow-lg outline-hidden"
+              className='bg-popover text-popover-foreground shadow-lg outline-hidden'
               onMouseLeave={() => {
                 setOnScrollbar(false)
               }}
@@ -439,16 +474,23 @@ const MultipleSelector = ({
               }}
               onMouseUp={() => {
                 inputRef?.current?.focus()
-              }}>
+              }}
+            >
               {isLoading ? (
                 <>{loadingIndicator}</>
               ) : (
                 <>
                   {EmptyItem()}
                   {CreatableItem()}
-                  {!selectFirstItem && <CommandItem value="-" className="hidden" />}
+                  {!selectFirstItem && (
+                    <CommandItem value='-' className='hidden' />
+                  )}
                   {Object.entries(selectables).map(([key, dropdowns]) => (
-                    <CommandGroup key={key} heading={key} className="h-full overflow-auto">
+                    <CommandGroup
+                      key={key}
+                      heading={key}
+                      className='h-full overflow-auto'
+                    >
                       <>
                         {dropdowns.map((option) => {
                           return (
@@ -470,8 +512,12 @@ const MultipleSelector = ({
                                 setSelected(newOptions)
                                 onChange?.(newOptions)
                               }}
-                              className={cn('cursor-pointer', option.disable &&
-                                'pointer-events-none cursor-not-allowed opacity-50')}>
+                              className={cn(
+                                'cursor-pointer',
+                                option.disable &&
+                                  'pointer-events-none cursor-not-allowed opacity-50'
+                              )}
+                            >
                               {option.label}
                             </CommandItem>
                           )

@@ -1,24 +1,23 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-
 import { cloneDeep } from 'lodash'
-import { useState } from 'react'
-import { Separator } from '@/components/ui/separator'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { useState, useId } from 'react'
+import { FaMoneyBillAlt } from 'react-icons/fa'
 
-import { Label } from '@/components/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { useId } from 'react'
 import creditCardLogo from '@/assets/credit-card-black-logo.png'
 import momoLogo from '@/assets/momo-logo.png'
 import vnpayLogo from '@/assets/vnpay-logo.png'
-import { FaMoneyBillAlt } from 'react-icons/fa'
-import Image from 'next/image'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Separator } from '@/components/ui/separator'
 import { useOrder } from '@/contexts/order-context'
 import { PaymentMethod } from '@/types/enums/checkout'
-import { useRouter } from 'next/navigation'
-import RightSidebar from './_components/right-sidebar'
+
 import CreditForm from './_components/credit-form'
+import RightSidebar from './_components/right-sidebar'
 
 export default function Payment() {
   const { clusterOrders, checkoutInfo, setCheckoutInfo } = useOrder()
@@ -73,21 +72,21 @@ export default function Payment() {
 
   return (
     <div>
-      <div className='text-red-400 font-semibold mt-4 mb-10'>
+      <div className='mt-4 mb-10 font-semibold text-red-400'>
         Lưu ý: Đơn hàng của bạn có thể được TÁCH thành nhiều đơn hàng nhỏ theo
         chính sách của chúng tôi!
       </div>
       <div className='space-y-10'>
         {clusterOrders?.map((clusterOrder, index) => (
           <div key={index} className='grid grid-cols-12 gap-12'>
-            <div className='border-[2px] border-b-[#ddd] rounded-md p-4 col-span-9'>
-              <div className='font-semibold text-xl text-mainColor1-800'>
+            <div className='col-span-9 rounded-md border-[2px] border-b-[#ddd] p-4'>
+              <div className='text-mainColor1-800 text-xl font-semibold'>
                 Đơn hàng {index + 1}
               </div>
               <Separator className='mt-1 mb-4' />
 
               <div className='mb-10'>
-                <div className='text-mainColor1-600 font-medium text-lg mb-2'>
+                <div className='text-mainColor1-600 mb-2 text-lg font-medium'>
                   Phương thức thanh toán
                 </div>
                 <RadioGroup
@@ -194,9 +193,7 @@ export default function Payment() {
                 </RadioGroup>
               </div>
 
-              {payments[index].type === PaymentMethod.CREDIT && (
-                <CreditForm />
-              )}
+              {payments[index].type === PaymentMethod.CREDIT && <CreditForm />}
             </div>
             <div className='col-span-3'>
               <RightSidebar
@@ -207,17 +204,17 @@ export default function Payment() {
             </div>
           </div>
         ))}
-        <div className='grid grid-cols-2 gap-5 my-10'>
+        <div className='my-10 grid grid-cols-2 gap-5'>
           <Button
             type='button'
-            className='border bg-white text-mainColor1-600  border-mainColor1-600 hover:bg-white text-md font-semibold rounded-lg hover:drop-shadow-xl'
+            className='text-mainColor1-600 border-mainColor1-600 text-md rounded-lg border bg-white font-semibold hover:bg-white hover:drop-shadow-xl'
             onClick={handleBack}
           >
             Quay lại
           </Button>
           <Button
             onClick={handleUpdatePayment}
-            className='bg-mainColor1-600 hover:bg-mainColor1-800 text-white text-md font-semibold rounded-lg hover:drop-shadow-xl'
+            className='bg-mainColor1-600 hover:bg-mainColor1-800 text-md rounded-lg font-semibold text-white hover:drop-shadow-xl'
           >
             Tiếp tục
           </Button>

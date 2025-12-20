@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function CountDown() {
   const targetDate = new Date('2025-12-31T23:59:00').getTime()
@@ -31,19 +31,19 @@ export default function CountDown() {
         <span className='text-xs'>Ngày</span>
         <span className='text-3xl'>{days < 10 ? `0${days}` : days}</span>
       </li>
-      <li className='text-2xl text-red-500 text-bold'>:</li>
+      <li className='text-bold text-2xl text-red-500'>:</li>
       <li className='flex flex-col items-start font-semibold'>
         <span className='text-xs'>Giờ</span>
         <span className='text-3xl'>{hours < 10 ? `0${hours}` : hours}</span>
       </li>
-      <li className='text-2xl text-red-500 text-bold'>:</li>
+      <li className='text-bold text-2xl text-red-500'>:</li>
       <li className='flex flex-col items-start font-semibold'>
         <span className='text-xs'>Phút</span>
         <span className='text-3xl'>
           {minutes < 10 ? `0${minutes}` : minutes}
         </span>
       </li>
-      <li className='text-2xl text-red-500 text-bold'>:</li>
+      <li className='text-bold text-2xl text-red-500'>:</li>
       <li className='flex flex-col items-start font-semibold'>
         <span className='text-xs'>Giây</span>
         <span className='text-3xl'>

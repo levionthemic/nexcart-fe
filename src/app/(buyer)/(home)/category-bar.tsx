@@ -2,6 +2,8 @@
 
 import { CollapsibleTrigger } from '@radix-ui/react-collapsible'
 import { ChevronDown } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
 import {
   SidebarMenu,
@@ -10,7 +12,6 @@ import {
   SidebarMenuSubItem
 } from '@/components/ui/sidebar'
 import { Category } from '@/types/entities/category'
-import { useRouter } from 'next/navigation'
 
 export default function CategoryBar({
   categories = [],
@@ -22,16 +23,16 @@ export default function CategoryBar({
   const router = useRouter()
   return (
     <div
-      className={`sticky left-0 flex-1 overflow-y-auto h-96 max-h-96 top-5 scroll-smooth scroll-pr-1 custom-scrollbar ${className}`}
+      className={`custom-scrollbar sticky top-5 left-0 h-96 max-h-96 flex-1 scroll-pr-1 overflow-y-auto scroll-smooth ${className}`}
     >
-      <div className='text-xl font-semibold text-mainColor1-600'>Danh mục:</div>
-      <SidebarMenu className='flex flex-col items-start gap-2 mt-2'>
+      <div className='text-mainColor1-600 text-xl font-semibold'>Danh mục:</div>
+      <SidebarMenu className='mt-2 flex flex-col items-start gap-2'>
         {categories?.map((item) => (
-          <Collapsible key={item.id} className='w-full group/collapsible'>
+          <Collapsible key={item.id} className='group/collapsible w-full'>
             {/* <SidebarMenuItem> */}
             <CollapsibleTrigger className='w-full'>
               <SidebarMenuButton asChild>
-                <div className='flex items-center justify-between w-full'>
+                <div className='flex w-full items-center justify-between'>
                   {item.name}
                   <ChevronDown className='ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180' />
                 </div>
@@ -42,7 +43,7 @@ export default function CategoryBar({
                 {item.children?.map((sub) => (
                   <SidebarMenuSubItem
                     key={sub.id}
-                    className='text-xs text-muted-foreground cursor-pointer hover:text-mainColor1-600'
+                    className='text-muted-foreground hover:text-mainColor1-600 cursor-pointer text-xs'
                     onClick={() => {
                       router.push(`/category/${sub.slug}`)
                     }}

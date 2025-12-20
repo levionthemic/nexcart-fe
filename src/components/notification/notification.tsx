@@ -1,14 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
+import { format } from 'date-fns'
+import { BellRing, MoreHorizontalIcon } from 'lucide-react'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'sonner'
+
 import {
   Popover,
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover'
-import { BellRing, MoreHorizontalIcon } from 'lucide-react'
 import {
   fetchCurrentNotificationListAPI,
   selectCurrentNotificationList,
@@ -16,17 +19,16 @@ import {
   setHasNewNotification
 } from '@/redux/notification/notificationSlice'
 import { AppDispatch } from '@/redux/store'
-import { toast } from 'sonner'
 import { NotificationType } from '@/types/enums/notification-type'
-import { ScrollArea } from '../ui/scroll-area'
-import { format } from 'date-fns'
 import {
   categorizeDate,
   mapNotificationTypeToTitle,
   mapNotificationTypeToToastInfo
 } from '@/utils/helpers'
+
 import { useSocketContext } from '../providers/socket-provider'
 import { Button } from '../ui/button'
+import { ScrollArea } from '../ui/scroll-area'
 
 export type SocketPayload = {
   content: string
@@ -85,12 +87,12 @@ export default function Notification() {
     <Popover>
       <PopoverTrigger>
         <div
-          className='relative cursor-pointer hover:scale-105 hover:ease-out hover:duration-300 transition-all'
+          className='relative cursor-pointer transition-all hover:scale-105 hover:duration-300 hover:ease-out'
           onClick={handleUnshowBadge}
         >
           <BellRing className='text-mainColor1-600 text-xl' />
           {hasNewNotification && (
-            <div className='w-2.5 h-2.5 rounded-full text-center absolute -top-2 -right-2 bg-mainColor2-800'></div>
+            <div className='bg-mainColor2-800 absolute -top-2 -right-2 h-2.5 w-2.5 rounded-full text-center'></div>
           )}
         </div>
       </PopoverTrigger>
@@ -117,25 +119,25 @@ export default function Notification() {
                     currentNotificationList.length === 0 ||
                     !filterNotificationsByDate(index) ||
                     filterNotificationsByDate(index)?.length === 0 ? (
-                      <p className='text-sm text-muted-foreground'>
+                      <p className='text-muted-foreground text-sm'>
                         Không có thông báo mới.
                       </p>
                     ) : (
                       filterNotificationsByDate(index)?.map((notification) => (
                         <div
                           key={notification.id}
-                          className='rounded-lg p-3 transition hover:bg-mainColor1-100/50 flex items-center gap-6 bg-mainColor1-100/20 cursor-pointer'
+                          className='hover:bg-mainColor1-100/50 bg-mainColor1-100/20 flex cursor-pointer items-center gap-6 rounded-lg p-3 transition'
                         >
                           {!notification.read_at && (
-                            <div className='size-2.5 bg-mainColor1-800 rounded-full relative -top-10'></div>
+                            <div className='bg-mainColor1-800 relative -top-10 size-2.5 rounded-full'></div>
                           )}
                           <div className='flex-1'>
-                            <h4 className='font-semibold text-base mb-2'>
+                            <h4 className='mb-2 text-base font-semibold'>
                               {mapNotificationTypeToTitle(notification.type)}
                             </h4>
 
                             <p className='text-sm'>{notification.content}</p>
-                            <p className='text-xs text-right text-gray-500 italic'>
+                            <p className='text-right text-xs text-gray-500 italic'>
                               {format(
                                 notification.created_at,
                                 "'Lúc' k:m:ss 'ngày' dd/MM/yyyy"
@@ -150,7 +152,7 @@ export default function Notification() {
               ))}
             </div>
 
-            <Button className='w-full mt-4 bg-gray-600'>
+            <Button className='mt-4 w-full bg-gray-600'>
               Xem các thông báo trước
             </Button>
           </div>

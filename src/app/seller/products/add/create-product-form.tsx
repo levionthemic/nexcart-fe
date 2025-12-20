@@ -1,7 +1,13 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
 import clsx from 'clsx'
+import { useEffect, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
+import { z } from 'zod'
+
+import { getShopsApi } from '@/apis/shop.api'
+import Autocomplete from '@/components/Autocomplete'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -20,23 +26,19 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
-import UploadImage from './upload-image'
+import { Brand } from '@/types/entities/brand'
+import { Category } from '@/types/entities/category'
+import { Shop } from '@/types/entities/shop'
+import { generateSKU } from '@/utils/helpers'
 import {
   FIELD_REQUIRED_MESSAGE,
   STRING_CONTAIN_NUMBER_RULE,
   STRING_CONTAIN_NUMBER_RULE_MESSAGE
 } from '@/utils/validators'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Category } from '@/types/entities/category'
-import { Brand } from '@/types/entities/brand'
-import { useEffect, useState } from 'react'
-import { Shop } from '@/types/entities/shop'
-import { getShopsApi } from '@/apis/shop.api'
-import { Separator } from '@/components/ui/separator'
-import { generateSKU } from '@/utils/helpers'
-import Autocomplete from '@/components/Autocomplete'
+
+import UploadImage from './upload-image'
 
 const formSchema = z.object({
   name: z.string().min(1, { message: FIELD_REQUIRED_MESSAGE }),
@@ -191,7 +193,7 @@ export default function CreateProductForm({
         className='space-y-4!'
         onSubmit={form.handleSubmit(handleAddProduct)}
       >
-        <div className='font-medium text-mainColor1-600 text-lg mb-2'>
+        <div className='text-mainColor1-600 mb-2 text-lg font-medium'>
           Phần 1: Thông tin về sản phẩm
         </div>
 
@@ -208,7 +210,7 @@ export default function CreateProductForm({
                   <FormControl>
                     <Input
                       placeholder='Vd: Cửa hàng ABC'
-                      className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] ${
+                      className={`placeholder:text-opacity-50 rounded-lg border-[1px] placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none ${
                         !!form.formState.errors['name'] && 'border-red-500'
                       }`}
                       {...field}
@@ -305,7 +307,7 @@ export default function CreateProductForm({
               control={form.control}
               name='specifications'
               render={() => (
-                <FormItem className='grid grid-cols-3 mb-2'>
+                <FormItem className='mb-2 grid grid-cols-3'>
                   <div className=''>
                     <FormLabel>Đặc điểm sản phẩm</FormLabel>
                     <FormDescription>
@@ -319,7 +321,7 @@ export default function CreateProductForm({
                       (field, index) => (
                         <div
                           key={field.id}
-                          className='flex gap-2 items-start mb-2'
+                          className='mb-2 flex items-start gap-2'
                         >
                           <FormField
                             control={form.control}
@@ -395,7 +397,7 @@ export default function CreateProductForm({
                 <Textarea
                   placeholder='Vd: Mô tả của sản phẩm'
                   rows={10}
-                  className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] ${
+                  className={`placeholder:text-opacity-50 rounded-lg border-[1px] placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none ${
                     !!form.formState.errors['description'] && 'border-red-500'
                   }`}
                   {...field}
@@ -406,9 +408,9 @@ export default function CreateProductForm({
           )}
         />
 
-        <Separator className='my-8! border border-mainColor2-300' />
+        <Separator className='border-mainColor2-300 my-8! border' />
 
-        <div className='font-medium text-mainColor1-600 text-lg mb-2'>
+        <div className='text-mainColor1-600 mb-2 text-lg font-medium'>
           Phần 2: Thông tin về các biến thể sản phẩm
         </div>
 
@@ -428,7 +430,7 @@ export default function CreateProductForm({
                     (field, index) => (
                       <div
                         key={field.id}
-                        className='flex gap-2 items-start mb-2'
+                        className='mb-2 flex items-start gap-2'
                       >
                         <FormField
                           control={form.control}
@@ -616,7 +618,7 @@ export default function CreateProductForm({
                     (field, index) => (
                       <div
                         key={field.id}
-                        className='flex gap-2 items-start mb-2'
+                        className='mb-2 flex items-start gap-2'
                       >
                         <FormField
                           control={form.control}
@@ -725,7 +727,7 @@ export default function CreateProductForm({
                   >
                     Thêm
                   </Button>
-                  <FormMessage className='mt-2 ' />
+                  <FormMessage className='mt-2' />
                 </div>
               </FormItem>
             )}

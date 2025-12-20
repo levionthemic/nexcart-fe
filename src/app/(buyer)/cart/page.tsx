@@ -1,26 +1,5 @@
 'use client'
 
-import { useDispatch, useSelector } from 'react-redux'
-import {
-  deleteItemAPI,
-  selectCurrentCart,
-  setCart,
-  updateCartQuantityAPI
-} from '@/redux/cart/cartSlice'
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table'
-import { Separator } from '@/components/ui/separator'
-import { RiSubtractFill } from 'react-icons/ri'
-import { IoMdAdd } from 'react-icons/io'
-import { Checkbox } from '@/components/ui/checkbox'
 import {
   ColumnDef,
   flexRender,
@@ -30,9 +9,15 @@ import {
   useReactTable
 } from '@tanstack/react-table'
 import { cloneDeep } from 'lodash'
-import { Button } from '@/components/ui/button'
-import { toast } from 'sonner'
 import { ChevronDown, ChevronUp, EllipsisIcon, Trash2Icon } from 'lucide-react'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { IoMdAdd } from 'react-icons/io'
+import { RiSubtractFill } from 'react-icons/ri'
+import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'sonner'
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -44,15 +29,30 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
-import { useEffect, useState } from 'react'
-import { selectCurrentUser } from '@/redux/user/userSlice'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Separator } from '@/components/ui/separator'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
+import { useOrder } from '@/contexts/order-context'
+import {
+  deleteItemAPI,
+  selectCurrentCart,
+  setCart,
+  updateCartQuantityAPI
+} from '@/redux/cart/cartSlice'
 import { AppDispatch } from '@/redux/store'
+import { selectCurrentUser } from '@/redux/user/userSlice'
 import { CartItem } from '@/types/entities/cart'
-import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 import { OrderItem } from '@/types/entities/order'
 import { DEFAULT_IMAGE_URL } from '@/utils/constants'
-import { useOrder } from '@/contexts/order-context'
 
 export default function CartPage() {
   const router = useRouter()
@@ -198,7 +198,7 @@ export default function CartPage() {
           height={64}
           src={row.getValue('avatar') || DEFAULT_IMAGE_URL}
           alt={row.getValue('name')}
-          className='rounded object-cover size-16'
+          className='size-16 rounded object-cover'
         />
       ),
       size: 64
@@ -228,9 +228,9 @@ export default function CartPage() {
       accessorKey: 'quantity',
       cell: ({ row }) => {
         return (
-          <div className='flex items-center justify-between p-1 border border-gray-300 rounded-lg w-fit'>
+          <div className='flex w-fit items-center justify-between rounded-lg border border-gray-300 p-1'>
             <RiSubtractFill
-              className='text-xl rounded-md cursor-pointer hover:bg-mainColor2-800/40'
+              className='hover:bg-mainColor2-800/40 cursor-pointer rounded-md text-xl'
               onClick={() => {
                 handleChangeQuantity(row.original.product_variant.id, false)
               }}
@@ -238,10 +238,10 @@ export default function CartPage() {
             <input
               value={row.getValue('quantity')}
               readOnly
-              className='w-[30px] text-center mx-1.5 border-none outline-none text-md bg-transparent'
+              className='text-md mx-1.5 w-[30px] border-none bg-transparent text-center outline-none'
             />
             <IoMdAdd
-              className='text-xl rounded-md cursor-pointer hover:bg-mainColor2-800/40'
+              className='hover:bg-mainColor2-800/40 cursor-pointer rounded-md text-xl'
               onClick={() => {
                 handleChangeQuantity(row.original.product_variant.id, true)
               }}
@@ -256,7 +256,7 @@ export default function CartPage() {
       header: () => <div className='text-right'>Thành tiền</div>,
       cell: ({ row }) => {
         return (
-          <div className='font-semibold text-right'>
+          <div className='text-right font-semibold'>
             {(
               Number(row.getValue('price')) * Number(row.getValue('quantity'))
             ).toLocaleString('vi-VN')}
@@ -273,7 +273,7 @@ export default function CartPage() {
         <div className='flex items-center justify-end gap-1'>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <div className='hover:bg-red-200 hover:text-red-500 p-1.5 rounded-md cursor-pointer transition-all hover:ease-in-out hover:duration-300'>
+              <div className='cursor-pointer rounded-md p-1.5 transition-all hover:bg-red-200 hover:text-red-500 hover:duration-300 hover:ease-in-out'>
                 <Trash2Icon className='size-4' />
               </div>
             </AlertDialogTrigger>
@@ -295,7 +295,7 @@ export default function CartPage() {
             </AlertDialogContent>
           </AlertDialog>
           <div
-            className='hover:bg-gray-200 p-1.5 rounded-md cursor-pointer transition-all hover:ease-in-out hover:duration-300'
+            className='cursor-pointer rounded-md p-1.5 transition-all hover:bg-gray-200 hover:duration-300 hover:ease-in-out'
             onClick={() =>
               router.push(
                 `/product/${row.original.product_variant.product.slug}`
@@ -379,15 +379,15 @@ export default function CartPage() {
 
   return (
     <div className='container mx-auto py-6'>
-      <div className='relative grid max-h-full grid-cols-4 gap-5 min-h-[95vh]'>
-        <div className='col-span-3 py-4 h-fit'>
-          <div className='mb-6 text-2xl font-semibold text-mainColor2-800'>
+      <div className='relative grid max-h-full min-h-[95vh] grid-cols-4 gap-5'>
+        <div className='col-span-3 h-fit py-4'>
+          <div className='text-mainColor2-800 mb-6 text-2xl font-semibold'>
             Giỏ Hàng Của Bạn
           </div>
           {!cart || !cart?.cart_items?.length ? (
             <p>Giỏ hàng của bạn đang trống.</p>
           ) : (
-            <div className='bg-section rounded-lg p-4 max-h-full h-[75vh]'>
+            <div className='bg-section h-[75vh] max-h-full rounded-lg p-4'>
               <Table className='table-fixed'>
                 <TableHeader>
                   {table.getHeaderGroups().map((headerGroup) => (
@@ -421,7 +421,7 @@ export default function CartPage() {
                         return (
                           <TableRow
                             key={row.id}
-                            className='cursor-pointer bg-muted hover:bg-mainColor1-100/50'
+                            className='bg-muted hover:bg-mainColor1-100/50 cursor-pointer'
                           >
                             <TableCell colSpan={1}>
                               <Checkbox
@@ -442,7 +442,7 @@ export default function CartPage() {
                                   alt=''
                                   width={32}
                                   height={32}
-                                  className='w-8 h-8 rounded-full object-cover'
+                                  className='h-8 w-8 rounded-full object-cover'
                                 />
                                 <span>
                                   {
@@ -456,7 +456,7 @@ export default function CartPage() {
                             <TableCell>
                               {row.getCanExpand() && (
                                 <div
-                                  className='flex justify-end cursor-pointer'
+                                  className='flex cursor-pointer justify-end'
                                   // onClick={row.getToggleExpandedHandler()}
                                 >
                                   {row.getIsExpanded() ? (
@@ -501,7 +501,7 @@ export default function CartPage() {
                   <TableRow className='hover:bg-transparent'>
                     <TableCell colSpan={6}>Tổng thành tiền</TableCell>
                     <TableCell className='text-right'>
-                      <div className='text-lg font-bold text-right total-price'>
+                      <div className='total-price text-right text-lg font-bold'>
                         {totalPrice()?.toLocaleString('vi-VN') || 0}
                         <sup>đ</sup>
                       </div>
@@ -512,21 +512,21 @@ export default function CartPage() {
             </div>
           )}
         </div>
-        <div className='col-span-1 bg-[#ECEEF6] dark:bg-section sticky top-32 rounded-lg left-0 max-h-[80%] min-h-fit'>
-          <div className='p-4 m-4 bg-white dark:bg-section brightness-125 rounded-lg'>
-            <div className='py-4 text-sm font-semibold tracking-wide text-center uppercase text-mainColor1-600'>
+        <div className='dark:bg-section sticky top-32 left-0 col-span-1 max-h-[80%] min-h-fit rounded-lg bg-[#ECEEF6]'>
+          <div className='dark:bg-section m-4 rounded-lg bg-white p-4 brightness-125'>
+            <div className='text-mainColor1-600 py-4 text-center text-sm font-semibold tracking-wide uppercase'>
               Tóm tắt
             </div>
 
             <Separator />
 
-            <div className='flex justify-between my-4 text-sm'>
+            <div className='my-4 flex justify-between text-sm'>
               <div className='flex flex-col gap-1.5'>
                 <span>Tổng thành tiền</span>
                 <span>Phí vận chuyển</span>
                 <span>Giảm giá</span>
               </div>
-              <div className='flex flex-col gap-1.5 items-end'>
+              <div className='flex flex-col items-end gap-1.5'>
                 <span>
                   {totalPrice()?.toLocaleString('vi-VN') || 0}
                   <sup>đ</sup>
@@ -544,11 +544,11 @@ export default function CartPage() {
 
             <Separator />
 
-            <div className='flex items-end justify-between my-4'>
-              <span className='font-semibold text-mainColor1-600'>
+            <div className='my-4 flex items-end justify-between'>
+              <span className='text-mainColor1-600 font-semibold'>
                 Tổng tiền
               </span>
-              <span className='text-xl font-bold text-mainColor1-800'>
+              <span className='text-mainColor1-800 text-xl font-bold'>
                 {totalPrice()?.toLocaleString('vi-VN') || 0}
                 <sup>đ</sup>
               </span>
@@ -556,7 +556,7 @@ export default function CartPage() {
 
             <Button
               onClick={handleCheckout}
-              className='bg-mainColor1-800 w-full text-white uppercase py-4 text-center rounded-xl font-bold hover:drop-shadow-xl hover:scale-[102%] hover:duration-300 hover:bg-mainColor1-600 transition-all'
+              className='bg-mainColor1-800 hover:bg-mainColor1-600 w-full rounded-xl py-4 text-center font-bold text-white uppercase transition-all hover:scale-[102%] hover:drop-shadow-xl hover:duration-300'
             >
               Thanh toán
             </Button>

@@ -8,6 +8,7 @@
     "source.addMissingImports": "explicit",
     "source.organizeImports": "explicit",
     "source.removeUnusedImports": "explicit",
+    "source.fixAll": "explicit",
     "source.fixAll.eslint": "explicit"
   },
 
@@ -33,5 +34,11 @@
 
   // ESLint settings
   "eslint.workingDirectories": ["."],
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "eslint.useFlatConfig": true
 }

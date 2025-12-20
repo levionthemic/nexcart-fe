@@ -1,54 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { FormEvent, useEffect, useRef, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import {
-  addToCartAPI,
-  clearCart,
-  fetchCurrentCartAPI,
-  selectCurrentCart
-} from '@/redux/cart/cartSlice'
-
-import { logoutUserAction, selectCurrentUser } from '@/redux/user/userSlice'
-import { Input } from '@/components/ui/input'
-
-import { LuShoppingCart } from 'react-icons/lu'
-
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ArrowRightIcon, LogInIcon, SearchIcon } from 'lucide-react'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { FormEvent, useEffect, useRef, useState } from 'react'
+import { LuShoppingCart } from 'react-icons/lu'
+import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'sonner'
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { Badge } from '@/components/ui/badge'
-
-import { Button } from '@/components/ui/button'
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger
-} from '@/components/ui/sheet'
-
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger
-} from '@/components/ui/tooltip'
-
+import { getProductsWithFiltersApi } from '@/apis/product.api'
+import Notification from '@/components/notification/notification'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -60,16 +22,49 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { Input } from '@/components/ui/input'
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger
+} from '@/components/ui/sheet'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from '@/components/ui/tooltip'
 import { useDebounceFn } from '@/hooks/use-debounce'
-import { AppDispatch } from '@/redux/store'
-import Image from 'next/image'
-import MenuBar from './menu-bar'
-import { ProductListItem } from '@/types/entities/product'
-import { useRouter } from 'next/navigation'
-import { getProductsWithFiltersApi } from '@/apis/product.api'
-import { DEFAULT_IMAGE_URL } from '@/utils/constants'
-import Notification from '@/components/notification/notification'
+import {
+  addToCartAPI,
+  clearCart,
+  fetchCurrentCartAPI,
+  selectCurrentCart
+} from '@/redux/cart/cartSlice'
 import { fetchCurrentNotificationListAPI } from '@/redux/notification/notificationSlice'
+import { AppDispatch } from '@/redux/store'
+import { logoutUserAction, selectCurrentUser } from '@/redux/user/userSlice'
+import { ProductListItem } from '@/types/entities/product'
+import { DEFAULT_IMAGE_URL } from '@/utils/constants'
+
+import MenuBar from './menu-bar'
 
 export default function BuyerHeader() {
   const router = useRouter()
@@ -166,11 +161,11 @@ export default function BuyerHeader() {
 
   return (
     <>
-      <div className='fixed top-0 left-0 bg-background w-full z-50'>
+      <div className='bg-background fixed top-0 left-0 z-50 w-full'>
         <div className='container mx-auto'>
           <div className='flex items-center justify-between'>
             <div
-              className='text-4xl font-medium text-mainColor1-600 cursor-pointer hover:scale-105 transition-transform hover:duration-500'
+              className='text-mainColor1-600 cursor-pointer text-4xl font-medium transition-transform hover:scale-105 hover:duration-500'
               onClick={() => router.push('/')}
             >
               <Image
@@ -178,16 +173,16 @@ export default function BuyerHeader() {
                 alt='NexCart Logo'
                 width={80}
                 height={80}
-                className='w-32 aspect-video object-cover'
+                className='aspect-video w-32 object-cover'
               />
             </div>
             <div className='flex-1'>
               <form
                 onSubmit={handleSearch}
-                className='relative w-[80%] mx-auto'
+                className='relative mx-auto w-[80%]'
               >
                 <Input
-                  className='peer ps-9 pe-9 w-full placeholder:text-sm placeholder:text-mainColor1-100 rounded-full border-mainColor1-800 text-mainColor1-600 hover:border-[2px] focus:border-[2px] flex-1'
+                  className='peer placeholder:text-mainColor1-100 border-mainColor1-800 text-mainColor1-600 w-full flex-1 rounded-full ps-9 pe-9 placeholder:text-sm hover:border-[2px] focus:border-[2px]'
                   placeholder='Bạn cần tìm gì?'
                   onFocus={handleFocus}
                   onBlur={handleBlur}
@@ -212,9 +207,9 @@ export default function BuyerHeader() {
 
               <Sheet key={'right'}>
                 <SheetTrigger asChild>
-                  <div className='relative cursor-pointer hover:scale-105 hover:ease-out hover:duration-300 transition-transform'>
+                  <div className='relative cursor-pointer transition-transform hover:scale-105 hover:duration-300 hover:ease-out'>
                     <LuShoppingCart className='text-mainColor1-600 text-xl' />
-                    <Badge className='w-2 h-2 rounded-full p-2 text-center absolute -top-3 -right-3 bg-mainColor1-600'>
+                    <Badge className='bg-mainColor1-600 absolute -top-3 -right-3 h-2 w-2 rounded-full p-2 text-center'>
                       {currentCart?.cart_items?.length || 0}
                     </Badge>
                   </div>
@@ -231,7 +226,7 @@ export default function BuyerHeader() {
                       Sơ lược các sản phẩm trong giỏ hàng.
                     </SheetDescription>
                   </SheetHeader>
-                  <div className='p-4 max-h-[89%] overflow-auto space-y-6'>
+                  <div className='max-h-[89%] space-y-6 overflow-auto p-4'>
                     {currentCart?.cart_items?.map(
                       ({ product_variant, quantity }, index) => (
                         <div key={index} className='flex items-center gap-2'>
@@ -240,13 +235,13 @@ export default function BuyerHeader() {
                             alt=''
                             width={40}
                             height={40}
-                            className='rounded-md size-10'
+                            className='size-10 rounded-md'
                           />
                           <div className='flex flex-col gap-1'>
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <span className='text-sm line-clamp-1 text-mainColor2-800 leading-none'>
+                                  <span className='text-mainColor2-800 line-clamp-1 text-sm leading-none'>
                                     {product_variant.name}
                                   </span>
                                 </TooltipTrigger>
@@ -255,14 +250,14 @@ export default function BuyerHeader() {
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
-                            <p className='line-clamp-1 text-xs text-gray-400 mb-0.5'>
+                            <p className='mb-0.5 line-clamp-1 text-xs text-gray-400'>
                               Loại: {product_variant.name}
                             </p>
                             <div className='flex flex-col lg:flex-row lg:items-center lg:gap-4'>
                               <Badge className='bg-mainColor2-800/90'>
                                 {quantity} sản phẩm
                               </Badge>
-                              <span className='text-[0.8rem] text-muted-foreground'>
+                              <span className='text-muted-foreground text-[0.8rem]'>
                                 x{' '}
                                 {product_variant.price.toLocaleString('vi-VN')}
                                 <sup>đ</sup>
@@ -289,7 +284,7 @@ export default function BuyerHeader() {
               {currentUser ? (
                 <DropdownMenu open={open} onOpenChange={setOpen}>
                   <DropdownMenuTrigger asChild>
-                    <div className='flex items-center gap-3 cursor-pointer'>
+                    <div className='flex cursor-pointer items-center gap-3'>
                       <Avatar>
                         <AvatarImage src={currentUser?.avatar} />
                         <AvatarFallback>LV</AvatarFallback>
@@ -324,7 +319,7 @@ export default function BuyerHeader() {
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <DropdownMenuItem
-                          className='text-red-600 font-medium hover:bg-red-100 hover:text-red-600 cursor-pointer'
+                          className='cursor-pointer font-medium text-red-600 hover:bg-red-100 hover:text-red-600'
                           onSelect={(event) => {
                             event.preventDefault()
                           }}
@@ -356,7 +351,7 @@ export default function BuyerHeader() {
                 </DropdownMenu>
               ) : (
                 <div
-                  className='flex items-center gap-2 text-mainColor1-600 cursor-pointer hover:scale-105 hover:ease-out hover:duration-300 transition-transform'
+                  className='text-mainColor1-600 flex cursor-pointer items-center gap-2 transition-transform hover:scale-105 hover:duration-300 hover:ease-out'
                   onClick={() => router.push('/login')}
                 >
                   <LogInIcon />
@@ -370,9 +365,9 @@ export default function BuyerHeader() {
       </div>
       {showBackgroundOverlay && (
         <>
-          <div className='w-[100vw] h-[100vh] fixed z-50 top-20 bg-black opacity-80'></div>
+          <div className='fixed top-20 z-50 h-[100vh] w-[100vw] bg-black opacity-80'></div>
           <div
-            className='bg-white opacity-100 z-[51] w-[53%] h-fit fixed top-16 left-[18%] shadow-xl p-1 rounded-sm text-center text-sm'
+            className='fixed top-16 left-[18%] z-[51] h-fit w-[53%] rounded-sm bg-white p-1 text-center text-sm opacity-100 shadow-xl'
             style={{
               boxShadow: 'rgba(0, 0, 0, 0.28) 0px 6px 12px 0px'
             }}
@@ -382,7 +377,7 @@ export default function BuyerHeader() {
               ? searchProducts.map((prod) => (
                   <div
                     key={prod.id}
-                    className='flex items-center gap-4 hover:bg-gray-100 px-1 rounded-sm my-1 cursor-pointer py-2'
+                    className='my-1 flex cursor-pointer items-center gap-4 rounded-sm px-1 py-2 hover:bg-gray-100'
                     onMouseDown={() => {
                       router.push(`/product/${prod.id}`)
                     }}

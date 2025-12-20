@@ -1,6 +1,14 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import { ArrowLeft } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+
+import { forgotPasswordApi } from '@/apis/auth.api'
+import OtpFillIn from '@/components/otp-fill-in'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -11,18 +19,11 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useState } from 'react'
-import { toast } from 'sonner'
-import { asyncHandler } from '@/utils/asyncHandler'
-import { zodResolver } from '@hookform/resolvers/zod'
 import {
   ForgotPasswordFormSchema,
   ForgotPasswordFormSchemaType
 } from '@/shared/schemas/auth.schema'
-import { useRouter } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
-import { forgotPasswordApi } from '@/apis/auth.api'
-import OtpFillIn from '@/components/otp-fill-in'
+import { asyncHandler } from '@/utils/asyncHandler'
 
 export default function ForgotPasswordForm() {
   const [open, setOpen] = useState<boolean>(false)
@@ -35,7 +36,7 @@ export default function ForgotPasswordForm() {
       email: ''
     }
   })
-  
+
   const handleForgotPassword = async (data: { email: string }) => {
     toast.promise(asyncHandler(forgotPasswordApi(data)), {
       loading: 'Đang xử lý...',
@@ -63,7 +64,7 @@ export default function ForgotPasswordForm() {
                 <FormControl>
                   <Input
                     placeholder='Nhập email tài khoản của bạn'
-                    className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 text-white rounded-full focus:outline-none focus:border-[2px] border-[1px] ${
+                    className={`placeholder:text-opacity-50 rounded-full border-[1px] text-white placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none ${
                       !!form.formState.errors['email'] && 'border-red-500'
                     }`}
                     {...field}
@@ -76,7 +77,7 @@ export default function ForgotPasswordForm() {
 
           <Button
             type='submit'
-            className='w-full py-5 rounded-full bg-mainColor2-800/85 animate-fadeInTop text-md'
+            className='bg-mainColor2-800/85 animate-fadeInTop text-md w-full rounded-full py-5'
           >
             Tiếp tục
           </Button>
@@ -84,14 +85,18 @@ export default function ForgotPasswordForm() {
       </Form>
       <div className='mt-8 mb-2 text-xs text-white'>
         <div
-          className='flex items-center gap-2 cursor-pointer hover:underline'
+          className='flex cursor-pointer items-center gap-2 hover:underline'
           onClick={() => router.push('/login')}
         >
           <ArrowLeft size={16} />
           Quay lại trang Đăng nhập
         </div>
       </div>
-      <OtpFillIn open={open} setOpen={setOpen} email={form.getValues('email')} />
+      <OtpFillIn
+        open={open}
+        setOpen={setOpen}
+        email={form.getValues('email')}
+      />
     </div>
   )
 }

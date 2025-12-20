@@ -1,6 +1,17 @@
 'use client'
 
-import { cn } from '@/lib/utils'
+import { OTPInput } from 'input-otp'
+import { useRouter } from 'next/navigation'
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
+import { toast } from 'sonner'
+
+import { verifyOtpApi } from '@/apis/auth.api'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -11,12 +22,8 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
-import { OTPInput } from 'input-otp'
-import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
-import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
 import { asyncHandler } from '@/utils/asyncHandler'
-import { useRouter } from 'next/navigation'
-import { verifyOtpApi } from '@/apis/auth.api'
 
 export default function OtpFillIn({
   open,
@@ -77,7 +84,7 @@ export default function OtpFillIn({
       <DialogContent>
         <div className='flex flex-col items-center gap-2'>
           <div
-            className='flex items-center justify-center border rounded-full size-11 shrink-0'
+            className='flex size-11 shrink-0 items-center justify-center rounded-full border'
             aria-hidden='true'
           >
             <svg
@@ -138,14 +145,14 @@ export default function OtpFillIn({
             </div>
             {hasGuessed === false && (
               <p
-                className='text-xs text-center text-muted-foreground'
+                className='text-muted-foreground text-center text-xs'
                 role='alert'
                 aria-live='polite'
               >
                 Mã không hợp lệ. Hãy thử lại.
               </p>
             )}
-            <p className='text-sm text-center'>
+            <p className='text-center text-sm'>
               <a className='underline hover:no-underline' href='#'>
                 Gửi lại mã
               </a>

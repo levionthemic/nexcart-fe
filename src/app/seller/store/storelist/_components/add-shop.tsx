@@ -1,5 +1,11 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import React, { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
+
 import { addNewShopApi } from '@/apis/shop.api'
 import Autocomplete from '@/components/Autocomplete'
 import { Button } from '@/components/ui/button'
@@ -29,11 +35,6 @@ import {
   PHONE_NUMBER_RULE,
   PHONE_NUMBER_RULE_MESSAGE
 } from '@/utils/validators'
-import { zodResolver } from '@hookform/resolvers/zod'
-import React, { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
-import { z } from 'zod'
 
 const formSchema = z.object({
   phone: z
@@ -192,7 +193,7 @@ export default function AddShopDialog({
               <FormLabel className='text-base'>Địa chỉ cửa hàng</FormLabel>
               <FormControl>
                 <div className=''>
-                  <div className='grid grid-cols-3 gap-10 mb-4'>
+                  <div className='mb-4 grid grid-cols-3 gap-10'>
                     <FormField
                       control={form.control}
                       name='provinceId'
@@ -280,7 +281,7 @@ export default function AddShopDialog({
                         <FormControl>
                           <Input
                             placeholder='Vd: 123 đường ABC'
-                            className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-xl focus:outline-none focus:border-[2px] border border-mainColor1-100/50 ${
+                            className={`placeholder:text-opacity-50 border-mainColor1-100/50 rounded-xl border placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none ${
                               !!form.formState.errors.address &&
                               'border-red-500'
                             }`}

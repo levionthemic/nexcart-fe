@@ -1,6 +1,20 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import { TokenResponse, useGoogleLogin } from '@react-oauth/google'
+import Cookies from 'js-cookie'
+import { Check, Info } from 'lucide-react'
+import Link from 'next/link'
+import { useSearchParams, useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { FaFacebookF, FaGoogle } from 'react-icons/fa'
+import { useDispatch } from 'react-redux'
+import { toast } from 'sonner'
+
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Form,
   FormControl,
@@ -10,29 +24,15 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { AppDispatch } from '@/redux/store'
+import { loginUserAction, setUser } from '@/redux/user/userSlice'
 import {
   LoginFormSchema,
   LoginFormSchemaType
 } from '@/shared/schemas/auth.schema'
-import { Check, Info } from 'lucide-react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { Role } from '@/types/enums/role'
-import { useState } from 'react'
-import { useSearchParams } from 'next/navigation'
-import { TokenResponse, useGoogleLogin } from '@react-oauth/google'
-import { useRouter } from 'next/navigation'
-import { toast } from 'sonner'
-import { FaFacebookF, FaGoogle } from 'react-icons/fa'
-import { Checkbox } from '@/components/ui/checkbox'
-import Link from 'next/link'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from '@/redux/store'
-import { loginUserAction, setUser } from '@/redux/user/userSlice'
-import Cookies from 'js-cookie'
 
 export default function LoginForm() {
   const dispatch = useDispatch<AppDispatch>()
@@ -66,9 +66,13 @@ export default function LoginForm() {
       {
         loading: 'Đang đăng nhập...',
         success: async (res) => {
-          Cookies.set('access_token', res.access_token, { expires: res.remember_me ? 14 : undefined })
-          Cookies.set('session_id', res.session_id, { expires: res.remember_me ? 14 : undefined })
-          
+          Cookies.set('access_token', res.access_token, {
+            expires: res.remember_me ? 14 : undefined
+          })
+          Cookies.set('session_id', res.session_id, {
+            expires: res.remember_me ? 14 : undefined
+          })
+
           const userData = await fetch('/api/me', {
             credentials: 'include'
           }).then((res) => res.json())
@@ -92,15 +96,15 @@ export default function LoginForm() {
   })
 
   return (
-    <div className='w-[500px] min-h-[500px] bg-gray-200/10 rounded-3xl border-gray-100 border-solid border-[1px] px-10 pb-4 animate-fadeInTop backdrop-blur-sm'>
-      <div className='mt-10 text-4xl font-semibold text-center text-white uppercase'>
+    <div className='animate-fadeInTop min-h-[500px] w-[500px] rounded-3xl border-[1px] border-solid border-gray-100 bg-gray-200/10 px-10 pb-4 backdrop-blur-sm'>
+      <div className='mt-10 text-center text-4xl font-semibold text-white uppercase'>
         Đăng nhập
       </div>
 
       <div className='py-4'>
         {verifiedEmail && (
           <Alert className='bg-[#EDF7ED]/80'>
-            <Check className='w-4 h-4' />
+            <Check className='h-4 w-4' />
             <AlertTitle className='font-semibold'>
               Xác nhận thành công!
             </AlertTitle>
@@ -117,7 +121,7 @@ export default function LoginForm() {
         )}
         {registeredEmail && (
           <Alert className='bg-[#E5F6FD]/80'>
-            <Info className='items-center w-4 h-4' />
+            <Info className='h-4 w-4 items-center' />
             <AlertTitle>Thông báo!</AlertTitle>
             <AlertDescription>
               Chúng tôi đã gửi 1 email đến email:&nbsp;
@@ -140,7 +144,7 @@ export default function LoginForm() {
                 <FormControl>
                   <Input
                     placeholder='Vd: levionthemic@example.com'
-                    className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 text-white rounded-full focus:outline-none focus:border-[2px] border-[1px] ${
+                    className={`placeholder:text-opacity-50 rounded-full border-[1px] text-white placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none ${
                       !!form.formState.errors['email'] && 'border-red-500'
                     }`}
                     {...field}
@@ -160,7 +164,7 @@ export default function LoginForm() {
                   <Input
                     type='password'
                     placeholder='Vd: 12345678a'
-                    className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 text-white rounded-full focus:outline-none focus:border-[2px] border-[1px] ${
+                    className={`placeholder:text-opacity-50 rounded-full border-[1px] text-white placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none ${
                       !!form.formState.errors['password'] && 'border-red-500'
                     }`}
                     {...field}
@@ -168,7 +172,7 @@ export default function LoginForm() {
                 </FormControl>
                 <FormMessage />
                 <div className='flex items-center justify-between'>
-                  <div className='flex items-center gap-1.5 text-white mt-1/2'>
+                  <div className='mt-1/2 flex items-center gap-1.5 text-white'>
                     <Checkbox
                       id='remember-me'
                       className='border-white'
@@ -179,7 +183,7 @@ export default function LoginForm() {
                     />
                     <label
                       htmlFor='remember-me'
-                      className='text-sm leading-none cursor-pointer hover:underline'
+                      className='cursor-pointer text-sm leading-none hover:underline'
                     >
                       Lưu mật khẩu trong 14 ngày
                     </label>
@@ -187,7 +191,7 @@ export default function LoginForm() {
 
                   <Link
                     href='/forgot-password'
-                    className='text-xs text-right text-white cursor-pointer hover:underline'
+                    className='cursor-pointer text-right text-xs text-white hover:underline'
                   >
                     Quên mật khẩu?
                   </Link>
@@ -207,26 +211,26 @@ export default function LoginForm() {
                     defaultValue={field.value}
                     className='flex items-center justify-center gap-10 text-white'
                   >
-                    <FormItem className='flex items-center space-x-3 space-y-0 hover:bg-mainColor2-800/50 px-4 py-2 rounded-md hover:transition-all hover:ease-in-out hover:duration-400 cursor-pointer has-[button[data-state=checked]]:bg-mainColor2-800/40 has-[button[data-state=checked]]:border-accent has-[button[data-state=checked]]:border-2 border border-muted/50'>
+                    <FormItem className='hover:bg-mainColor2-800/50 has-[button[data-state=checked]]:bg-mainColor2-800/40 has-[button[data-state=checked]]:border-accent border-muted/50 flex cursor-pointer items-center space-y-0 space-x-3 rounded-md border px-4 py-2 hover:transition-all hover:duration-400 hover:ease-in-out has-[button[data-state=checked]]:border-2'>
                       <FormControl>
                         <RadioGroupItem
                           value={Role.BUYER}
-                          className='bg-white border-white sr-only'
+                          className='sr-only border-white bg-white'
                         />
                       </FormControl>
-                      <FormLabel className='font-normal cursor-pointer text-sm'>
+                      <FormLabel className='cursor-pointer text-sm font-normal'>
                         Người mua
                       </FormLabel>
                     </FormItem>
 
-                    <FormItem className='flex items-center space-x-3 space-y-0 hover:bg-mainColor2-800/50 px-4 py-2 rounded-md hover:transition-all hover:ease-in-out hover:duration-400 cursor-pointer has-[button[data-state=checked]]:bg-mainColor2-800/40 has-[button[data-state=checked]]:border-accent has-[button[data-state=checked]]:border-2 border border-muted/50'>
+                    <FormItem className='hover:bg-mainColor2-800/50 has-[button[data-state=checked]]:bg-mainColor2-800/40 has-[button[data-state=checked]]:border-accent border-muted/50 flex cursor-pointer items-center space-y-0 space-x-3 rounded-md border px-4 py-2 hover:transition-all hover:duration-400 hover:ease-in-out has-[button[data-state=checked]]:border-2'>
                       <FormControl>
                         <RadioGroupItem
                           value={Role.SELLER}
-                          className='bg-white border-white sr-only'
+                          className='sr-only border-white bg-white'
                         />
                       </FormControl>
-                      <FormLabel className='font-normal cursor-pointer text-sm'>
+                      <FormLabel className='cursor-pointer text-sm font-normal'>
                         Người bán
                       </FormLabel>
                     </FormItem>
@@ -239,34 +243,34 @@ export default function LoginForm() {
           />
           <Button
             type='submit'
-            className='w-full py-5 rounded-full bg-mainColor2-800/85 animate-fadeInTop text-md'
+            className='bg-mainColor2-800/85 animate-fadeInTop text-md w-full rounded-full py-5'
           >
             Đăng nhập
           </Button>
         </form>
       </Form>
 
-      <div className='flex items-center justify-between my-10 text-xs text-gray-200'>
+      <div className='my-10 flex items-center justify-between text-xs text-gray-200'>
         <div className='h-px w-[32%] border-b border-gray-300'></div>
         <span>hoặc đăng nhập bằng: </span>
         <div className='h-px w-[32%] border-b border-gray-300'></div>
       </div>
-      <div className='flex items-center justify-between gap-6 mt-6 text-sm text-white'>
+      <div className='mt-6 flex items-center justify-between gap-6 text-sm text-white'>
         <div
           onClick={() => handleLoginWithGoogle()}
-          className='flex items-center justify-center border border-white rounded-sm w-full p-2 cursor-pointer hover:bg-mainColor1-600 hover:border-[2px] hover:scale-105 hover:duration-300 hover:ease-in-out transition-transform'
+          className='hover:bg-mainColor1-600 flex w-full cursor-pointer items-center justify-center rounded-sm border border-white p-2 transition-transform hover:scale-105 hover:border-[2px] hover:duration-300 hover:ease-in-out'
         >
           <FaGoogle size={20} />
         </div>
-        <div className='flex items-center justify-center border border-white rounded-sm w-full p-2 cursor-pointer hover:bg-mainColor1-600 hover:border-[2px] hover:scale-105 hover:duration-300 hover:ease-in-out transition-transform'>
+        <div className='hover:bg-mainColor1-600 flex w-full cursor-pointer items-center justify-center rounded-sm border border-white p-2 transition-transform hover:scale-105 hover:border-[2px] hover:duration-300 hover:ease-in-out'>
           <FaFacebookF size={20} />
         </div>
       </div>
 
-      <div className='mt-8 text-xs text-center text-white'>
+      <div className='mt-8 text-center text-xs text-white'>
         Chưa có tài khoản?{' '}
         <div
-          className='font-semibold underline scale-100 cursor-pointer hover:scale-110 hover:transition-transform hover:ease-in-out hover:duration-200'
+          className='scale-100 cursor-pointer font-semibold underline hover:scale-110 hover:transition-transform hover:duration-200 hover:ease-in-out'
           onClick={() => router.push('/register')}
         >
           Đăng kí

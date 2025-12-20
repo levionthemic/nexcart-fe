@@ -1,5 +1,10 @@
 'use client'
 
+import dayjs from 'dayjs'
+import React, { useEffect, useState } from 'react'
+
+import { getOrdersApi } from '@/apis/order.api'
+import { Badge } from '@/components/ui/badge'
 import {
   Table,
   TableBody,
@@ -8,13 +13,9 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { Order } from '@/types/entities/order'
-import React, { useEffect, useState } from 'react'
-import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
+import { Order } from '@/types/entities/order'
 import { OrderStatus } from '@/types/enums/order-status'
-import dayjs from 'dayjs'
-import { getOrdersApi } from '@/apis/order.api'
 
 export default function LatestOrders() {
   const [latestOrders, setLatestOrders] = useState<Order[]>([])

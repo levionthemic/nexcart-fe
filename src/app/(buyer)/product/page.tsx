@@ -1,17 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ProductCard } from '@/components/product'
-import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from '@/utils/constants'
-import PaginationComponent from '@/components/pagination/pagination'
-
-import { Category } from '@/types/entities/category'
-import { Brand } from '@/types/entities/brand'
-import ProductFilterForm from './filter-form'
-import { ProductListItem } from '@/types/entities/product'
 import { getProductsWithFiltersApi } from '@/apis/product.api'
+import PaginationComponent from '@/components/pagination/pagination'
+import { ProductCard } from '@/components/product'
+import { Brand } from '@/types/entities/brand'
+import { Category } from '@/types/entities/category'
+import { ProductListItem } from '@/types/entities/product'
+import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from '@/utils/constants'
 
-export default async function ProductList({
-  searchParams
-}: any) {
+import ProductFilterForm from './filter-form'
+
+export default async function ProductList({ searchParams }: any) {
   const params = await searchParams
 
   const page = Number(params.page) || DEFAULT_PAGE
@@ -47,8 +45,7 @@ export default async function ProductList({
       searchObject['q[minPrice]'] = minPrice
       searchObject['q[maxPrice]'] = maxPrice
     }
-    if (categoryId)
-      searchObject['q[categoryId]'] = categoryId
+    if (categoryId) searchObject['q[categoryId]'] = categoryId
 
     if (brandId) searchObject['q[brandId]'] = brandId
 
@@ -72,8 +69,8 @@ export default async function ProductList({
   return (
     <div className='container mx-auto py-6'>
       <div className='relative flex h-full gap-6'>
-        <div className='w-[20%] px-6 py-4 h-full sticky top-36 left-0 max-h-full bg-section rounded-lg'>
-          <div className='text-xl font-medium text-mainColor2-800'>
+        <div className='bg-section sticky top-36 left-0 h-full max-h-full w-[20%] rounded-lg px-6 py-4'>
+          <div className='text-mainColor2-800 text-xl font-medium'>
             Bộ lọc sản phẩm
           </div>
 
@@ -84,9 +81,11 @@ export default async function ProductList({
 
         <div className='flex-1'>
           <div>
-            <div className='flex items-end justify-between mb-4'>
-              <span className='text-xl font-medium text-mainColor2-800'>
-                {keyword ? `Kết quả tìm kiếm cho "${keyword}"` : 'Tất cả sản phẩm' }
+            <div className='mb-4 flex items-end justify-between'>
+              <span className='text-mainColor2-800 text-xl font-medium'>
+                {keyword
+                  ? `Kết quả tìm kiếm cho "${keyword}"`
+                  : 'Tất cả sản phẩm'}
               </span>
               <span>Trang {page}</span>
             </div>
@@ -117,7 +116,7 @@ export default async function ProductList({
               )}
             </div>
 
-            <div className='flex flex-row-reverse my-6'>
+            <div className='my-6 flex flex-row-reverse'>
               <PaginationComponent
                 currentPage={Number(page || DEFAULT_PAGE)}
                 totalPages={Math.ceil(totalProducts / DEFAULT_ITEMS_PER_PAGE)}

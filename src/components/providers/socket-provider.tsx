@@ -9,9 +9,10 @@ import {
   useEffect,
   useState
 } from 'react'
-import { Socket } from 'socket.io-client'
-import { getNotificationSocket } from '@/lib/socket'
 import { useSelector } from 'react-redux'
+import { Socket } from 'socket.io-client'
+
+import { getNotificationSocket } from '@/lib/socket'
 import { selectCurrentUser } from '@/redux/user/userSlice'
 
 type SocketContextType = {

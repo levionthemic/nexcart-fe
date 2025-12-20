@@ -1,24 +1,26 @@
-import { ProductCard } from '@/components/product'
-import CategoryBar from './category-bar'
-
+import Image from 'next/image'
+import Link from 'next/link'
 import { FaShippingFast } from 'react-icons/fa'
-import { MdSupportAgent } from 'react-icons/md'
-import { MdCurrencyExchange } from 'react-icons/md'
-import { MdHighQuality } from 'react-icons/md'
+import {
+  MdCurrencyExchange,
+  MdHighQuality,
+  MdSupportAgent
+} from 'react-icons/md'
 
-import { DEFAULT_ITEMS_PER_PAGE } from '@/utils/constants'
-
+import { getCategoriesApi } from '@/apis/category.api'
+import { getProductsApi } from '@/apis/product.api'
 import banner from '@/assets/banner.jpg'
-import { SidebarProvider } from '@/components/ui/sidebar'
+import { ProductCard } from '@/components/product'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import Image from 'next/image'
-import CountDown from './countdown'
-import CarouselProducts from './carousel-products'
+import { SidebarProvider } from '@/components/ui/sidebar'
+import { DEFAULT_ITEMS_PER_PAGE } from '@/utils/constants'
+
 import CarouselCategories from './carousel-categories'
-import { getProductsApi } from '@/apis/product.api'
-import { getCategoriesApi } from '@/apis/category.api'
-import Link from 'next/link'
+import CarouselProducts from './carousel-products'
+import CategoryBar from './category-bar'
+import CountDown from './countdown'
+
 export const dynamic = 'force-dynamic'
 export default async function HomePage() {
   let categories = []
@@ -34,10 +36,10 @@ export default async function HomePage() {
   }
 
   return (
-    <div className='bg-[#F5F5FA] dark:bg-background'>
-      <div className='container py-6 mx-auto'>
+    <div className='dark:bg-background bg-[#F5F5FA]'>
+      <div className='container mx-auto py-6'>
         <div className='grid grid-cols-5 gap-4'>
-          <SidebarProvider className='col-span-1 pl-3 pr-1 py-4 bg-white dark:bg-sidebar rounded-lg min-h-96'>
+          <SidebarProvider className='dark:bg-sidebar col-span-1 min-h-96 rounded-lg bg-white py-4 pr-1 pl-3'>
             <CategoryBar
               categories={categories || []}
               // onClickCategory={handleClickCategory}
@@ -49,20 +51,20 @@ export default async function HomePage() {
               height={416}
               src={banner}
               alt=''
-              className='h-[416px] w-full object-cover rounded-md'
+              className='h-[416px] w-full rounded-md object-cover'
             />
           </div>
         </div>
 
-        <div className='p-4 mt-16 bg-white dark:bg-section rounded-lg'>
+        <div className='dark:bg-section mt-16 rounded-lg bg-white p-4'>
           <div className='flex items-center gap-2'>
-            <div className='w-3 rounded-sm h-7 bg-mainColor2-800'></div>
-            <span className='text-sm font-semibold text-mainColor2-800'>
+            <div className='bg-mainColor2-800 h-7 w-3 rounded-sm'></div>
+            <span className='text-mainColor2-800 text-sm font-semibold'>
               Hôm nay
             </span>
           </div>
 
-          <div className='flex items-center gap-32 mt-6 mb-4'>
+          <div className='mt-6 mb-4 flex items-center gap-32'>
             <span className='text-3xl font-semibold tracking-wide text-red-500'>
               Flash sales!
             </span>
@@ -72,42 +74,42 @@ export default async function HomePage() {
 
           <CarouselProducts bestSellingProducts={bestSellingProducts} />
 
-          <div className='flex items-center justify-center mt-6'>
+          <div className='mt-6 flex items-center justify-center'>
             <Link href='/product'>
-              <Button className='px-10 py-5 bg-mainColor1-800 hover:bg-mainColor1-600'>
+              <Button className='bg-mainColor1-800 hover:bg-mainColor1-600 px-10 py-5'>
                 Xem tất cả
               </Button>
             </Link>
           </div>
         </div>
 
-        <div className='p-4 mt-16 bg-white dark:bg-section rounded-lg'>
+        <div className='dark:bg-section mt-16 rounded-lg bg-white p-4'>
           <div className='flex items-center gap-2'>
-            <div className='w-3 rounded-sm h-7 bg-mainColor2-800'></div>
-            <span className='text-sm font-semibold text-mainColor2-800'>
+            <div className='bg-mainColor2-800 h-7 w-3 rounded-sm'></div>
+            <span className='text-mainColor2-800 text-sm font-semibold'>
               Danh mục
             </span>
           </div>
 
-          <div className='mt-2 mb-4 text-2xl font-semibold text-mainColor1-800'>
+          <div className='text-mainColor1-800 mt-2 mb-4 text-2xl font-semibold'>
             Duyệt danh mục sản phẩm
           </div>
 
           <CarouselCategories categories={categories} />
         </div>
 
-        <div className='p-4 mt-16 bg-white dark:bg-section rounded-lg'>
+        <div className='dark:bg-section mt-16 rounded-lg bg-white p-4'>
           <div className='flex items-center gap-2'>
-            <div className='w-3 rounded-sm h-7 bg-mainColor2-800'></div>
-            <span className='text-sm font-semibold text-mainColor2-800'>
+            <div className='bg-mainColor2-800 h-7 w-3 rounded-sm'></div>
+            <span className='text-mainColor2-800 text-sm font-semibold'>
               Tháng này
             </span>
           </div>
 
-          <div className='flex items-center justify-between mx-auto mt-3 text-2xl font-bold text-mainColor1-600'>
+          <div className='text-mainColor1-600 mx-auto mt-3 flex items-center justify-between text-2xl font-bold'>
             Sản phẩm bán chạy
             <Link href='/product'>
-              <Button className='px-10 py-5 bg-mainColor1-800 hover:bg-mainColor1-600'>
+              <Button className='bg-mainColor1-800 hover:bg-mainColor1-600 px-10 py-5'>
                 Xem tất cả
               </Button>
             </Link>
@@ -118,20 +120,20 @@ export default async function HomePage() {
           <CarouselProducts bestSellingProducts={bestSellingProducts} />
         </div>
 
-        <div className='p-4 my-16 bg-white dark:bg-section rounded-lg'>
-          <div className='flex items-center gap-2 mb-3'>
-            <div className='w-3 rounded-sm h-7 bg-mainColor2-800'></div>
-            <span className='text-sm font-semibold text-mainColor2-800'>
+        <div className='dark:bg-section my-16 rounded-lg bg-white p-4'>
+          <div className='mb-3 flex items-center gap-2'>
+            <div className='bg-mainColor2-800 h-7 w-3 rounded-sm'></div>
+            <span className='text-mainColor2-800 text-sm font-semibold'>
               Chính sách của chúng tôi
             </span>
           </div>
-          <div className='grid grid-cols-2 gap-8 text-mainColor1-400 lg:grid-cols-4'>
+          <div className='text-mainColor1-400 grid grid-cols-2 gap-8 lg:grid-cols-4'>
             <div className='flex flex-col items-center'>
               <FaShippingFast className='my-4 text-4xl' />
               <span className='mb-1 text-xl font-semibold'>
                 Giao hàng nhanh chóng
               </span>
-              <p className='text-sm text-justify text-gray-400'>
+              <p className='text-justify text-sm text-gray-400'>
                 Chúng tôi cam kết giao hàng nhanh chóng trong 1-3 ngày làm việc,
                 đảm bảo đơn hàng đến tay bạn an toàn và đúng hẹn. Hỗ trợ nhiều
                 phương thức vận chuyển linh hoạt, theo dõi đơn hàng dễ dàng
@@ -142,7 +144,7 @@ export default async function HomePage() {
               <span className='mb-1 text-xl font-semibold'>
                 Hỗ trợ trực tuyến
               </span>
-              <p className='text-sm text-justify text-gray-400'>
+              <p className='text-justify text-sm text-gray-400'>
                 Chúng tôi luôn sẵn sàng hỗ trợ bạn 24/7 qua chat, email và
                 hotline. Đội ngũ chăm sóc khách hàng chuyên nghiệp sẽ giải đáp
                 mọi thắc mắc nhanh chóng, giúp bạn có trải nghiệm mua sắm tốt
@@ -154,7 +156,7 @@ export default async function HomePage() {
               <span className='mb-1 text-xl font-semibold'>
                 Hoàn tiền nhanh chóng
               </span>
-              <p className='text-sm text-justify text-gray-400'>
+              <p className='text-justify text-sm text-gray-400'>
                 Chúng tôi cam kết hoàn tiền dễ dàng, nhanh chóng trong vòng 3-5
                 ngày làm việc nếu sản phẩm không đúng như mô tả hoặc có lỗi từ
                 nhà sản xuất. Quy trình đơn giản, minh bạch, đảm bảo quyền lợi
@@ -166,7 +168,7 @@ export default async function HomePage() {
               <span className='mb-1 text-xl font-semibold'>
                 Sản phẩm chất lượng cao
               </span>
-              <p className='text-sm text-justify text-gray-400'>
+              <p className='text-justify text-sm text-gray-400'>
                 Chúng tôi cam kết cung cấp sản phẩm chính hãng, chất lượng cao,
                 được kiểm định kỹ lưỡng trước khi giao đến tay khách hàng. Mỗi
                 sản phẩm đều đảm bảo độ bền, kiểu dáng đẹp và an toàn khi sử
@@ -176,18 +178,18 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <div className='p-4 mt-16 bg-white dark:bg-section rounded-lg'>
+        <div className='dark:bg-section mt-16 rounded-lg bg-white p-4'>
           <div className='flex items-center gap-2'>
-            <div className='w-3 rounded-sm h-7 bg-mainColor2-800'></div>
-            <span className='text-sm font-semibold text-mainColor2-800'>
+            <div className='bg-mainColor2-800 h-7 w-3 rounded-sm'></div>
+            <span className='text-mainColor2-800 text-sm font-semibold'>
               Sản phẩm
             </span>
           </div>
 
-          <div className='flex items-center justify-between mx-auto mt-3 text-2xl font-bold text-mainColor1-600'>
+          <div className='text-mainColor1-600 mx-auto mt-3 flex items-center justify-between text-2xl font-bold'>
             Khám phá các sản phẩm của chúng tôi
             <Link href='/product'>
-              <Button className='px-10 py-5 bg-mainColor1-800 hover:bg-mainColor1-600'>
+              <Button className='bg-mainColor1-800 hover:bg-mainColor1-600 px-10 py-5'>
                 Xem tất cả
               </Button>
             </Link>
@@ -195,7 +197,7 @@ export default async function HomePage() {
 
           <Separator className='my-4 h-[2px]' />
 
-          <div className='list-recommended-products grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2.5'>
+          <div className='list-recommended-products grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'>
             {recommendedProducts.length > 0
               ? recommendedProducts
                   .slice(0, DEFAULT_ITEMS_PER_PAGE)

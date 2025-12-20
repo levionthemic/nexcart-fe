@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import { Label, Pie, PieChart, Sector } from 'recharts'
+import { PieSectorDataItem } from 'recharts/types/polar/Pie'
 
 import {
   Card,
@@ -24,7 +25,6 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { PieSectorDataItem } from 'recharts/types/polar/Pie'
 
 const desktopData = [
   { status: 'pending', desktop: 186, fill: 'var(--color-pending)' },
@@ -64,7 +64,10 @@ export default function PieChartComponent() {
     () => desktopData.findIndex((item) => item.status === activeStatus),
     [activeStatus]
   )
-  const statuses = React.useMemo(() => desktopData.map((item) => item.status), [])
+  const statuses = React.useMemo(
+    () => desktopData.map((item) => item.status),
+    []
+  )
   return (
     <Card data-chart={id} className='flex flex-col'>
       <ChartStyle id={id} config={chartConfig} />

@@ -1,6 +1,29 @@
 'use client'
 
 import {
+  Box,
+  ChevronDown,
+  Home,
+  House,
+  MessageCircleWarning,
+  NotepadText,
+  Store,
+  TicketPercent
+} from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
+import { IoMdHelpCircleOutline } from 'react-icons/io'
+import { LuSettings, LuLogOut } from 'react-icons/lu'
+
+import LogoutComponent from '@/components/logout/logout'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger
+} from '@/components/ui/collapsible'
+import { Separator } from '@/components/ui/separator'
+import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
@@ -14,29 +37,6 @@ import {
   SidebarMenuSubItem,
   useSidebar
 } from '@/components/ui/sidebar'
-import {
-  Box,
-  ChevronDown,
-  Home,
-  House,
-  MessageCircleWarning,
-  NotepadText,
-  Store,
-  TicketPercent
-} from 'lucide-react'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger
-} from '@/components/ui/collapsible'
-import { LuSettings } from 'react-icons/lu'
-import { IoMdHelpCircleOutline } from 'react-icons/io'
-import { LuLogOut } from 'react-icons/lu'
-import { Separator } from '@/components/ui/separator'
-import { usePathname, useRouter } from 'next/navigation'
-import Link from 'next/link'
-import LogoutComponent from '@/components/logout/logout'
-import Image from 'next/image'
 
 export default function SellerSidebar() {
   const router = useRouter()
@@ -47,16 +47,20 @@ export default function SellerSidebar() {
 
   return (
     <Sidebar
-      className='px-4 bg-sidebar border-none pb-4'
+      className='bg-sidebar border-none px-4 pb-4'
       collapsible='icon'
       variant='inset'
     >
       <SidebarHeader className='p-0'>
         <div
-          className='text-4xl font-medium text-accent text-center cursor-pointer my-10 flex justify-center'
+          className='text-accent my-10 flex cursor-pointer justify-center text-center text-4xl font-medium'
           onClick={() => router.push('/seller')}
         >
-          {open ? <Image src="/mainlogo.png" alt='Logo' width={100} height={100} /> : <Home />}
+          {open ? (
+            <Image src='/mainlogo.png' alt='Logo' width={100} height={100} />
+          ) : (
+            <Home />
+          )}
         </div>
       </SidebarHeader>
 
@@ -64,7 +68,7 @@ export default function SellerSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              className='text-accent hover:bg-white/15 hover:text-white hover:rounded-lg'
+              className='text-accent hover:rounded-lg hover:bg-white/15 hover:text-white'
               asChild
               isActive={pathname === '/seller'}
             >
@@ -79,7 +83,7 @@ export default function SellerSidebar() {
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton
-                  className='text-accent-foreground group-data-[state=open]/collapsible:hover:bg-white/15 hover:bg-white/15 group-data-[state=open]/collapsible:hover:text-white hover:text-white'
+                  className='text-accent-foreground hover:bg-white/15 hover:text-white group-data-[state=open]/collapsible:hover:bg-white/15 group-data-[state=open]/collapsible:hover:text-white'
                   isActive={pathname.includes('/seller/store')}
                 >
                   <Store />
@@ -93,7 +97,7 @@ export default function SellerSidebar() {
                     <SidebarMenuButton
                       isActive={pathname === '/seller/store/profile'}
                       asChild
-                      className='text-white hover:bg-white/15 hover:text-white hover:rounded-lg'
+                      className='text-white hover:rounded-lg hover:bg-white/15 hover:text-white'
                     >
                       <Link href='/seller/store/profile'>Hồ sơ người bán</Link>
                     </SidebarMenuButton>
@@ -104,7 +108,7 @@ export default function SellerSidebar() {
                     <SidebarMenuButton
                       isActive={pathname === '/seller/store/storelist'}
                       asChild
-                      className='text-white hover:bg-white/15 hover:text-white hover:rounded-lg'
+                      className='text-white hover:rounded-lg hover:bg-white/15 hover:text-white'
                     >
                       <Link href='/seller/store/storelist'>
                         Danh sách cửa hàng
@@ -120,7 +124,7 @@ export default function SellerSidebar() {
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton
-                  className='text-white group-data-[state=open]/collapsible:hover:bg-white/15 hover:bg-white/15 group-data-[state=open]/collapsible:hover:text-white hover:text-white'
+                  className='text-white hover:bg-white/15 hover:text-white group-data-[state=open]/collapsible:hover:bg-white/15 group-data-[state=open]/collapsible:hover:text-white'
                   isActive={pathname.includes('/seller/products')}
                 >
                   <Box />
@@ -134,7 +138,7 @@ export default function SellerSidebar() {
                     <SidebarMenuButton
                       isActive={pathname === '/seller/products'}
                       asChild
-                      className='text-white hover:bg-white/15 hover:text-white hover:rounded-lg'
+                      className='text-white hover:rounded-lg hover:bg-white/15 hover:text-white'
                     >
                       <Link href='/seller/products'>Quản lí sản phẩm</Link>
                     </SidebarMenuButton>
@@ -148,7 +152,7 @@ export default function SellerSidebar() {
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton
-                  className='text-white group-data-[state=open]/collapsible:hover:bg-white/15 hover:bg-white/15 group-data-[state=open]/collapsible:hover:text-white hover:text-white'
+                  className='text-white hover:bg-white/15 hover:text-white group-data-[state=open]/collapsible:hover:bg-white/15 group-data-[state=open]/collapsible:hover:text-white'
                   isActive={pathname.includes('/seller/orders')}
                 >
                   <NotepadText />
@@ -162,7 +166,7 @@ export default function SellerSidebar() {
                     <SidebarMenuButton
                       isActive={pathname === '/seller/orders'}
                       asChild
-                      className='text-white hover:bg-white/15 hover:text-white hover:rounded-lg'
+                      className='text-white hover:rounded-lg hover:bg-white/15 hover:text-white'
                     >
                       <Link href='/seller/orders'>Quản lí đơn hàng</Link>
                     </SidebarMenuButton>
@@ -175,7 +179,7 @@ export default function SellerSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton
               isActive={pathname === '/seller/promotion'}
-              className='text-white hover:bg-white/15 hover:text-white hover:rounded-lg'
+              className='text-white hover:rounded-lg hover:bg-white/15 hover:text-white'
               asChild
             >
               <Link href='/seller/promotion'>
@@ -188,7 +192,7 @@ export default function SellerSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton
               isActive={pathname === '/seller/comments'}
-              className='text-white hover:bg-white/15 hover:text-white hover:rounded-lg'
+              className='text-white hover:rounded-lg hover:bg-white/15 hover:text-white'
               asChild
             >
               <Link href='/seller/comments'>
@@ -202,14 +206,14 @@ export default function SellerSidebar() {
         <Separator className='my-6' />
 
         <SidebarGroup className='p-0'>
-          <SidebarGroupLabel className='text-gray-300 mb-1'>
+          <SidebarGroupLabel className='mb-1 text-gray-300'>
             CHUNG
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  className='text-white hover:bg-white/15 hover:text-white hover:rounded-lg'
+                  className='text-white hover:rounded-lg hover:bg-white/15 hover:text-white'
                   asChild
                 >
                   <a href='/seller/settings'>
@@ -221,7 +225,7 @@ export default function SellerSidebar() {
 
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  className='text-white hover:bg-white/15 hover:text-white hover:rounded-lg'
+                  className='text-white hover:rounded-lg hover:bg-white/15 hover:text-white'
                   asChild
                 >
                   <a href='/seller/help'>
@@ -235,7 +239,7 @@ export default function SellerSidebar() {
                 icon={
                   <SidebarMenuItem>
                     <SidebarMenuButton
-                      className='text-white hover:bg-white/15 hover:text-white hover:rounded-lg'
+                      className='text-white hover:rounded-lg hover:bg-white/15 hover:text-white'
                       asChild
                     >
                       <div className='cursor-pointer'>

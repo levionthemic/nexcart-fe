@@ -1,5 +1,12 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useLayoutEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'sonner'
+import { z } from 'zod'
+
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -31,12 +38,7 @@ import {
   PHONE_NUMBER_RULE,
   PHONE_NUMBER_RULE_MESSAGE
 } from '@/utils/validators'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useLayoutEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { useDispatch, useSelector } from 'react-redux'
-import { toast } from 'sonner'
-import { z } from 'zod'
+
 import AddAddress from '../_components/add-address'
 
 const LeftFormSchema = z.object({
@@ -134,7 +136,7 @@ export default function ProfileLeftForm() {
                 </div>
                 <FormControl>
                   <Input
-                    className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-full focus:outline-none focus:border-[2px] border-[1px] ${
+                    className={`placeholder:text-opacity-50 rounded-full border-[1px] placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none ${
                       !!leftForm.formState.errors['name'] && 'border-red-500'
                     }`}
                     placeholder='Vd: Nguyễn Văn A'
@@ -161,7 +163,7 @@ export default function ProfileLeftForm() {
                 <FormControl>
                   <Input
                     placeholder='VD: 0123456789'
-                    className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-5 rounded-full focus:outline-none focus:border-[2px] border-[1px] ${
+                    className={`placeholder:text-opacity-5 rounded-full border-[1px] placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none ${
                       !!leftForm.formState.errors['phone'] && 'border-red-500'
                     }`}
                     {...field}
@@ -210,7 +212,7 @@ export default function ProfileLeftForm() {
           <div className='flex justify-center'>
             <Button
               type='submit'
-              className='w-[70%] rounded-full bg-mainColor2-800 text-white tex-lg uppercase'
+              className='bg-mainColor2-800 tex-lg w-[70%] rounded-full text-white uppercase'
             >
               Cập nhật
             </Button>

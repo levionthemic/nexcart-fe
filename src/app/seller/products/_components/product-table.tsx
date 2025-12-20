@@ -1,14 +1,15 @@
 'use client'
 
+import { ColumnDef } from '@tanstack/react-table'
+import Image from 'next/image'
+
+import CustomTable from '@/components/custom-table/custom-table'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
-import { ColumnDef } from '@tanstack/react-table'
-
-import Image from 'next/image'
 import { ProductListItem } from '@/types/entities/product'
-import ProductDetailDialog from './product-detail-dialog'
 import { DEFAULT_IMAGE_URL } from '@/utils/constants'
-import CustomTable from '@/components/custom-table/custom-table'
+
+import ProductDetailDialog from './product-detail-dialog'
 import RowActions from './row-actions'
 
 const calculateAveragePrice = (product: ProductListItem) => {
@@ -53,7 +54,7 @@ const columns: ColumnDef<ProductListItem>[] = [
         alt=''
         width={40}
         height={40}
-        className='border border-gray-300 p-0.5 overflow-hidden rounded-md size-10'
+        className='size-10 overflow-hidden rounded-md border border-gray-300 p-0.5'
       />
     ),
     size: 35,
@@ -65,7 +66,7 @@ const columns: ColumnDef<ProductListItem>[] = [
     header: 'Tên sản phẩm',
     accessorKey: 'name',
     cell: ({ row }) => (
-      <div className='line-clamp-4 text-wrap font-medium'>
+      <div className='line-clamp-4 font-medium text-wrap'>
         {row.getValue('name')}
       </div>
     )
@@ -75,7 +76,7 @@ const columns: ColumnDef<ProductListItem>[] = [
     header: 'Mã SP',
     accessorKey: 'id',
     cell: ({ row }) => (
-      <div className='line-clamp-4 text-wrap font-medium'>
+      <div className='line-clamp-4 font-medium text-wrap'>
         {row.getValue('id')}
       </div>
     ),

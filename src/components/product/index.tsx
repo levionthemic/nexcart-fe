@@ -1,4 +1,5 @@
 import { VariantHandlingProvider } from '@/contexts/variant-handling-context'
+
 import ClientProductCard, { ProductCardPropTypes } from './product-card'
 
 export function ProductCard({ product, loading }: ProductCardPropTypes) {

@@ -5,20 +5,22 @@ import {
   FaYoutube,
   FaLinkedin
 } from 'react-icons/fa'
+
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
+
 import { ModeToggle } from '../mode-toggle'
 
 export default function Footer() {
   return (
-    <footer className='bg-mainColor1-400/95 text-white pt-12 pb-6'>
+    <footer className='bg-mainColor1-400/95 pt-12 pb-6 text-white'>
       <footer className='container mx-auto'>
         <div className='grid grid-cols-5'>
           {/* Customer Support */}
           <div className=''>
-            <h3 className='text-lg font-medium mb-2'>Chăm sóc khách hàng</h3>
-            <ul className='text-sm flex flex-col gap-1'>
+            <h3 className='mb-2 text-lg font-medium'>Chăm sóc khách hàng</h3>
+            <ul className='flex flex-col gap-1 text-sm'>
               <li>Trung tâm trợ giúp</li>
               <li>Blog</li>
               <li>Mall</li>
@@ -29,8 +31,8 @@ export default function Footer() {
 
           {/* About Us */}
           <div className=''>
-            <h3 className='text-lg font-medium mb-2'>Về chúng tôi</h3>
-            <ul className='text-sm flex flex-col gap-1'>
+            <h3 className='mb-2 text-lg font-medium'>Về chúng tôi</h3>
+            <ul className='flex flex-col gap-1 text-sm'>
               <li>
                 <a href='/about'>Giới thiệu về công ty</a>
               </li>
@@ -48,8 +50,8 @@ export default function Footer() {
 
           {/* Contact */}
           <div className=''>
-            <h3 className='text-lg font-medium mb-2'>Liên hệ</h3>
-            <div className='text-sm flex flex-col gap-1'>
+            <h3 className='mb-2 text-lg font-medium'>Liên hệ</h3>
+            <div className='flex flex-col gap-1 text-sm'>
               <p>Địa chỉ: Số 123, Đường ABC, Thành phố XYZ</p>
               <p>Điện thoại: 0123 456 789</p>
               <p>Email: support@example.com</p>
@@ -58,8 +60,8 @@ export default function Footer() {
 
           {/* Follow Us */}
           <div className=''>
-            <h3 className='text-lg font-medium mb-2'>Theo dõi chúng tôi</h3>
-            <div className='text-sm flex flex-col gap-1'>
+            <h3 className='mb-2 text-lg font-medium'>Theo dõi chúng tôi</h3>
+            <div className='flex flex-col gap-1 text-sm'>
               <div className='flex items-center gap-2'>
                 <FaFacebook /> <span>Facebook</span>
               </div>
@@ -80,8 +82,8 @@ export default function Footer() {
 
           {/* Newsletter Subscription */}
           <div className=''>
-            <h3 className='text-lg font-medium mb-2'>Đăng ký nhận tin</h3>
-            <form className='flex gap-1 items-center mb-4'>
+            <h3 className='mb-2 text-lg font-medium'>Đăng ký nhận tin</h3>
+            <form className='mb-4 flex items-center gap-1'>
               <Input
                 type='email'
                 className='text-white placeholder:text-white/50'

@@ -1,6 +1,8 @@
 'use client'
 
-import { cn } from '@/lib/utils'
+import { CheckIcon, ChevronDownIcon } from 'lucide-react'
+import { useId, useState } from 'react'
+
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -16,8 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover'
-import { CheckIcon, ChevronDownIcon } from 'lucide-react'
-import { useId, useState } from 'react'
+import { cn } from '@/lib/utils'
 
 interface DataType {
   id: number | string
@@ -60,7 +61,7 @@ export default function Autocomplete({
             variant='outline'
             role='combobox'
             aria-expanded={open}
-            className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-xl focus:outline-none focus:border-[2px] border w-full flex justify-between ${
+            className={`placeholder:text-opacity-50 flex w-full justify-between rounded-xl border placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none ${
               error ? 'border-red-400!' : 'border-mainColor1-100/50!'
             }`}
           >
@@ -83,7 +84,7 @@ export default function Autocomplete({
           <Command>
             <CommandInput
               placeholder='Tìm kiếm...'
-              className='border-none focus:border-none outline-none'
+              className='border-none outline-none focus:border-none'
             />
             <CommandList>
               <CommandEmpty>Không có kết quả.</CommandEmpty>

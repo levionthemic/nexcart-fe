@@ -1,10 +1,11 @@
 'use client'
 
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+
+import { verifyUserApi } from '@/apis/auth.api'
 import Loader from '@/components/loader/loader'
 import { RoleValue } from '@/types/enums/role'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { verifyUserApi } from '@/apis/auth.api'
 
 function AccountVerification() {
   const [isVerified, setVerified] = useState(false)

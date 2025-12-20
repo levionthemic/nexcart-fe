@@ -9,11 +9,11 @@ import {
   UploadIcon,
   XIcon
 } from 'lucide-react'
-import {  useState } from 'react'
-
-import { useFileUpload } from '@/hooks/use-file-upload'
-import { Button } from '@/components/ui/button'
 import Image from 'next/image'
+import { useState } from 'react'
+
+import { Button } from '@/components/ui/button'
+import { useFileUpload } from '@/hooks/use-file-upload'
 
 interface UploadImageProps {
   onImageUploaded?: (file: File) => Promise<void>
@@ -93,7 +93,7 @@ export default function UploadImage({
           onDragOver={handleDragOver}
           onDrop={handleDrop}
           data-dragging={isDragging || undefined}
-          className='relative flex min-h-52 flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed border-input p-4 transition-colors has-[input:focus]:border-ring has-[input:focus]:ring-[3px] has-[input:focus]:ring-ring/50 data-[dragging=true]:bg-accent/50'
+          className='border-input has-[input:focus]:border-ring has-[input:focus]:ring-ring/50 data-[dragging=true]:bg-accent/50 relative flex min-h-52 flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed p-4 transition-colors has-[input:focus]:ring-[3px]'
         >
           <input
             {...(getInputProps() as any)}
@@ -104,10 +104,10 @@ export default function UploadImage({
 
           {/* Loading overlay */}
           {loading && (
-            <div className='absolute inset-0 z-10 flex items-center justify-center bg-background/80'>
+            <div className='bg-background/80 absolute inset-0 z-10 flex items-center justify-center'>
               <div className='flex flex-col items-center gap-2'>
-                <LoaderIcon className='size-6 animate-spin text-primary' />
-                <p className='text-sm text-muted-foreground'>Đang tải lên...</p>
+                <LoaderIcon className='text-primary size-6 animate-spin' />
+                <p className='text-muted-foreground text-sm'>Đang tải lên...</p>
               </div>
             </div>
           )}
@@ -133,13 +133,13 @@ export default function UploadImage({
           ) : (
             <div className='flex flex-col items-center justify-center px-4 py-3 text-center'>
               <div
-                className='mb-2 flex size-11 shrink-0 items-center justify-center rounded-full border bg-background'
+                className='bg-background mb-2 flex size-11 shrink-0 items-center justify-center rounded-full border'
                 aria-hidden='true'
               >
                 <ImageIcon className='size-4 opacity-60' />
               </div>
               <p className='mb-1.5 text-sm font-medium'>Kéo thả hình ảnh</p>
-              <p className='text-xs text-muted-foreground'>
+              <p className='text-muted-foreground text-xs'>
                 SVG, PNG, JPG hoặc GIF (max. {maxSizeMB}MB)
               </p>
               <Button
@@ -162,7 +162,7 @@ export default function UploadImage({
           <div className='absolute top-4 right-4'>
             <button
               type='button'
-              className='z-50 flex size-8 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white transition-[color,box-shadow] outline-none hover:bg-black/80 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50'
+              className='focus-visible:border-ring focus-visible:ring-ring/50 z-50 flex size-8 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white transition-[color,box-shadow] outline-none hover:bg-black/80 focus-visible:ring-[3px]'
               onClick={handleRemoveImage}
               aria-label='Remove image'
             >
@@ -175,7 +175,7 @@ export default function UploadImage({
       {/* Error messages */}
       {(errors.length > 0 || error) && (
         <div
-          className='flex items-center gap-1 text-xs text-destructive'
+          className='text-destructive flex items-center gap-1 text-xs'
           role='alert'
         >
           <AlertCircleIcon className='size-3 shrink-0' />

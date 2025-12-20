@@ -1,13 +1,15 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from '../store'
-import { Cart } from '@/types/entities/cart'
+
 import {
   addCartItemApi,
   deleteCartItemApi,
   getCartApi,
   updateCartItemQuantityApi
 } from '@/apis/cart.api'
+import { Cart } from '@/types/entities/cart'
 import { asyncHandler } from '@/utils/asyncHandler'
+
+import { RootState } from '../store'
 
 // -----------------------------
 // Types

@@ -1,4 +1,5 @@
 import { OrderStatus } from '../enums/order-status'
+
 import { Address } from './address'
 import { ProductVariant } from './product'
 import { Shop } from './shop'
@@ -20,7 +21,7 @@ export interface Order {
   shipping_method: string
   created_at?: Date
   updated_at?: Date
-  
+
   buyer_address: Address
   buyerAddressString?: string
   buyer: Buyer

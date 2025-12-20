@@ -1,12 +1,14 @@
 'use client'
 
 import { SidebarCloseIcon, SidebarOpenIcon } from 'lucide-react'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { useSelector } from 'react-redux'
-import { selectCurrentUser } from '@/redux/user/userSlice'
 import { TbBellRinging2 } from 'react-icons/tb'
-import { useSidebar } from '@/components/ui/sidebar'
+import { useSelector } from 'react-redux'
+
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { useSidebar } from '@/components/ui/sidebar'
+import { selectCurrentUser } from '@/redux/user/userSlice'
+
 import { ModeToggle } from '../mode-toggle'
 
 export default function SellerHeader() {
@@ -15,18 +17,18 @@ export default function SellerHeader() {
   const { open, toggleSidebar } = useSidebar()
 
   return (
-    <div className='grid grid-cols-5 px-4 py-2 gap-4 bg-background shadow-lg shadow-mainColor1-100'>
+    <div className='bg-background shadow-mainColor1-100 grid grid-cols-5 gap-4 px-4 py-2 shadow-lg'>
       <div className='col-span-4 flex items-center'>
         <Button variant='outline' size='icon' onClick={toggleSidebar}>
           {open ? <SidebarCloseIcon /> : <SidebarOpenIcon />}
         </Button>
       </div>
       <div className='col-span-1 flex items-center justify-between'>
-        <div className='bg-[#ECEEF6] p-2 rounded-lg'>
+        <div className='rounded-lg bg-[#ECEEF6] p-2'>
           <TbBellRinging2 className='text-xl text-gray-500' />
         </div>
         <ModeToggle />
-        <div className='flex items-center gap-2 cursor-pointer'>
+        <div className='flex cursor-pointer items-center gap-2'>
           <Avatar>
             <AvatarImage src={currentUser?.avatar} />
             <AvatarFallback>LV</AvatarFallback>

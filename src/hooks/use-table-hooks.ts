@@ -1,3 +1,4 @@
+import { CheckedState } from '@radix-ui/react-checkbox'
 import {
   ColumnDef,
   ColumnFilter,
@@ -10,7 +11,7 @@ import {
   useReactTable
 } from '@tanstack/react-table'
 import { useId, useMemo, useRef, useState } from 'react'
-import { CheckedState } from '@radix-ui/react-checkbox'
+
 import { DEFAULT_ITEMS_PER_PAGE } from '@/utils/constants'
 
 export default function useTableHooks<T extends { id: number }>({

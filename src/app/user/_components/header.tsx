@@ -1,12 +1,19 @@
 'use client'
 
-import { BsHandbag } from 'react-icons/bs'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { useDispatch, useSelector } from 'react-redux'
-import { selectCurrentUser } from '@/redux/user/userSlice'
 import { House } from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import { BsHandbag } from 'react-icons/bs'
+import { IoIosLogOut } from 'react-icons/io'
+import { useDispatch, useSelector } from 'react-redux'
+
+import LogoutComponent from '@/components/logout/logout'
+import Notification from '@/components/notification/notification'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { selectCurrentCart } from '@/redux/cart/cartSlice'
+import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetClose,
@@ -23,17 +30,11 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from '@/components/ui/tooltip'
-import { Button } from '@/components/ui/button'
-import { useRouter } from 'next/navigation'
-import Image from 'next/image'
-import Link from 'next/link'
-import { DEFAULT_IMAGE_URL } from '@/utils/constants'
-import Notification from '@/components/notification/notification'
-import { useEffect } from 'react'
-import { AppDispatch } from '@/redux/store'
+import { selectCurrentCart } from '@/redux/cart/cartSlice'
 import { fetchCurrentNotificationListAPI } from '@/redux/notification/notificationSlice'
-import LogoutComponent from '@/components/logout/logout'
-import { IoIosLogOut } from 'react-icons/io'
+import { AppDispatch } from '@/redux/store'
+import { selectCurrentUser } from '@/redux/user/userSlice'
+import { DEFAULT_IMAGE_URL } from '@/utils/constants'
 
 export default function UserHeader() {
   const currentUser = useSelector(selectCurrentUser)
@@ -47,18 +48,18 @@ export default function UserHeader() {
   const router = useRouter()
 
   return (
-    <div className='flex items-center justify-between my-6'>
+    <div className='my-6 flex items-center justify-between'>
       <Link href='/'>
-        <House className='cursor-pointer text-mainColor1-800' />
+        <House className='text-mainColor1-800 cursor-pointer' />
       </Link>
       <div className='flex items-center justify-between gap-8'>
         <Notification />
 
         <Sheet key={'right'}>
           <SheetTrigger asChild>
-            <div className='relative transition-transform cursor-pointer hover:scale-105 hover:ease-out hover:duration-300'>
-              <BsHandbag className='text-xl text-mainColor1-600' />
-              <Badge className='absolute w-2 h-2 p-2 text-center rounded-full -top-3 -right-3 bg-mainColor1-400'>
+            <div className='relative cursor-pointer transition-transform hover:scale-105 hover:duration-300 hover:ease-out'>
+              <BsHandbag className='text-mainColor1-600 text-xl' />
+              <Badge className='bg-mainColor1-400 absolute -top-3 -right-3 h-2 w-2 rounded-full p-2 text-center'>
                 {currentCart?.cart_items?.length || 0}
               </Badge>
             </div>
@@ -75,10 +76,10 @@ export default function UserHeader() {
                 Sơ lược các sản phẩm trong giỏ hàng.
               </SheetDescription>
             </SheetHeader>
-            <div className='p-4 max-h-[89%] overflow-auto'>
+            <div className='max-h-[89%] overflow-auto p-4'>
               {currentCart?.cart_items?.map(
                 ({ product_variant, quantity }, index) => (
-                  <div key={index} className='flex items-center gap-2 my-6'>
+                  <div key={index} className='my-6 flex items-center gap-2'>
                     <Image
                       src={product_variant?.image_url || DEFAULT_IMAGE_URL}
                       alt=''
@@ -90,7 +91,7 @@ export default function UserHeader() {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <span className='text-sm leading-none line-clamp-1 text-mainColor2-800'>
+                            <span className='text-mainColor2-800 line-clamp-1 text-sm leading-none'>
                               {product_variant.product.name}
                             </span>
                           </TooltipTrigger>
@@ -99,14 +100,14 @@ export default function UserHeader() {
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
-                      <p className='line-clamp-1 text-xs text-gray-400 mb-0.5'>
+                      <p className='mb-0.5 line-clamp-1 text-xs text-gray-400'>
                         Loại: {product_variant.name}
                       </p>
                       <div className='flex flex-col lg:flex-row lg:items-center lg:gap-4'>
                         <Badge className='bg-mainColor2-800/90'>
                           {quantity} sản phẩm
                         </Badge>
-                        <span className='text-[0.8rem] text-muted-foreground'>
+                        <span className='text-muted-foreground text-[0.8rem]'>
                           x {product_variant.price.toLocaleString('vi-VN')}
                           <sup>đ</sup>
                         </span>
@@ -119,7 +120,7 @@ export default function UserHeader() {
             <SheetFooter>
               <SheetClose asChild>
                 <Button
-                  className='w-full bg-mainColor2-800/90 hover:bg-mainColor2-800 hover:drop-shadow-lg'
+                  className='bg-mainColor2-800/90 hover:bg-mainColor2-800 w-full hover:drop-shadow-lg'
                   onClick={() => router.push('/cart')}
                 >
                   Xem giỏ hàng
@@ -130,18 +131,18 @@ export default function UserHeader() {
         </Sheet>
 
         <div className='flex items-center justify-between gap-2'>
-          <Avatar className='w-8 h-8'>
+          <Avatar className='h-8 w-8'>
             <AvatarImage src={currentUser?.avatar} />
             <AvatarFallback>LV</AvatarFallback>
           </Avatar>
-          <div className='text-sm text-mainColor1-800'>
+          <div className='text-mainColor1-800 text-sm'>
             Xin chào, <b>{currentUser?.buyer?.name || 'Ẩn danh'}</b>!
           </div>
         </div>
 
         <LogoutComponent
           icon={
-            <IoIosLogOut className='text-xl cursor-pointer right-3 text-mainColor1-800' />
+            <IoIosLogOut className='text-mainColor1-800 right-3 cursor-pointer text-xl' />
           }
         />
       </div>

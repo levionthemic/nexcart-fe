@@ -1,6 +1,7 @@
+import { NextRequest, NextResponse } from 'next/server'
+
 import http from '@/lib/http'
 import { Shop } from '@/types/entities/shop'
-import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(req: NextRequest) {
   const accessToken = req.cookies.get('accessToken')?.value

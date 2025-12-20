@@ -1,9 +1,11 @@
 'use client'
 
-import React, { ReactNode, useEffect, useRef, useState } from 'react'
-import { Button } from '../ui/button'
-import Image from 'next/image'
-import { DEFAULT_IMAGE_URL } from '@/utils/constants'
+import { PopoverArrow } from '@radix-ui/react-popover'
+import EmojiPicker, {
+  EmojiClickData,
+  EmojiStyle,
+  Theme
+} from 'emoji-picker-react'
 import {
   Minus,
   SendHorizontal,
@@ -12,20 +14,24 @@ import {
   ThumbsUp,
   Smile
 } from 'lucide-react'
-import { Input } from '../ui/input'
-import { Label } from '../ui/label'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger
-} from '@/components/ui/tooltip'
-import EmojiPicker, { EmojiClickData, EmojiStyle, Theme } from 'emoji-picker-react'
+import Image from 'next/image'
+import React, { ReactNode, useEffect, useRef, useState } from 'react'
+
 import {
   Popover,
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover'
-import { PopoverArrow } from '@radix-ui/react-popover'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger
+} from '@/components/ui/tooltip'
+import { DEFAULT_IMAGE_URL } from '@/utils/constants'
+
+import { Button } from '../ui/button'
+import { Input } from '../ui/input'
+import { Label } from '../ui/label'
 
 export default function ChatBox({
   children,
@@ -66,8 +72,8 @@ export default function ChatBox({
         {children}
       </Button>
       {isOpen && (
-        <div className='w-[330px] h-[450px] fixed z-10 right-20 bottom-0 bg-section rounded-tl-xl rounded-tr-xl border border-b-0 border-border overflow-hidden flex flex-col'>
-          <div className='bg-mainColor1-400 py-2 px-3 flex items-center justify-between'>
+        <div className='bg-section border-border fixed right-20 bottom-0 z-10 flex h-[450px] w-[330px] flex-col overflow-hidden rounded-tl-xl rounded-tr-xl border border-b-0'>
+          <div className='bg-mainColor1-400 flex items-center justify-between px-3 py-2'>
             <div className='flex items-center gap-2'>
               <Image
                 src={DEFAULT_IMAGE_URL}
@@ -78,27 +84,27 @@ export default function ChatBox({
               />
               <div>
                 <div className='font-medium'>Tên người bán</div>
-                <div className='text-xs text-muted-foreground'>Người bán</div>
+                <div className='text-muted-foreground text-xs'>Người bán</div>
               </div>
             </div>
             <div className='flex items-center gap-2'>
               <Minus
-                className='cursor-pointer rounded-md hover:bg-muted/40 transition-all duration-300 ease-in-out p-1'
+                className='hover:bg-muted/40 cursor-pointer rounded-md p-1 transition-all duration-300 ease-in-out'
                 size={30}
               />
               <X
-                className='cursor-pointer rounded-md hover:bg-muted/40 transition-all duration-300 ease-in-out p-1'
+                className='hover:bg-muted/40 cursor-pointer rounded-md p-1 transition-all duration-300 ease-in-out'
                 size={30}
                 onClick={() => setOpen(false)}
               />
             </div>
           </div>
           <div
-            className='flex-1 overflow-y-auto custom-scrollbar p-2 space-y-3'
+            className='custom-scrollbar flex-1 space-y-3 overflow-y-auto p-2'
             ref={chatBoxRef}
           >
             <div className='flex items-center justify-end'>
-              <div className='bg-mainColor1-600 w-fit py-1.5 px-3 rounded-2xl max-w-4/5'>
+              <div className='bg-mainColor1-600 w-fit max-w-4/5 rounded-2xl px-3 py-1.5'>
                 Hello Lorem ipsum dolor sit amet consectetur adipisicing elit.
                 Ipsa temporibus eligendi necessitatibus! Veniam reiciendis,
                 numquam quod itaque sunt, harum ducimus atque illo similique,
@@ -106,12 +112,12 @@ export default function ChatBox({
               </div>
             </div>
             <div className='flex items-center'>
-              <div className='bg-muted/60 border border-border w-fit py-1.5 px-3 rounded-2xl max-w-4/5'>
+              <div className='bg-muted/60 border-border w-fit max-w-4/5 rounded-2xl border px-3 py-1.5'>
                 Hello
               </div>
             </div>
             <div className='flex items-center justify-end'>
-              <div className='bg-mainColor1-600 w-fit py-1.5 px-3 rounded-2xl max-w-4/5'>
+              <div className='bg-mainColor1-600 w-fit max-w-4/5 rounded-2xl px-3 py-1.5'>
                 Hello Lorem ipsum dolor sit amet consectetur adipisicing elit.
                 Ipsa temporibus eligendi necessitatibus! Veniam reiciendis,
                 numquam quod itaque sunt, harum ducimus atque illo similique,
@@ -119,12 +125,12 @@ export default function ChatBox({
               </div>
             </div>
           </div>
-          <div className='flex items-center gap-3 p-2 border-t border-t-border'>
+          <div className='border-t-border flex items-center gap-3 border-t p-2'>
             <Tooltip>
               <TooltipTrigger>
                 <Label className='cursor-pointer'>
                   <ImageIcon
-                    className='hover:bg-muted/50 p-1.5 rounded-full'
+                    className='hover:bg-muted/50 rounded-full p-1.5'
                     size={35}
                   />
                   <Input type='file' className='sr-only' />
@@ -134,7 +140,7 @@ export default function ChatBox({
             </Tooltip>
             <div className='relative w-full'>
               <Input
-                className='peer pe-9 rounded-full focus-visible:ring-0 focus-visible:border-border'
+                className='peer focus-visible:border-border rounded-full pe-9 focus-visible:ring-0'
                 type='text'
                 placeholder='Nhập tin nhắn...'
                 onFocus={() => setTyping(true)}
@@ -146,13 +152,13 @@ export default function ChatBox({
                 <Popover>
                   <PopoverTrigger>
                     <Smile
-                      className='cursor-pointer hover:bg-muted/40 rounded-full p-1.5'
+                      className='hover:bg-muted/40 cursor-pointer rounded-full p-1.5'
                       size={35}
                     />
                   </PopoverTrigger>
                   <PopoverContent
                     side='top'
-                    className='relative -translate-x-[36%] w-fit p-0 border-none'
+                    className='relative w-fit -translate-x-[36%] border-none p-0'
                   >
                     <EmojiPicker
                       theme={Theme.DARK}
@@ -161,10 +167,14 @@ export default function ChatBox({
                       allowExpandReactions={false}
                       lazyLoadEmojis
                       autoFocusSearch={false}
-                      style={{ borderBottomRightRadius: '0'}}
+                      style={{ borderBottomRightRadius: '0' }}
                       onEmojiClick={(emoji) => handlePickEmoji(emoji)}
                     />
-                    <PopoverArrow className='relative left-[126px] fill-[#363636]' width={20} height={15} />
+                    <PopoverArrow
+                      className='relative left-[126px] fill-[#363636]'
+                      width={20}
+                      height={15}
+                    />
                   </PopoverContent>
                 </Popover>
               </div>

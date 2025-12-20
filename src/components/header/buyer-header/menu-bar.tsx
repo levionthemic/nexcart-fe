@@ -1,13 +1,14 @@
-import { IoMenu } from 'react-icons/io5'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { IoMenu } from 'react-icons/io5'
+
+import { getCategoriesApi } from '@/apis/category.api'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover'
-import { useEffect, useState } from 'react'
 import { Category } from '@/types/entities/category'
-import { getCategoriesApi } from '@/apis/category.api'
 
 export default function MenuBar() {
   const [categories, setCategories] = useState<Category[]>([])
@@ -28,29 +29,29 @@ export default function MenuBar() {
           <div className='relative'>
             <Popover>
               <PopoverTrigger asChild>
-                <button className='flex items-center gap-2 py-1 px-4 text-white hover:text-mainColor1-400 hover:bg-white rounded-full cursor-pointer transition-all'>
+                <button className='hover:text-mainColor1-400 flex cursor-pointer items-center gap-2 rounded-full px-4 py-1 text-white transition-all hover:bg-white'>
                   <IoMenu className='text-2xl' />
                   <span>Danh mục</span>
                 </button>
               </PopoverTrigger>
-              <PopoverContent className='w-auto bg-section rounded-lg shadow-xl p-1'>
-                <div className="max-h-96 overflow-auto rounded-lg custom-scrollbar">
-                  <ul className='grid grid-cols-4 gap-y-4 mb-2 last:mb-0'>
+              <PopoverContent className='bg-section w-auto rounded-lg p-1 shadow-xl'>
+                <div className='custom-scrollbar max-h-96 overflow-auto rounded-lg'>
+                  <ul className='mb-2 grid grid-cols-4 gap-y-4 last:mb-0'>
                     {categories?.map((category) => (
                       <li key={category.id}>
                         <Link
                           href={`/category/${category.slug}`}
-                          className='block font-medium py-1 px-3 hover:bg-mainColor1-100 rounded cursor-pointer text-mainColor1-700'
+                          className='hover:bg-mainColor1-100 text-mainColor1-700 block cursor-pointer rounded px-3 py-1 font-medium'
                         >
                           {category.name}
                         </Link>
                         {category.children && category.children.length > 0 && (
-                          <ul className="ml-4 mt-1 space-y-0">
+                          <ul className='mt-1 ml-4 space-y-0'>
                             {category.children.map((child) => (
                               <li key={child.id}>
                                 <Link
                                   href={`/category/${child.slug}`}
-                                  className="block py-0.5 px-1 hover:bg-mainColor1-50 rounded cursor-pointer text-mainColor1-600 text-sm"
+                                  className='hover:bg-mainColor1-50 text-mainColor1-600 block cursor-pointer rounded px-1 py-0.5 text-sm'
                                 >
                                   {child.name}
                                 </Link>
@@ -65,21 +66,21 @@ export default function MenuBar() {
               </PopoverContent>
             </Popover>
           </div>
-          <ul className='flex items-center gap-8 text-white text-sm'>
+          <ul className='flex items-center gap-8 text-sm text-white'>
             <Link href={'/'}>
-              <li className='py-1 px-4 rounded-full hover:text-mainColor1-400 hover:bg-white cursor-pointer transition-all hover:ease-in-out hover:duration-300'>
+              <li className='hover:text-mainColor1-400 cursor-pointer rounded-full px-4 py-1 transition-all hover:bg-white hover:duration-300 hover:ease-in-out'>
                 Trang chủ
               </li>
             </Link>
             <Link href={'/product'}>
-              <li className='py-1 px-4 rounded-full hover:text-mainColor1-400 hover:bg-white cursor-pointer transition-all hover:ease-in-out hover:duration-300'>
+              <li className='hover:text-mainColor1-400 cursor-pointer rounded-full px-4 py-1 transition-all hover:bg-white hover:duration-300 hover:ease-in-out'>
                 Sản phẩm
               </li>
             </Link>
-            <li className='py-1 px-4 rounded-full hover:text-mainColor1-400 hover:bg-white cursor-pointer transition-all hover:ease-in-out hover:duration-300'>
+            <li className='hover:text-mainColor1-400 cursor-pointer rounded-full px-4 py-1 transition-all hover:bg-white hover:duration-300 hover:ease-in-out'>
               Giới thiệu
             </li>
-            <li className='py-1 px-4 rounded-full hover:text-mainColor1-400 hover:bg-white cursor-pointer transition-all hover:ease-in-out hover:duration-300'>
+            <li className='hover:text-mainColor1-400 cursor-pointer rounded-full px-4 py-1 transition-all hover:bg-white hover:duration-300 hover:ease-in-out'>
               Liên hệ
             </li>
           </ul>

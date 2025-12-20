@@ -1,7 +1,39 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { cn } from '@/lib/utils'
+import { CheckedState } from '@radix-ui/react-checkbox'
+import {
+  ColumnDef,
+  ColumnFilter,
+  flexRender,
+  getCoreRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  HeaderContext,
+  Row,
+  useReactTable
+} from '@tanstack/react-table'
+import {
+  ChevronDownIcon,
+  ChevronFirstIcon,
+  ChevronLastIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronUpIcon,
+  CircleAlertIcon,
+  CircleXIcon,
+  Columns3Icon,
+  EllipsisIcon,
+  FilterIcon,
+  ListFilterIcon,
+  TrashIcon
+} from 'lucide-react'
+import Image from 'next/image'
+import React, { useEffect, useId, useMemo, useRef, useState } from 'react'
+
+import { getOrdersApi } from '@/apis/order.api'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -50,43 +82,12 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import {
-  ColumnDef,
-  ColumnFilter,
-  flexRender,
-  getCoreRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  HeaderContext,
-  Row,
-  useReactTable
-} from '@tanstack/react-table'
-import {
-  ChevronDownIcon,
-  ChevronFirstIcon,
-  ChevronLastIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ChevronUpIcon,
-  CircleAlertIcon,
-  CircleXIcon,
-  Columns3Icon,
-  EllipsisIcon,
-  FilterIcon,
-  ListFilterIcon,
-  TrashIcon
-} from 'lucide-react'
-import React, { useEffect, useId, useMemo, useRef, useState } from 'react'
-import { getAddressString } from '@/utils/helpers'
+import { cn } from '@/lib/utils'
 import { Order, OrderItem } from '@/types/entities/order'
-import Image from 'next/image'
-import { getOrdersApi } from '@/apis/order.api'
 import { ShippingMethod } from '@/types/enums/checkout'
 import { OrderStatus } from '@/types/enums/order-status'
 import { MAP_ORDER_STATUS } from '@/utils/constants'
-import { CheckedState } from '@radix-ui/react-checkbox'
+import { getAddressString } from '@/utils/helpers'
 
 // Custom filter function for multi-column searching
 const multiColumnFilterFn = (
@@ -139,7 +140,7 @@ const columns: ColumnDef<Order>[] = [
     header: 'Mã đơn hàng',
     accessorKey: 'order_code',
     cell: ({ row }) => (
-      <div className='font-medium text-ellipsis overflow-x-hidden'>
+      <div className='overflow-x-hidden font-medium text-ellipsis'>
         {row.getValue('order_code')}
       </div>
     ),
@@ -152,7 +153,7 @@ const columns: ColumnDef<Order>[] = [
     header: 'Người bán',
     accessorFn: (row) => row.seller.seller_id,
     cell: ({ row }) => (
-      <div className='font-medium text-ellipsis overflow-x-hidden'>
+      <div className='overflow-x-hidden font-medium text-ellipsis'>
         {row.original.seller.name || 'Ẩn danh'}
       </div>
     ),
@@ -182,19 +183,19 @@ const columns: ColumnDef<Order>[] = [
                   alt=''
                   width={40}
                   height={40}
-                  className='rounded-md border size-10 border-gray-300 p-0.5'
+                  className='size-10 rounded-md border border-gray-300 p-0.5'
                 />
               </div>
               <div className='flex-1'>
                 <div className='line-clamp-1'>{item.product_variant.name}</div>
-                <div className='line-clamp-1 text-xs text-muted-foreground'>
+                <div className='text-muted-foreground line-clamp-1 text-xs'>
                   Loại: {item.product_variant.name}
                 </div>
               </div>
             </div>
           ))}
         {row.getValue<OrderItem[]>('order_items').length > 2 && (
-          <div className='mt-2 text-muted-foreground'>
+          <div className='text-muted-foreground mt-2'>
             + {row.getValue<OrderItem[]>('order_items').length - 2} sản phẩm
           </div>
         )}
@@ -203,7 +204,7 @@ const columns: ColumnDef<Order>[] = [
   },
   {
     id: 'shipping_method',
-    header: () => <div className='text-center flex-1'>Đơn vị vận chuyển</div>,
+    header: () => <div className='flex-1 text-center'>Đơn vị vận chuyển</div>,
     accessorKey: 'shipping_method',
     size: 80,
     cell: ({ row }) => (
@@ -221,7 +222,7 @@ const columns: ColumnDef<Order>[] = [
   },
   {
     id: 'status',
-    header: () => <div className='text-center w-full'>Trạng thái</div>,
+    header: () => <div className='w-full text-center'>Trạng thái</div>,
     accessorKey: 'status',
     cell: ({ row }) => (
       <div className='flex items-center justify-center'>
@@ -252,7 +253,7 @@ const columns: ColumnDef<Order>[] = [
         style: 'currency',
         currency: 'VND'
       }).format(amount)
-      return <div className='font-bold text-lg text-red-500'>{formatted}</div>
+      return <div className='text-lg font-bold text-red-500'>{formatted}</div>
     },
     size: 80
   },

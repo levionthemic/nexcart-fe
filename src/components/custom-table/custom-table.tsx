@@ -1,6 +1,23 @@
 'use client'
 
-import { cn } from '@/lib/utils'
+import { ColumnDef, flexRender, HeaderContext } from '@tanstack/react-table'
+import {
+  ChevronDownIcon,
+  ChevronFirstIcon,
+  ChevronLastIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronUpIcon,
+  CircleAlertIcon,
+  CircleXIcon,
+  Columns3Icon,
+  FilterIcon,
+  ListFilterIcon,
+  PlusIcon,
+  TrashIcon
+} from 'lucide-react'
+import { useRouter } from 'next/navigation'
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -48,25 +65,9 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { ColumnDef, flexRender, HeaderContext } from '@tanstack/react-table'
-import {
-  ChevronDownIcon,
-  ChevronFirstIcon,
-  ChevronLastIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ChevronUpIcon,
-  CircleAlertIcon,
-  CircleXIcon,
-  Columns3Icon,
-  FilterIcon,
-  ListFilterIcon,
-  PlusIcon,
-  TrashIcon
-} from 'lucide-react'
 import { useLoading } from '@/contexts/loading-context'
-import { useRouter } from 'next/navigation'
 import useTableHooks from '@/hooks/use-table-hooks'
+import { cn } from '@/lib/utils'
 
 export default function CustomTable<T extends { id: number }>({
   data,
@@ -98,8 +99,8 @@ export default function CustomTable<T extends { id: number }>({
   return (
     <div className='space-y-1'>
       {/* Filters */}
-      <div className='flex flex-wrap items-center justify-between gap-3 bg-section p-3 rounded-lg'>
-        <div className='font-semibold text-mainColor1-600'>{title}</div>
+      <div className='bg-section flex flex-wrap items-center justify-between gap-3 rounded-lg p-3'>
+        <div className='text-mainColor1-600 font-semibold'>{title}</div>
 
         <div className='flex items-center gap-3'>
           {/* Filter by name or email */}
@@ -290,7 +291,7 @@ export default function CustomTable<T extends { id: number }>({
       </div>
 
       {/* Table */}
-      <div className='bg-section overflow-hidden border rounded-lg font-lexend font-light'>
+      <div className='bg-section font-lexend overflow-hidden rounded-lg border font-light'>
         <Table
           className='table-fixed'
           // style={{
@@ -309,8 +310,8 @@ export default function CustomTable<T extends { id: number }>({
                         header.column.getIsSorted() === 'asc'
                           ? 'ascending'
                           : header.column.getIsSorted() === 'desc'
-                          ? 'descending'
-                          : 'none'
+                            ? 'descending'
+                            : 'none'
                       }
                       {...{
                         colSpan: header.colSpan,

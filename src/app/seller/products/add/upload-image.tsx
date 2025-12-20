@@ -1,8 +1,9 @@
 'use client'
 
-import { useImageUpload } from '@/hooks/use-image-upload'
-import { Button } from '@/components/ui/button'
 import Image from 'next/image'
+
+import { Button } from '@/components/ui/button'
+import { useImageUpload } from '@/hooks/use-image-upload'
 
 export default function UploadImage({
   fieldName,
@@ -25,7 +26,7 @@ export default function UploadImage({
       <div className='w-full space-y-2'>
         {previewUrl && (
           <div
-            className='border-input relative flex size-1/2 aspect-square shrink-0 items-center justify-center overflow-hidden rounded-md border'
+            className='border-input relative flex aspect-square size-1/2 shrink-0 items-center justify-center overflow-hidden rounded-md border'
             aria-label={
               previewUrl ? 'Preview of uploaded image' : 'Default user avatar'
             }
@@ -40,7 +41,7 @@ export default function UploadImage({
           </div>
         )}
         <div className='relative inline-block flex-1'>
-          <div className=' flex items-center gap-2'>
+          <div className='flex items-center gap-2'>
             <Button
               onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
                 event.preventDefault()
@@ -68,7 +69,7 @@ export default function UploadImage({
         <div className='mt-2'>
           <div className='inline-flex gap-2 text-xs'>
             <p
-              className='text-muted-foreground truncate max-w-32'
+              className='text-muted-foreground max-w-32 truncate'
               aria-live='polite'
             >
               {fileName}

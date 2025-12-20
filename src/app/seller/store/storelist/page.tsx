@@ -1,16 +1,19 @@
 'use client'
 import { ArrowRightIcon, SearchIcon } from 'lucide-react'
+import { useEffect, useState } from 'react'
+
+import { getShopsApi } from '@/apis/shop.api'
+import banner from '@/assets/banner.jpg'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import banner from '@/assets/banner.jpg'
-import PageHeader from '../../_components/page-header'
-import OverviewStats from './_components/overview-stats'
-import StoreCard from './_components/store-card'
-import AddShopDialog from './_components/add-shop'
-import { useEffect, useState } from 'react'
 import { Shop } from '@/types/entities/shop'
 import { getAddressString } from '@/utils/helpers'
-import { getShopsApi } from '@/apis/shop.api'
+
+import PageHeader from '../../_components/page-header'
+
+import AddShopDialog from './_components/add-shop'
+import OverviewStats from './_components/overview-stats'
+import StoreCard from './_components/store-card'
 
 export default function StoreList() {
   const [shops, setShops] = useState<Shop[]>([])
@@ -50,7 +53,7 @@ export default function StoreList() {
       <OverviewStats />
 
       {/* Toolbar */}
-      <div className='bg-section p-3 rounded-lg flex items-center justify-between gap-20 mb-8'>
+      <div className='bg-section mb-8 flex items-center justify-between gap-20 rounded-lg p-3'>
         <div className='flex items-center gap-2'>
           <Button variant='outline'>Lọc</Button>
           <Button variant='outline'>Sắp xếp</Button>
@@ -78,7 +81,7 @@ export default function StoreList() {
       </div>
 
       {/* List Cards */}
-      <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
+      <div className='grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
         {shops.map((shop, index) => (
           <StoreCard
             {...shop}

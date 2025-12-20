@@ -1,6 +1,15 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import React from 'react'
+import { useDispatch } from 'react-redux'
+import { toast } from 'sonner'
+
+import { clearCart } from '@/redux/cart/cartSlice'
+import { AppDispatch } from '@/redux/store'
+import { logoutUserAction } from '@/redux/user/userSlice'
+
+import { useSocketContext } from '../providers/socket-provider'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,13 +21,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '../ui/alert-dialog'
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from '@/redux/store'
-import { clearCart } from '@/redux/cart/cartSlice'
-import { toast } from 'sonner'
-import { useRouter } from 'next/navigation'
-import { useSocketContext } from '../providers/socket-provider'
-import { logoutUserAction } from '@/redux/user/userSlice'
 
 export default function LogoutComponent({ icon }: { icon: React.ReactNode }) {
   const dispatch = useDispatch<AppDispatch>()
