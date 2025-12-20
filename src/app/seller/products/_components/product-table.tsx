@@ -3,7 +3,7 @@
 import { ColumnDef } from '@tanstack/react-table'
 import Image from 'next/image'
 
-import CustomTable from '@/components/custom-table/custom-table'
+import CustomTable from '@/components/shared/custom-table'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ProductListItem } from '@/types/entities/product'

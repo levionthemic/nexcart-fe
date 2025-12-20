@@ -7,7 +7,7 @@ import { useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 import { getShopsApi } from '@/apis/shop.api'
-import Autocomplete from '@/components/Autocomplete'
+import Autocomplete from '@/components/shared/autocomplete'
 import { Button } from '@/components/ui/button'
 import {
   Form,

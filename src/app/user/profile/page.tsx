@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
 
 import productImg from '@/assets/logo.png'
+import UploadImage from '@/components/shared/upload-image'
 import { Ratings } from '@/components/ui/ratings'
-import UploadImage from '@/components/upload/upload-image'
 import { AppDispatch } from '@/redux/store'
 import {
   selectCurrentUser,

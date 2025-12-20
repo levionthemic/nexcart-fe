@@ -7,16 +7,19 @@ import EmojiPicker, {
   Theme
 } from 'emoji-picker-react'
 import {
+  Image as ImageIcon,
   Minus,
   SendHorizontal,
-  X,
-  Image as ImageIcon,
+  Smile,
   ThumbsUp,
-  Smile
+  X
 } from 'lucide-react'
 import Image from 'next/image'
-import React, { ReactNode, useEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Popover,
   PopoverContent,
@@ -28,10 +31,6 @@ import {
   TooltipTrigger
 } from '@/components/ui/tooltip'
 import { DEFAULT_IMAGE_URL } from '@/utils/constants'
-
-import { Button } from '../ui/button'
-import { Input } from '../ui/input'
-import { Label } from '../ui/label'
 
 export default function ChatBox({
   children,

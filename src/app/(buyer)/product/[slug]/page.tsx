@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { FaStar } from 'react-icons/fa'
 
 import { getProductDetailsApi, getProductsApi } from '@/apis/product.api'
-import { ProductCard } from '@/components/product'
+import { ProductCard } from '@/components/features/product'
 import {
   Breadcrumb,
   BreadcrumbItem,

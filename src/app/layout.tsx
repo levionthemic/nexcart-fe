@@ -1,12 +1,12 @@
 import type { Metadata } from 'next'
 import { Roboto } from 'next/font/google'
 
-import './globals.css'
 import PersistProvider from '@/components/providers/persist-provider'
 import { SocketProvider } from '@/components/providers/socket-provider'
-import { ThemeProvider } from '@/components/theme-provider'
+import { ThemeProvider } from '@/components/providers/theme-provider'
 import { Toaster } from '@/components/ui/sonner'
 import { LoadingProvider } from '@/contexts/loading-context'
+import './globals.css'
 
 const roboto = Roboto({
   variable: '--roboto',

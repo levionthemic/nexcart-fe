@@ -14,9 +14,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { IoMdHelpCircleOutline } from 'react-icons/io'
-import { LuSettings, LuLogOut } from 'react-icons/lu'
+import { LuLogOut, LuSettings } from 'react-icons/lu'
 
-import LogoutComponent from '@/components/logout/logout'
+import LogoutComponent from '@/components/feedback/logout/logout'
 import {
   Collapsible,
   CollapsibleContent,
@@ -27,12 +27,12 @@ import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
-  SidebarHeader,
   SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarGroupLabel,
   SidebarMenuSub,
   SidebarMenuSubItem,
   useSidebar

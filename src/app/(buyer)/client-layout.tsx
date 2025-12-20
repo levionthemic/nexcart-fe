@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
-import NProgress from '@/components/n-progress/progress'
+import NProgress from '@/components/feedback/n-progress/progress'
 import { useLoading } from '@/contexts/loading-context'
 
 export default function ClientBuyerLayout({

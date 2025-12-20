@@ -7,7 +7,7 @@ import { Dispatch, SetStateAction } from 'react'
 import { toast } from 'sonner'
 
 import { getOrdersApi, updateOrderStatusApi } from '@/apis/order.api'
-import CustomTable from '@/components/custom-table/custom-table'
+import CustomTable from '@/components/shared/custom-table'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { cn } from '@/lib/utils'

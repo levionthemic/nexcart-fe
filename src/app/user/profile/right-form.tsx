@@ -1,10 +1,10 @@
 'use client'
 
 import { Pencil } from 'lucide-react'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import OtpFillIn from '@/components/otp-fill-in'
+import OtpFillIn from '@/components/shared/otp-fill-in'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'

@@ -1,5 +1,5 @@
-import Footer from '@/components/footer/footer'
-import BuyerHeader from '@/components/header/buyer-header/buyer-header'
+import Footer from '@/components/layout/footer/footer'
+import { BuyerHeader } from '@/components/layout/header'
 import { LoadingProvider } from '@/contexts/loading-context'
 import { OrderProvider } from '@/contexts/order-context'
 

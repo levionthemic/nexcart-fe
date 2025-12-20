@@ -14,7 +14,7 @@ import {
 } from 'lucide-react'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FaStar } from 'react-icons/fa'
 
 import {
@@ -22,8 +22,8 @@ import {
   getSellerProductsApi
 } from '@/apis/product.api'
 import { getPublicSellerProfileApi } from '@/apis/user.api'
-import ChatBox from '@/components/chat/chatbox'
-import { ProductCard } from '@/components/product'
+import ChatBox from '@/components/features/chat/chatbox'
+import { ProductCard } from '@/components/features/product'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'

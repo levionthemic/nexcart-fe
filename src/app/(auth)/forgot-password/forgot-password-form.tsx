@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
 import { forgotPasswordApi } from '@/apis/auth.api'
-import OtpFillIn from '@/components/otp-fill-in'
+import OtpFillIn from '@/components/shared/otp-fill-in'
 import { Button } from '@/components/ui/button'
 import {
   Form,

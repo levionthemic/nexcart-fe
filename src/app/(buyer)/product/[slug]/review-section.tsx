@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { FaRegCommentDots, FaRegThumbsUp } from 'react-icons/fa'
 import { IoShareSocialOutline } from 'react-icons/io5'
 import { useSelector } from 'react-redux'
 import { toast } from 'sonner'
 
 import { addReviewApi, getReviewsByProductIdApi } from '@/apis/review.api'
-import PaginationComponent from '@/components/pagination/pagination'
+import PaginationComponent from '@/components/shared/pagination'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Ratings } from '@/components/ui/ratings'
 import { Separator } from '@/components/ui/separator'

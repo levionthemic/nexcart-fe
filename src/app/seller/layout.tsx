@@ -1,4 +1,4 @@
-import SellerHeader from '@/components/header/seller-header'
+import { SellerHeader } from '@/components/layout/header'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { LoadingProvider } from '@/contexts/loading-context'
 

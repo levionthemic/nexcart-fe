@@ -7,7 +7,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { addNewShopApi } from '@/apis/shop.api'
-import Autocomplete from '@/components/Autocomplete'
+import Autocomplete from '@/components/shared/autocomplete'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,

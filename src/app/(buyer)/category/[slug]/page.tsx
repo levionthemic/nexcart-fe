@@ -4,8 +4,8 @@ import Link from 'next/link'
 
 import { getCategoriesBySlugApi } from '@/apis/category.api'
 import { getProductsWithFiltersApi } from '@/apis/product.api'
-import PaginationComponent from '@/components/pagination/pagination'
-import { ProductCard } from '@/components/product'
+import { ProductCard } from '@/components/features/product'
+import PaginationComponent from '@/components/shared/pagination'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { Category } from '@/types/entities/category'
 import {

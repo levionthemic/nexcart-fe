@@ -3,15 +3,18 @@
 
 import { format } from 'date-fns'
 import { BellRing, MoreHorizontalIcon } from 'lucide-react'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
 
+import { useSocketContext } from '@/components/providers/socket-provider'
+import { Button } from '@/components/ui/button'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   fetchCurrentNotificationListAPI,
   selectCurrentNotificationList,
@@ -25,10 +28,6 @@ import {
   mapNotificationTypeToTitle,
   mapNotificationTypeToToastInfo
 } from '@/utils/helpers'
-
-import { useSocketContext } from '../providers/socket-provider'
-import { Button } from '../ui/button'
-import { ScrollArea } from '../ui/scroll-area'
 
 export type SocketPayload = {
   content: string

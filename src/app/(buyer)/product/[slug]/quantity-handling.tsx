@@ -2,7 +2,7 @@
 
 import { cloneDeep } from 'lodash'
 import { useRouter } from 'next/navigation'
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { IoMdAdd } from 'react-icons/io'
 import { IoBagCheckOutline } from 'react-icons/io5'
 import { MdAddShoppingCart } from 'react-icons/md'
@@ -23,7 +23,11 @@ import {
 } from '@/redux/cart/cartSlice'
 import { AppDispatch } from '@/redux/store'
 import { selectCurrentUser } from '@/redux/user/userSlice'
-import { CartProductVariant, Product } from '@/types/entities/product'
+import {
+  CartProduct,
+  CartProductVariant,
+  Product
+} from '@/types/entities/product'
 
 import ReviewRate from './_components/review-rate'
 
@@ -72,18 +76,19 @@ export default function QuantityHandling({ product }: { product: Product }) {
         const productVariant = product.product_variants.find(
           (pv) => pv.id === productVariantId
         )!
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
         const {
           category,
           brand,
           product_variants,
           specifications,
           reviews,
-          ...restProduct
+          ...sanitizedProduct
         } = product
+
         const cartProductVariant: CartProductVariant = {
           ...productVariant,
-          product: restProduct
+          product: sanitizedProduct as CartProduct
         }
         cart_items.push({
           product_variant: cartProductVariant,

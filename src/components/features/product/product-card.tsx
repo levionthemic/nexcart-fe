@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
 
 import ChooseProductVariant from '@/app/(buyer)/product/[slug]/choose-product-variant'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -21,6 +22,17 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger
+} from '@/components/ui/drawer'
+import { Ratings } from '@/components/ui/ratings'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useVariantHandling } from '@/contexts/variant-handling-context'
@@ -34,19 +46,6 @@ import { AppDispatch } from '@/redux/store'
 import { selectCurrentUser } from '@/redux/user/userSlice'
 import { CartProductVariant, ProductListItem } from '@/types/entities/product'
 import { DEFAULT_IMAGE_URL } from '@/utils/constants'
-
-import { Button } from '../ui/button'
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger
-} from '../ui/drawer'
-import { Ratings } from '../ui/ratings'
 
 export interface ProductCardPropTypes {
   product: ProductListItem | null
@@ -90,7 +89,7 @@ export default function ClientProductCard({
         const productVariant = product.product_variants.find(
           (pv) => pv.id === productVariantId
         )!
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+         
         const { category, brand, product_variants, ...restProduct } = product
         const cartProductVariant: CartProductVariant = {
           ...productVariant,

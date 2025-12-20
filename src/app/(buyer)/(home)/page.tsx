@@ -10,7 +10,7 @@ import {
 import { getCategoriesApi } from '@/apis/category.api'
 import { getProductsApi } from '@/apis/product.api'
 import banner from '@/assets/banner.jpg'
-import { ProductCard } from '@/components/product'
+import { ProductCard } from '@/components/features/product'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { SidebarProvider } from '@/components/ui/sidebar'

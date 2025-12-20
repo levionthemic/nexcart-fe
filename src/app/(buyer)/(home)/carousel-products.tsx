@@ -2,7 +2,7 @@
 
 import Autoplay from 'embla-carousel-autoplay'
 
-import { ProductCard } from '@/components/product'
+import { ProductCard } from '@/components/features/product'
 import {
   Carousel,
   CarouselContent,

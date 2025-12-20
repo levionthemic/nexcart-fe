@@ -14,7 +14,7 @@ import {
   getListProvincesApi,
   getListWardsByDistrictIdApi
 } from '@/apis/ghn.api'
-import Autocomplete from '@/components/Autocomplete'
+import Autocomplete from '@/components/shared/autocomplete'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,

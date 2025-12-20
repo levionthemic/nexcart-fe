@@ -8,7 +8,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { store } from '@/redux/store'
 import { injectStore } from '@/utils/asyncHandler'
 
-import Loader from '../loader/loader'
+import Loader from '../feedback/loader/loader'
 
 const persistor = persistStore(store)
 

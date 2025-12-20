@@ -1,6 +1,6 @@
 function Loader() {
   return (
-    <div className='w-screen h-screen flex items-center justify-center'>
+    <div className='flex h-screen w-screen items-center justify-center'>
       <div className='loader-wrapper'>
         <span className='loader-letter'>G</span>
         <span className='loader-letter'>e</span>

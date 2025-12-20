@@ -4,12 +4,11 @@ import { SidebarCloseIcon, SidebarOpenIcon } from 'lucide-react'
 import { TbBellRinging2 } from 'react-icons/tb'
 import { useSelector } from 'react-redux'
 
+import { ModeToggle } from '@/components/shared/mode-toggle'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { useSidebar } from '@/components/ui/sidebar'
 import { selectCurrentUser } from '@/redux/user/userSlice'
-
-import { ModeToggle } from '../mode-toggle'
 
 export default function SellerHeader() {
   const currentUser = useSelector(selectCurrentUser)

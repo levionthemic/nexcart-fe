@@ -5,11 +5,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { toast } from 'sonner'
 
-import { clearCart } from '@/redux/cart/cartSlice'
-import { AppDispatch } from '@/redux/store'
-import { logoutUserAction } from '@/redux/user/userSlice'
-
-import { useSocketContext } from '../providers/socket-provider'
+import { useSocketContext } from '@/components/providers/socket-provider'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,7 +16,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger
-} from '../ui/alert-dialog'
+} from '@/components/ui/alert-dialog'
+import { clearCart } from '@/redux/cart/cartSlice'
+import { AppDispatch } from '@/redux/store'
+import { logoutUserAction } from '@/redux/user/userSlice'
 
 export default function LogoutComponent({ icon }: { icon: React.ReactNode }) {
   const dispatch = useDispatch<AppDispatch>()

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getProductsWithFiltersApi } from '@/apis/product.api'
-import PaginationComponent from '@/components/pagination/pagination'
-import { ProductCard } from '@/components/product'
+import { ProductCard } from '@/components/features/product'
+import PaginationComponent from '@/components/shared/pagination'
 import { Brand } from '@/types/entities/brand'
 import { Category } from '@/types/entities/category'
 import { ProductListItem } from '@/types/entities/product'

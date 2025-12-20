@@ -1,16 +1,15 @@
 import {
   FaFacebook,
   FaInstagram,
+  FaLinkedin,
   FaTwitter,
-  FaYoutube,
-  FaLinkedin
+  FaYoutube
 } from 'react-icons/fa'
 
+import { ModeToggle } from '@/components/shared/mode-toggle'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
-
-import { ModeToggle } from '../mode-toggle'
 
 export default function Footer() {
   return (

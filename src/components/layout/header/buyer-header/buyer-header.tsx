@@ -6,11 +6,11 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { FormEvent, useEffect, useRef, useState } from 'react'
 import { LuShoppingCart } from 'react-icons/lu'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
 
 import { getProductsWithFiltersApi } from '@/apis/product.api'
-import Notification from '@/components/notification/notification'
+import Notification from '@/components/feedback/notification/notification'
 import {
   AlertDialog,
   AlertDialogAction,
