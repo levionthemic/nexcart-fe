@@ -41,6 +41,12 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          NEXT_PUBLIC_API_ENDPOINT: ${{ secrets.NEXT_PUBLIC_API_ENDPOINT }}
+          NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
+          NEXT_PUBLIC_GHN_TOKEN_API: ${{ secrets.NEXT_PUBLIC_GHN_TOKEN_API }}
+          NEXT_PUBLIC_GHN_SHOP_ID: ${{ secrets.NEXT_PUBLIC_GHN_SHOP_ID }}
+          NEXT_PUBLIC_SOCKET_URL: ${{ secrets.NEXT_PUBLIC_SOCKET_URL }}
 
       - name: Check build output
         run: test -d .next && echo "Build successful" || exit 1
