@@ -1,9 +1,18 @@
 'use client'
 
 import { clsx } from 'clsx'
-import { MdAddShoppingCart } from 'react-icons/md'
+import { cloneDeep } from 'lodash'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { BsHandbag } from 'react-icons/bs'
+import { IoMdAdd } from 'react-icons/io'
+import { MdAddShoppingCart } from 'react-icons/md'
+import { RiSubtractFill } from 'react-icons/ri'
+import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'sonner'
 
+import ChooseProductVariant from '@/app/(buyer)/product/[slug]/choose-product-variant'
 import {
   Card,
   CardContent,
@@ -12,8 +21,19 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
 import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useVariantHandling } from '@/contexts/variant-handling-context'
+import {
+  addToCartAPI,
+  fetchCurrentCartAPI,
+  selectCurrentCart,
+  setCart
+} from '@/redux/cart/cartSlice'
+import { AppDispatch } from '@/redux/store'
+import { selectCurrentUser } from '@/redux/user/userSlice'
+import { CartProductVariant, ProductListItem } from '@/types/entities/product'
+import { DEFAULT_IMAGE_URL } from '@/utils/constants'
 
 import { Button } from '../ui/button'
 import {
@@ -26,27 +46,7 @@ import {
   DrawerTitle,
   DrawerTrigger
 } from '../ui/drawer'
-import { useEffect, useState } from 'react'
-import { RiSubtractFill } from 'react-icons/ri'
-import { IoMdAdd } from 'react-icons/io'
-import { toast } from 'sonner'
-import { useDispatch, useSelector } from 'react-redux'
-import {
-  addToCartAPI,
-  fetchCurrentCartAPI,
-  selectCurrentCart,
-  setCart
-} from '@/redux/cart/cartSlice'
-import { selectCurrentUser } from '@/redux/user/userSlice'
-import { cloneDeep } from 'lodash'
-import { CartProductVariant, ProductListItem } from '@/types/entities/product'
-import { AppDispatch } from '@/redux/store'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
 import { Ratings } from '../ui/ratings'
-import { DEFAULT_IMAGE_URL } from '@/utils/constants'
-import ChooseProductVariant from '@/app/(buyer)/product/[slug]/choose-product-variant'
-import { useVariantHandling } from '@/contexts/variant-handling-context'
 
 export interface ProductCardPropTypes {
   product: ProductListItem | null
@@ -196,7 +196,7 @@ export default function ClientProductCard({
     <Card
       className={clsx({
         'border-none shadow-none': loading,
-        'cursor-pointer border-gray-200 dark:border-border hover:border-[2px] border shadow-accent hover:shadow-xl transition-all ease-in-out hover:duration-300 overflow-hidden':
+        'dark:border-border shadow-accent cursor-pointer overflow-hidden border border-gray-200 transition-all ease-in-out hover:border-[2px] hover:shadow-xl hover:duration-300':
           !loading
       })}
     >
@@ -205,14 +205,14 @@ export default function ClientProductCard({
         onClick={() => router.push(`/product/${product?.slug}`)}
       >
         {loading ? (
-          <Skeleton className='w-full aspect-square' />
+          <Skeleton className='aspect-square w-full' />
         ) : (
           <Image
             src={product?.thumbnail_url || DEFAULT_IMAGE_URL}
             height={300}
             width={300}
             alt=''
-            className='object-cover w-full aspect-square'
+            className='aspect-square w-full object-cover'
           />
         )}
       </CardContent>
@@ -224,7 +224,7 @@ export default function ClientProductCard({
         {loading ? (
           <Skeleton className='h-[32px] w-full' />
         ) : (
-          <CardTitle className='line-clamp-2 min-h-[32px] text-mainColor1-600 dark:text-mainColor1-800'>
+          <CardTitle className='text-mainColor1-600 dark:text-mainColor1-800 line-clamp-2 min-h-8'>
             {product?.name}
           </CardTitle>
         )}
@@ -233,11 +233,11 @@ export default function ClientProductCard({
           <Skeleton className='h-[40px]' />
         ) : (
           <CardDescription>
-            <div className='text-lg font-bold text-[#ff4d4f] mb-1 text-justify'>
+            <div className='mb-1 text-justify text-lg font-bold text-[#ff4d4f]'>
               {averagePrice.toLocaleString()}
               <sup>đ</sup>
             </div>
-            <div className='flex items-center justify-between my-2 text-sm text-gray-400'>
+            <div className='my-2 flex items-center justify-between text-sm text-gray-400'>
               <div className='flex items-center gap-2'>
                 <span>{product?.rating || '0'}</span>
                 <Ratings
@@ -254,22 +254,22 @@ export default function ClientProductCard({
         )}
       </CardHeader>
 
-      {!loading && <Separator className='border-gray-200 dark:border-border' />}
+      {!loading && <Separator className='dark:border-border border-gray-200' />}
 
       {loading ? (
         <Skeleton className='h-4 py-2 pl-4' />
       ) : (
         <Drawer onAnimationEnd={(open) => handleCloseDrawer(open)}>
           <DrawerTrigger asChild>
-            <CardFooter className='grid grid-cols-2 p-0 text-sm text-center cursor-pointer'>
+            <CardFooter className='grid cursor-pointer grid-cols-2 p-0 text-center text-sm'>
               <div
-                className='flex items-center justify-center p-2 border-r dark:border-r-border hover:bg-mainColor2-800 text-mainColor2-800 hover:text-white border-r-gray-200'
+                className='dark:border-r-border hover:bg-mainColor2-800 text-mainColor2-800 flex items-center justify-center border-r border-r-gray-200 p-2 hover:text-white'
                 onClick={() => setIsAddToCart(true)}
               >
                 <MdAddShoppingCart className='text-2xl' />
               </div>
 
-              <div className='flex items-center justify-center p-2 hover:bg-mainColor1-800 text-mainColor1-800 hover:text-white'>
+              <div className='hover:bg-mainColor1-800 text-mainColor1-800 flex items-center justify-center p-2 hover:text-white'>
                 <BsHandbag className='text-2xl' />
               </div>
             </CardFooter>
@@ -283,19 +283,19 @@ export default function ClientProductCard({
             </DrawerHeader>
 
             <div className='p-4'>
-              <div className='flex items-center gap-10 mb-6'>
-                <div className='overflow-hidden border border-gray-300 rounded-lg w-28 h-28'>
+              <div className='mb-6 flex items-center gap-10'>
+                <div className='h-28 w-28 overflow-hidden rounded-lg border border-gray-300'>
                   <Image
                     width={112}
                     height={112}
                     src={product?.thumbnail_url || DEFAULT_IMAGE_URL}
                     alt=''
-                    className='object-contain w-full aspect-square'
+                    className='aspect-square w-full object-contain'
                   />
                 </div>
                 <div className='flex flex-col gap-2'>
                   <div>{product?.name}</div>
-                  <div className='text-[#f90606] font-bold text-2xl'>
+                  <div className='text-2xl font-bold text-[#f90606]'>
                     {(
                       product?.product_variants.find(
                         (pv) => pv.id === productVariantId
@@ -304,9 +304,9 @@ export default function ClientProductCard({
                     <sup>đ</sup>
                   </div>
                   <div className='flex items-center gap-20'>
-                    <div className='flex items-center justify-between p-1 border rounded-lg border-mainColor1-100'>
+                    <div className='border-mainColor1-100 flex items-center justify-between rounded-lg border p-1'>
                       <RiSubtractFill
-                        className='text-xl rounded-md cursor-pointer text-mainColor1-800 hover:bg-mainColor1-800/40'
+                        className='text-mainColor1-800 hover:bg-mainColor1-800/40 cursor-pointer rounded-md text-xl'
                         onClick={() =>
                           setQuantity(quantity > 1 ? quantity - 1 : 1)
                         }
@@ -317,7 +317,7 @@ export default function ClientProductCard({
                           setQuantity(parseInt(e.target.value))
                         }}
                         readOnly
-                        className='w-[50px] text-center mx-1.5 border-none outline-none text-md font-semibold text-mainColor1-800'
+                        className='text-md text-mainColor1-800 mx-1.5 w-[50px] border-none text-center font-semibold outline-none'
                       />
                       <IoMdAdd
                         onClick={() =>
@@ -325,7 +325,7 @@ export default function ClientProductCard({
                             Math.min(quantity + 1, totalStockQuantity)
                           )
                         }
-                        className='text-xl rounded-md cursor-pointer text-mainColor1-800 hover:bg-mainColor2-800/40'
+                        className='text-mainColor1-800 hover:bg-mainColor2-800/40 cursor-pointer rounded-md text-xl'
                       />
                     </div>
 
