@@ -1,6 +1,7 @@
 import { TokenResponse } from '@react-oauth/google'
-import { Role, RoleValue } from '@/types/enums/role'
+
 import http from '@/lib/http'
+import { Role, RoleValue } from '@/types/enums/role'
 
 const AUTH_API_PREFIX = '/auth'
 
@@ -23,7 +24,10 @@ export interface LoginResponse {
 export const loginUserApi = async (data: LoginPayload) => {
   let response
   if (data.access_token) {
-    response = await http.post<LoginResponse>(`${AUTH_API_PREFIX}/login/google/callback`, data)
+    response = await http.post<LoginResponse>(
+      `${AUTH_API_PREFIX}/login/google/callback`,
+      data
+    )
   } else {
     response = await http.post<LoginResponse>(`${AUTH_API_PREFIX}/login`, data)
   }

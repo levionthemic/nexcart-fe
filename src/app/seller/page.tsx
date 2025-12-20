@@ -1,4 +1,4 @@
-'use client' 
+'use client'
 
 import {
   Coins,
@@ -10,22 +10,23 @@ import {
   TrendingUp
 } from 'lucide-react'
 import CountUp from 'react-countup'
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { DEFAULT_IMAGE_URL } from '@/utils/constants'
 
+import BestSoldProducts from './_components/best-sold-products'
+import LatestOrders from './_components/latest-orders'
 import MultiLineChartComponent from './_components/multiline-chart'
 import PieChartComponent from './_components/pie-chart'
 import Timer from './_components/timer'
-import BestSoldProducts from './_components/best-sold-products'
-import LatestOrders from './_components/latest-orders'
-import { DEFAULT_IMAGE_URL } from '@/utils/constants'
 
 export default function Dashboard() {
   return (
-    <div className='py-4 px-6'>
-      <div className='flex items-end justify-between mb-4'>
+    <div className='px-6 py-4'>
+      <div className='mb-4 flex items-end justify-between'>
         <div className=''>
-          <div className='font-bold text-xl'>Dashboard</div>
+          <div className='text-xl font-bold'>Dashboard</div>
           <p className='text-sm text-gray-500'>
             Tổng quan về cửa hàng của bạn trong tuần này
           </p>
@@ -33,14 +34,14 @@ export default function Dashboard() {
         <Timer />
       </div>
 
-      <div className='grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6'>
-        <div className='col-span-1 bg-card rounded-lg p-6'>
-          <div className='flex items-center gap-3 mb-3 text-gray-500'>
+      <div className='mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4'>
+        <div className='bg-card col-span-1 rounded-lg p-6'>
+          <div className='mb-3 flex items-center gap-3 text-gray-500'>
             <Coins />
-            <span className='font-semibold text-sm'>Tổng Doanh thu</span>
+            <span className='text-sm font-semibold'>Tổng Doanh thu</span>
           </div>
           <div className='flex items-center justify-between'>
-            <span className='text-3xl font-bold flex flex-col gap-1/2'>
+            <span className='gap-1/2 flex flex-col text-3xl font-bold'>
               <CountUp end={2158000} start={1.5} separator='.' />
               <span className='text-xs text-gray-600'>VNĐ</span>
             </span>
@@ -58,13 +59,13 @@ export default function Dashboard() {
           <div></div>
         </div>
 
-        <div className='col-span-1 bg-card rounded-lg p-6'>
-          <div className='flex items-center gap-3 mb-3 text-gray-500'>
+        <div className='bg-card col-span-1 rounded-lg p-6'>
+          <div className='mb-3 flex items-center gap-3 text-gray-500'>
             <Package2 />
-            <span className='font-semibold text-sm'>Tổng Sản phẩm</span>
+            <span className='text-sm font-semibold'>Tổng Sản phẩm</span>
           </div>
           <div className='flex items-center justify-between'>
-            <span className='text-3xl font-bold flex flex-col gap-1/2'>
+            <span className='gap-1/2 flex flex-col text-3xl font-bold'>
               <CountUp end={488} start={1.5} />
               <span className='text-xs text-gray-600'>sản phẩm</span>
             </span>
@@ -82,13 +83,13 @@ export default function Dashboard() {
           <div></div>
         </div>
 
-        <div className='col-span-1 bg-card rounded-lg p-6'>
-          <div className='flex items-center gap-3 mb-3 text-gray-500'>
+        <div className='bg-card col-span-1 rounded-lg p-6'>
+          <div className='mb-3 flex items-center gap-3 text-gray-500'>
             <Layers />
-            <span className='font-semibold text-sm'>Tổng Đơn hàng</span>
+            <span className='text-sm font-semibold'>Tổng Đơn hàng</span>
           </div>
           <div className='flex items-center justify-between'>
-            <span className='text-3xl font-bold flex flex-col gap-1/2'>
+            <span className='gap-1/2 flex flex-col text-3xl font-bold'>
               <CountUp end={123} start={1.5} />
               <span className='text-xs text-gray-600'>đơn hàng</span>
             </span>
@@ -106,13 +107,13 @@ export default function Dashboard() {
           <div></div>
         </div>
 
-        <div className='col-span-1 bg-card rounded-lg p-6'>
-          <div className='flex items-center gap-3 mb-3 text-gray-500'>
+        <div className='bg-card col-span-1 rounded-lg p-6'>
+          <div className='mb-3 flex items-center gap-3 text-gray-500'>
             <Percent />
-            <span className='font-semibold text-sm'>Tỉ lệ chuyển đổi</span>
+            <span className='text-sm font-semibold'>Tỉ lệ chuyển đổi</span>
           </div>
           <div className='flex items-center justify-between'>
-            <span className='text-3xl font-bold flex flex-col gap-1/2'>
+            <span className='gap-1/2 flex flex-col text-3xl font-bold'>
               <CountUp end={5.03} start={1.5} decimals={2} />
               <span className='text-xs text-gray-600'>%</span>
             </span>
@@ -131,11 +132,11 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className='grid grid-cols-10 gap-4 mb-4'>
-        <div className='col-span-7 bg-section rounded-lg p-6 drop-shadow-md drop-shadow-mainColor1-100'>
-          <div className='flex items-center justify-between mb-4'>
-            <div className='font-semibold text-lg'>Tổng quan</div>
-            <MoreHorizontal className='text-gray-400 cursor-pointer' />
+      <div className='mb-4 grid grid-cols-10 gap-4'>
+        <div className='bg-section drop-shadow-mainColor1-100 col-span-7 rounded-lg p-6 drop-shadow-md'>
+          <div className='mb-4 flex items-center justify-between'>
+            <div className='text-lg font-semibold'>Tổng quan</div>
+            <MoreHorizontal className='cursor-pointer text-gray-400' />
           </div>
 
           <div className='grid grid-cols-2 gap-6'>
@@ -144,10 +145,10 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className='col-span-3 bg-section rounded-lg p-6 drop-shadow-md drop-shadow-mainColor1-100'>
-          <div className='flex items-center justify-between mb-4'>
-            <div className='font-semibold text-lg'>Sản phẩm bán chạy nhất</div>
-            <MoreHorizontal className='text-gray-400 cursor-pointer' />
+        <div className='bg-section drop-shadow-mainColor1-100 col-span-3 rounded-lg p-6 drop-shadow-md'>
+          <div className='mb-4 flex items-center justify-between'>
+            <div className='text-lg font-semibold'>Sản phẩm bán chạy nhất</div>
+            <MoreHorizontal className='cursor-pointer text-gray-400' />
           </div>
 
           <BestSoldProducts />
@@ -155,9 +156,9 @@ export default function Dashboard() {
       </div>
 
       <div className='grid grid-cols-10 gap-4'>
-        <div className='col-span-7 bg-section rounded-lg p-6 drop-shadow-md drop-shadow-mainColor1-100'>
-          <div className='flex items-center justify-between mb-4'>
-            <div className='font-semibold text-lg'>Đơn hàng mới nhất</div>
+        <div className='bg-section drop-shadow-mainColor1-100 col-span-7 rounded-lg p-6 drop-shadow-md'>
+          <div className='mb-4 flex items-center justify-between'>
+            <div className='text-lg font-semibold'>Đơn hàng mới nhất</div>
             <Button variant='outline' className=''>
               Tất cả
             </Button>
@@ -166,78 +167,78 @@ export default function Dashboard() {
           <LatestOrders />
         </div>
 
-        <div className='col-span-3 bg-section rounded-lg p-6 drop-shadow-md drop-shadow-mainColor1-100'>
-          <div className='flex items-center justify-between mb-4'>
-            <div className='font-semibold text-lg'>Khách hàng thân thiết</div>
-            <MoreHorizontal className='text-gray-400 cursor-pointer' />
+        <div className='bg-section drop-shadow-mainColor1-100 col-span-3 rounded-lg p-6 drop-shadow-md'>
+          <div className='mb-4 flex items-center justify-between'>
+            <div className='text-lg font-semibold'>Khách hàng thân thiết</div>
+            <MoreHorizontal className='cursor-pointer text-gray-400' />
           </div>
 
           <ul>
             <li className='flex items-center gap-4'>
-              <div className='flex items-center gap-3 flex-1'>
+              <div className='flex flex-1 items-center gap-3'>
                 <Avatar>
                   <AvatarImage src={DEFAULT_IMAGE_URL} />
                   <AvatarFallback>LV</AvatarFallback>
                 </Avatar>
                 <div className='flex flex-col'>
                   <span className='line-clamp-1'>Tên khách hàng</span>
-                  <span className='text-sm text-muted-foreground'>
+                  <span className='text-muted-foreground text-sm'>
                     15 đơn hàng
                   </span>
                 </div>
               </div>
-              <div className='border rounded-lg py-1.5 px-2 text-sm font-semibold'>
+              <div className='rounded-lg border px-2 py-1.5 text-sm font-semibold'>
                 Xem chi tiết
               </div>
             </li>
-            <li className='flex items-center gap-4 mt-4'>
-              <div className='flex items-center gap-3 flex-1'>
+            <li className='mt-4 flex items-center gap-4'>
+              <div className='flex flex-1 items-center gap-3'>
                 <Avatar>
                   <AvatarImage src={DEFAULT_IMAGE_URL} />
                   <AvatarFallback>LV</AvatarFallback>
                 </Avatar>
                 <div className='flex flex-col'>
                   <span className='line-clamp-1'>Tên khách hàng</span>
-                  <span className='text-sm text-muted-foreground'>
+                  <span className='text-muted-foreground text-sm'>
                     15 đơn hàng
                   </span>
                 </div>
               </div>
-              <div className='border rounded-lg py-1.5 px-2 text-sm font-semibold'>
+              <div className='rounded-lg border px-2 py-1.5 text-sm font-semibold'>
                 Xem chi tiết
               </div>
             </li>
-            <li className='flex items-center gap-4 mt-4'>
-              <div className='flex items-center gap-3 flex-1'>
+            <li className='mt-4 flex items-center gap-4'>
+              <div className='flex flex-1 items-center gap-3'>
                 <Avatar>
                   <AvatarImage src={DEFAULT_IMAGE_URL} />
                   <AvatarFallback>LV</AvatarFallback>
                 </Avatar>
                 <div className='flex flex-col'>
                   <span className='line-clamp-1'>Tên khách hàng</span>
-                  <span className='text-sm text-muted-foreground'>
+                  <span className='text-muted-foreground text-sm'>
                     15 đơn hàng
                   </span>
                 </div>
               </div>
-              <div className='border rounded-lg py-1.5 px-2 text-sm font-semibold'>
+              <div className='rounded-lg border px-2 py-1.5 text-sm font-semibold'>
                 Xem chi tiết
               </div>
             </li>
-            <li className='flex items-center gap-4 mt-4'>
-              <div className='flex items-center gap-3 flex-1'>
+            <li className='mt-4 flex items-center gap-4'>
+              <div className='flex flex-1 items-center gap-3'>
                 <Avatar>
                   <AvatarImage src={DEFAULT_IMAGE_URL} />
                   <AvatarFallback>LV</AvatarFallback>
                 </Avatar>
                 <div className='flex flex-col'>
                   <span className='line-clamp-1'>Tên khách hàng</span>
-                  <span className='text-sm text-muted-foreground'>
+                  <span className='text-muted-foreground text-sm'>
                     15 đơn hàng
                   </span>
                 </div>
               </div>
-              <div className='border rounded-lg py-1.5 px-2 text-sm font-semibold'>
+              <div className='rounded-lg border px-2 py-1.5 text-sm font-semibold'>
                 Xem chi tiết
               </div>
             </li>

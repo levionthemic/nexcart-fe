@@ -1,15 +1,16 @@
 'use client'
 
-import { useImageUpload } from '@/hooks/use-image-upload'
-import { Button } from '@/components/ui/button'
 import Image from 'next/image'
+
+import { Button } from '@/components/ui/button'
+import { useImageUpload } from '@/hooks/use-image-upload'
 
 export default function UploadAvatar({
   fieldName,
   defaultImageUrl,
   onValueChange
 }: {
-  fieldName: string,
+  fieldName: string
   defaultImageUrl: string | undefined
   onValueChange: (file: File | null) => void
 }) {
@@ -33,7 +34,7 @@ export default function UploadAvatar({
             }
           >
             <Image
-              className='size-32 object-cover border-input border rounded-full'
+              className='border-input size-32 rounded-full border object-cover'
               src={String(previewUrl || defaultImageUrl)}
               alt='Preview of uploaded image'
               width={128}
@@ -42,7 +43,7 @@ export default function UploadAvatar({
           </div>
         )}
         <div className='relative inline-block flex-1'>
-          <div className=' flex items-center gap-2'>
+          <div className='flex items-center gap-2'>
             <Button
               onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
                 event.preventDefault()
@@ -52,7 +53,7 @@ export default function UploadAvatar({
               className='w-full'
               variant={fileName ? 'outline' : undefined}
             >
-              {(fileName || defaultImageUrl) ? 'Thay đổi' : 'Chọn'}
+              {fileName || defaultImageUrl ? 'Thay đổi' : 'Chọn'}
             </Button>
           </div>
           <input
@@ -70,7 +71,7 @@ export default function UploadAvatar({
         <div className='mt-2'>
           <div className='inline-flex gap-2 text-xs'>
             <p
-              className='text-muted-foreground truncate max-w-32'
+              className='text-muted-foreground max-w-32 truncate'
               aria-live='polite'
             >
               {fileName}

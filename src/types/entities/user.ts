@@ -1,6 +1,8 @@
 import { Role } from '@/types/enums/role'
-import { Address } from './address'
+
 import { AccountStatusValue } from '../enums/account'
+
+import { Address } from './address'
 
 export interface User {
   user_id: string

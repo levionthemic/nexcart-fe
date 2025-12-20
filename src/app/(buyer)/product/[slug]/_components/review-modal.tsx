@@ -1,7 +1,10 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import Rating from '@/components/ui/rating'
+import { z } from 'zod'
+
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -22,11 +25,9 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form'
+import Rating from '@/components/ui/rating'
 import { Textarea } from '@/components/ui/textarea'
 import { FIELD_REQUIRED_MESSAGE } from '@/utils/validators'
-import { useState } from 'react'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
 
 interface ReviewSubmitData {
   rating: number

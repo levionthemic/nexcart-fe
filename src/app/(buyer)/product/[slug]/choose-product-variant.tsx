@@ -2,6 +2,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useVariantHandling } from '@/contexts/variant-handling-context'
 import { Product, ProductListItem } from '@/types/entities/product'
@@ -104,13 +105,13 @@ export default function ChooseProductVariant({
 
   return (
     <>
-      <div className='flex items-center gap-2 mt-2'>
-        <div className='text-[#f90606] font-bold text-2xl tracking-wide'>
+      <div className='mt-2 flex items-center gap-2'>
+        <div className='text-2xl font-bold tracking-wide text-[#f90606]'>
           {(productEndPrice * (1 - discount / 100)).toLocaleString()}
           <sup>đ</sup>
         </div>
 
-        <div className='bg-[#ddd] dark:bg-muted/50 rounded-xl px-1 text-xs'>
+        <div className='dark:bg-muted/50 rounded-xl bg-[#ddd] px-1 text-xs'>
           {`-${discount}%`}
         </div>
 
@@ -134,7 +135,7 @@ export default function ChooseProductVariant({
               {Array.from(value).map((item) => (
                 <label
                   key={item}
-                  className='border-input has-data-[state=checked]:border-primary/80 has-data-[state=checked]:border-2 has-focus-visible:border-ring has-focus-visible:ring-ring/50 relative flex cursor-pointer flex-col items-center gap-3 rounded-md border px-2 py-3 text-center shadow-xs transition-[color,box-shadow] outline-none has-focus-visible:ring-[3px] has-data-disabled:cursor-not-allowed has-data-disabled:opacity-50'
+                  className='border-input has-data-[state=checked]:border-primary/80 has-focus-visible:border-ring has-focus-visible:ring-ring/50 relative flex cursor-pointer flex-col items-center gap-3 rounded-md border px-2 py-3 text-center shadow-xs transition-[color,box-shadow] outline-none has-focus-visible:ring-[3px] has-data-disabled:cursor-not-allowed has-data-disabled:opacity-50 has-data-[state=checked]:border-2'
                 >
                   <RadioGroupItem
                     id={String(item)}

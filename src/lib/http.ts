@@ -1,6 +1,7 @@
+import Cookies from 'js-cookie'
+
 import { refreshTokenApi } from '@/apis/auth.api'
 import envConfig from '@/config'
-import Cookies from 'js-cookie'
 
 type CustomOptions = RequestInit & {
   baseUrl?: string | undefined

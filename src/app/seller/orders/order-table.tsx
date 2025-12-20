@@ -1,22 +1,21 @@
 'use client'
 
-import { cn } from '@/lib/utils'
+import { ColumnDef, Row } from '@tanstack/react-table'
+import dayjs from 'dayjs'
+import Image from 'next/image'
+import { Dispatch, SetStateAction } from 'react'
+import { toast } from 'sonner'
+
+import { getOrdersApi, updateOrderStatusApi } from '@/apis/order.api'
+import CustomTable from '@/components/shared/custom-table'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
-import { ColumnDef, Row } from '@tanstack/react-table'
-
-import { Dispatch, SetStateAction } from 'react'
-import dayjs from 'dayjs'
-import { toast } from 'sonner'
-import Image from 'next/image'
+import { cn } from '@/lib/utils'
 import { Order } from '@/types/entities/order'
-import { DEFAULT_IMAGE_URL, MAP_ORDER_STATUS } from '@/utils/constants'
 import { OrderStatus } from '@/types/enums/order-status'
-import { getOrdersApi, updateOrderStatusApi } from '@/apis/order.api'
+import { DEFAULT_IMAGE_URL, MAP_ORDER_STATUS } from '@/utils/constants'
 
 import RowActions from './row-actions'
-
-import CustomTable from '@/components/custom-table/custom-table'
 
 // Custom filter function for multi-column searching
 const multiColumnFilterFn = (
@@ -92,7 +91,7 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
       header: 'Mã đơn hàng',
       accessorKey: 'order_code',
       cell: ({ row }) => (
-        <div className='text-ellipsis overflow-hidden'>
+        <div className='overflow-hidden text-ellipsis'>
           {row.getValue('order_code')}
         </div>
       )
@@ -102,7 +101,7 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
       header: 'Ngày đặt hàng',
       accessorKey: 'created_at',
       cell: ({ row }) => (
-        <div className='text-ellipsis overflow-hidden'>
+        <div className='overflow-hidden text-ellipsis'>
           {dayjs(row.getValue('created_at')).format('DD-MM-YYYY')}
         </div>
       ),
@@ -126,7 +125,7 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
       header: 'Mã cửa hàng',
       accessorFn: (row) => row.shop.id,
       cell: ({ row }) => (
-        <div className='text-ellipsis overflow-hidden'>
+        <div className='overflow-hidden text-ellipsis'>
           {row.getValue('shop_id')}
         </div>
       ),
@@ -153,19 +152,19 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
                   alt=''
                   width={40}
                   height={40}
-                  className='rounded-md border border-gray-300 p-0.5 size-10'
+                  className='size-10 rounded-md border border-gray-300 p-0.5'
                 />
               </div>
-              <div className='flex-1 text-ellipsis overflow-hidden'>
+              <div className='flex-1 overflow-hidden text-ellipsis'>
                 <div className='line-clamp-1'>{item.product_variant.name}</div>
-                <div className='line-clamp-1 text-xs text-muted-foreground'>
+                <div className='text-muted-foreground line-clamp-1 text-xs'>
                   Loại: {item.product_variant.name}
                 </div>
               </div>
             </div>
           ))}
           {row.original.order_items.length > 2 && (
-            <div className='mt-2 text-muted-foreground'>
+            <div className='text-muted-foreground mt-2'>
               + {row.original.order_items.length - 2} sản phẩm
             </div>
           )}
@@ -188,7 +187,7 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
     },
     {
       id: 'status',
-      header: () => <div className='text-center w-full'>Trạng thái</div>,
+      header: () => <div className='w-full text-center'>Trạng thái</div>,
       accessorKey: 'status',
       cell: ({ row }) => (
         <div className='flex items-center justify-center'>
@@ -212,7 +211,7 @@ export default function OrderTable({ data, setData }: OrderTableProps) {
     },
     {
       id: 'actions',
-      header: () => <div className='text-center w-full'>Thao tác</div>,
+      header: () => <div className='w-full text-center'>Thao tác</div>,
       cell: ({ row }) => (
         <RowActions row={row} handleConfirmOrder={handleConfirmOrder} />
       ),

@@ -1,5 +1,6 @@
-import { ShopStatus } from "../enums/shop-status"
-import { Address } from "./address"
+import { ShopStatus } from '../enums/shop-status'
+
+import { Address } from './address'
 
 export interface Shop {
   id: number

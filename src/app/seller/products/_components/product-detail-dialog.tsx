@@ -3,6 +3,10 @@
 
 import { EllipsisIcon } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
+
+import { getProductDetailsApi } from '@/apis/product.api'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -13,16 +17,13 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
+import { useLoading } from '@/contexts/loading-context'
 import {
   Product,
   ProductListItem,
   ProductVariant
 } from '@/types/entities/product'
-import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { getProductDetailsApi } from '@/apis/product.api'
 import { DEFAULT_IMAGE_URL } from '@/utils/constants'
-import { useLoading } from '@/contexts/loading-context'
 
 function ProductDetailDialog({
   productProp
@@ -60,7 +61,7 @@ function ProductDetailDialog({
         <Button
           size='icon'
           variant='ghost'
-          className='shadow-none size-7'
+          className='size-7 shadow-none'
           aria-label='More item'
           title='Xem chi tiết sản phẩm'
         >
@@ -86,7 +87,7 @@ function ProductDetailDialog({
               alt={product?.name ?? ''}
               width={160}
               height={160}
-              className='object-cover rounded-lg shadow-md'
+              className='rounded-lg object-cover shadow-md'
             />
           </div>
 
@@ -112,7 +113,7 @@ function ProductDetailDialog({
           {/* Đặc điểm nổi bật */}
           <div className='mt-4'>
             <h3 className='font-semibold'>Đặc điểm sản phẩm:</h3>
-            <ul className='list-disc list-inside text-sm text-gray-700'>
+            <ul className='list-inside list-disc text-sm text-gray-700'>
               {product?.specifications.map((specifications, index) => (
                 <li key={index}>
                   <strong>{specifications.field}:</strong>{' '}
@@ -125,7 +126,7 @@ function ProductDetailDialog({
           {/* Các loại sản phẩm */}
           <div className='mt-4'>
             <h3 className='font-semibold'>Các phiên bản:</h3>
-            <ul className='list-disc list-inside text-sm text-gray-700'>
+            <ul className='list-inside list-disc text-sm text-gray-700'>
               {product?.product_variants.map((pv) => (
                 <li key={pv.id}>
                   {pv.name} - {pv.price.toLocaleString()} đ (Còn:{' '}

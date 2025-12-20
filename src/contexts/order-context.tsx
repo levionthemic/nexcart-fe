@@ -1,11 +1,5 @@
 'use client'
 
-import { InformationType } from '@/app/(buyer)/checkout/[step]/information'
-import { GhnFee } from '@/types/entities/ghn'
-import { Order, OrderItem } from '@/types/entities/order'
-import { Shop } from '@/types/entities/shop'
-import { Seller } from '@/types/entities/user'
-import { PaymentMethod, ShippingMethod } from '@/types/enums/checkout'
 import {
   createContext,
   useContext,
@@ -14,6 +8,13 @@ import {
   Dispatch,
   SetStateAction
 } from 'react'
+
+import { InformationType } from '@/app/(buyer)/checkout/[step]/information'
+import { GhnFee } from '@/types/entities/ghn'
+import { Order, OrderItem } from '@/types/entities/order'
+import { Shop } from '@/types/entities/shop'
+import { Seller } from '@/types/entities/user'
+import { PaymentMethod, ShippingMethod } from '@/types/enums/checkout'
 
 export interface ClusterOrderListItem {
   seller: Seller

@@ -1,5 +1,6 @@
-import { NextResponse, type NextRequest } from 'next/server'
 import { jwtVerify } from 'jose'
+import { NextResponse, type NextRequest } from 'next/server'
+
 import { Role } from '@/types/enums/role'
 
 export async function middleware(request: NextRequest) {

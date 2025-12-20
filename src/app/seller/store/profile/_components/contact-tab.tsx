@@ -1,10 +1,13 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { BsTiktok } from 'react-icons/bs'
 import { FaFacebookF, FaInstagram } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
+import { z } from 'zod'
+
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -16,7 +19,9 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { AppDispatch } from '@/redux/store'
 import { selectCurrentUser, updateUserAction } from '@/redux/user/userSlice'
+import { AccountStatus } from '@/types/enums/account'
 import {
   EMAIL_RULE,
   EMAIL_RULE_MESSAGE,
@@ -24,10 +29,6 @@ import {
   PHONE_NUMBER_RULE,
   PHONE_NUMBER_RULE_MESSAGE
 } from '@/utils/validators'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { AppDispatch } from '@/redux/store'
-import { AccountStatus } from '@/types/enums/account'
 
 const formSchema = z.object({
   phone: z
@@ -81,11 +82,11 @@ export default function ContactTab() {
   }
 
   return (
-    <div className='bg-section p-4 rounded-lg'>
+    <div className='bg-section rounded-lg p-4'>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleUpdateStoreGeneralInformation)}>
           <div className='grid grid-cols-2 gap-4'>
-            <div className='flex flex-col gap-4 mb-4'>
+            <div className='mb-4 flex flex-col gap-4'>
               <FormField
                 control={form.control}
                 name='phone'
@@ -104,7 +105,7 @@ export default function ContactTab() {
                         <FormControl className='mb-2'>
                           <Input
                             placeholder='Vd: 0123456789'
-                            className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] ${
+                            className={`placeholder:text-opacity-50 rounded-lg border-[1px] placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none ${
                               !!form.formState.errors['phone'] &&
                               'border-red-500'
                             }`}
@@ -135,7 +136,7 @@ export default function ContactTab() {
                           <Input
                             disabled
                             placeholder='Vd: abc@example.com'
-                            className='placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px]'
+                            className='placeholder:text-opacity-50 rounded-lg border-[1px] placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none'
                             {...field}
                           />
                         </FormControl>
@@ -162,7 +163,7 @@ export default function ContactTab() {
                       <div className='col-span-2'>
                         <FormControl className='mb-2'>
                           <Input
-                            className='placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px]'
+                            className='placeholder:text-opacity-50 rounded-lg border-[1px] placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none'
                             {...field}
                           />
                         </FormControl>
@@ -175,7 +176,7 @@ export default function ContactTab() {
             </div>
 
             <div className=''>
-              <div className='flex items-end gap-4 mb-3.5'>
+              <div className='mb-3.5 flex items-end gap-4'>
                 <FormLabel className='text-base'>
                   Liên kết mạng xã hội
                 </FormLabel>
@@ -192,7 +193,7 @@ export default function ContactTab() {
                       <div className='relative'>
                         <Input
                           placeholder='Facebook'
-                          className='peer ps-9 placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px]'
+                          className='peer placeholder:text-opacity-50 rounded-lg border-[1px] ps-9 placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none'
                           {...field}
                         />
                         <div className='text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50'>
@@ -212,7 +213,7 @@ export default function ContactTab() {
                       <div className='relative'>
                         <Input
                           placeholder='Instagram'
-                          className='peer ps-9 placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px]'
+                          className='peer placeholder:text-opacity-50 rounded-lg border-[1px] ps-9 placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none'
                           {...field}
                         />
                         <div className='text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50'>
@@ -232,7 +233,7 @@ export default function ContactTab() {
                       <div className='relative'>
                         <Input
                           placeholder='Tiktok'
-                          className='peer ps-9 placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px]'
+                          className='peer placeholder:text-opacity-50 rounded-lg border-[1px] ps-9 placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none'
                           {...field}
                         />
                         <div className='text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50'>
@@ -248,7 +249,7 @@ export default function ContactTab() {
 
           <Button
             type='submit'
-            className='bg-mainColor1-800/85 rounded-lg w-full py-3 text-md mt-8'
+            className='bg-mainColor1-800/85 text-md mt-8 w-full rounded-lg py-3'
           >
             Cập nhật chỉnh sửa
           </Button>

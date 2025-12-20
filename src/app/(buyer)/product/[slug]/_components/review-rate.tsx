@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { Label } from '@/components/ui/label'
-import { FaStar } from 'react-icons/fa'
 import { useEffect, useState } from 'react'
+import { FaStar } from 'react-icons/fa'
+
+import { Label } from '@/components/ui/label'
 import { Review } from '@/types/entities/review'
 
 export default function ReviewRate({ reviews }: { reviews: Review[] }) {

@@ -1,6 +1,5 @@
 'use client'
 
-import { Review } from '@/types/entities/review'
 import {
   createContext,
   useContext,
@@ -9,6 +8,8 @@ import {
   Dispatch,
   SetStateAction
 } from 'react'
+
+import { Review } from '@/types/entities/review'
 
 type ReviewContextType = {
   reviews: Review[]

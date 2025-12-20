@@ -1,6 +1,13 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import { TokenResponse, useGoogleLogin } from '@react-oauth/google'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
+import { FaGoogle } from 'react-icons/fa'
+import { toast } from 'sonner'
+
+import { registerUserApi, registerWithGoogleApi } from '@/apis/auth.api'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -11,21 +18,13 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form'
-
 import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-
-import { toast } from 'sonner'
-import { FaGoogle } from 'react-icons/fa'
-import { TokenResponse, useGoogleLogin } from '@react-oauth/google'
-import { Role, RoleValue } from '@/types/enums/role'
 import {
   RegisterFormSchema,
   RegisterFormSchemaType
 } from '@/shared/schemas/auth.schema'
-import { useRouter } from 'next/navigation'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { registerUserApi, registerWithGoogleApi } from '@/apis/auth.api'
+import { Role, RoleValue } from '@/types/enums/role'
 import { asyncHandler } from '@/utils/asyncHandler'
 
 function RegisterForm() {
@@ -77,8 +76,8 @@ function RegisterForm() {
   })
 
   return (
-    <div className='min-w-[500px] min-h-[600px] bg-gray-200/10 rounded-3xl border-gray-100 border-solid border-[1px] px-10 pb-4 backdrop-blur-sm'>
-      <div className='mt-10 text-4xl font-semibold text-center text-white uppercase'>
+    <div className='min-h-[600px] min-w-[500px] rounded-3xl border-[1px] border-solid border-gray-100 bg-gray-200/10 px-10 pb-4 backdrop-blur-sm'>
+      <div className='mt-10 text-center text-4xl font-semibold text-white uppercase'>
         SIGN UP
       </div>
 
@@ -96,7 +95,7 @@ function RegisterForm() {
                 <FormControl>
                   <Input
                     placeholder='Vd: levionthemic@example.com'
-                    className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 text-white rounded-full focus:outline-none focus:border-[2px] border-[1px] ${
+                    className={`placeholder:text-opacity-50 rounded-full border-[1px] text-white placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none ${
                       !!form.formState.errors['email'] && 'border-red-500'
                     }`}
                     {...field}
@@ -116,7 +115,7 @@ function RegisterForm() {
                   <Input
                     type='password'
                     placeholder='Vd: 12345678a'
-                    className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 text-white rounded-full focus:outline-none focus:border-[2px] border-[1px] ${
+                    className={`placeholder:text-opacity-50 rounded-full border-[1px] text-white placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none ${
                       !!form.formState.errors['password'] && 'border-red-500'
                     }`}
                     {...field}
@@ -138,7 +137,7 @@ function RegisterForm() {
                   <Input
                     type='password'
                     placeholder='Vd: 12345678a'
-                    className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 text-white rounded-full focus:outline-none focus:border-[2px] border-[1px] ${
+                    className={`placeholder:text-opacity-50 rounded-full border-[1px] text-white placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none ${
                       !!form.formState.errors['confirmPassword'] &&
                       'border-red-500'
                     }`}
@@ -161,25 +160,25 @@ function RegisterForm() {
                     defaultValue={field.value}
                     className='flex justify-center gap-10 text-white'
                   >
-                    <FormItem className='flex items-center space-x-3 space-y-0 hover:bg-mainColor2-800/50 px-4 py-2 rounded-md hover:transition-all hover:ease-in-out hover:duration-400 cursor-pointer has-[button[data-state=checked]]:bg-mainColor2-800/40 has-[button[data-state=checked]]:border-accent has-[button[data-state=checked]]:border-2 border border-muted/50'>
+                    <FormItem className='hover:bg-mainColor2-800/50 has-[button[data-state=checked]]:bg-mainColor2-800/40 has-[button[data-state=checked]]:border-accent border-muted/50 flex cursor-pointer items-center space-y-0 space-x-3 rounded-md border px-4 py-2 hover:transition-all hover:duration-400 hover:ease-in-out has-[button[data-state=checked]]:border-2'>
                       <FormControl>
                         <RadioGroupItem
                           value={Role.BUYER}
-                          className='bg-white border-white sr-only'
+                          className='sr-only border-white bg-white'
                         />
                       </FormControl>
-                      <FormLabel className='font-normal cursor-pointer text-sm'>
+                      <FormLabel className='cursor-pointer text-sm font-normal'>
                         Người mua
                       </FormLabel>
                     </FormItem>
-                    <FormItem className='flex items-center space-x-3 space-y-0 hover:bg-mainColor2-800/50 px-4 py-2 rounded-md hover:transition-all hover:ease-in-out hover:duration-400 cursor-pointer has-[button[data-state=checked]]:bg-mainColor2-800/40 has-[button[data-state=checked]]:border-accent has-[button[data-state=checked]]:border-2 border border-muted/50'>
+                    <FormItem className='hover:bg-mainColor2-800/50 has-[button[data-state=checked]]:bg-mainColor2-800/40 has-[button[data-state=checked]]:border-accent border-muted/50 flex cursor-pointer items-center space-y-0 space-x-3 rounded-md border px-4 py-2 hover:transition-all hover:duration-400 hover:ease-in-out has-[button[data-state=checked]]:border-2'>
                       <FormControl>
                         <RadioGroupItem
                           value={Role.SELLER}
-                          className='bg-white border-white sr-only'
+                          className='sr-only border-white bg-white'
                         />
                       </FormControl>
-                      <FormLabel className='font-normal cursor-pointer text-sm'>
+                      <FormLabel className='cursor-pointer text-sm font-normal'>
                         Người bán
                       </FormLabel>
                     </FormItem>
@@ -192,7 +191,7 @@ function RegisterForm() {
           />
           <Button
             type='submit'
-            className='w-full py-5 rounded-full bg-mainColor2-800/85 animate-fadeInTop text-md'
+            className='bg-mainColor2-800/85 animate-fadeInTop text-md w-full rounded-full py-5'
           >
             Đăng ký
           </Button>
@@ -200,23 +199,23 @@ function RegisterForm() {
       </Form>
 
       {form.getValues('role') === Role.BUYER && (
-        <div className='flex items-center justify-center gap-6 mt-6 text-sm text-white'>
+        <div className='mt-6 flex items-center justify-center gap-6 text-sm text-white'>
           <span>hoặc đăng ký bằng: </span>
           <div className='flex items-center justify-between gap-2'>
             <div
               onClick={() => handleRegisterWithGoogle()}
-              className='border border-white rounded-full p-1.5 cursor-pointer hover:bg-mainColor1-600 hover:border-[2px] hover:scale-105 hover:duration-300 hover:ease-in-out transition-transform'
+              className='hover:bg-mainColor1-600 cursor-pointer rounded-full border border-white p-1.5 transition-transform hover:scale-105 hover:border-[2px] hover:duration-300 hover:ease-in-out'
             >
               <FaGoogle />
             </div>
-            <span className='text-xs text-muted'>(Chỉ cho Người mua)</span>
+            <span className='text-muted text-xs'>(Chỉ cho Người mua)</span>
           </div>
         </div>
       )}
-      <div className='mt-8 text-xs text-center text-white'>
+      <div className='mt-8 text-center text-xs text-white'>
         Đã có tài khoản?{' '}
         <div
-          className='font-semibold underline scale-100 cursor-pointer hover:scale-110 hover:transition-transform hover:ease-in-out hover:duration-200'
+          className='scale-100 cursor-pointer font-semibold underline hover:scale-110 hover:transition-transform hover:duration-200 hover:ease-in-out'
           onClick={() => router.push('/login')}
         >
           Đăng nhập

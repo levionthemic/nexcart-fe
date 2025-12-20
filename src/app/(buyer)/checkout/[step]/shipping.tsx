@@ -2,7 +2,17 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { cloneDeep } from 'lodash'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { useEffect, useId, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+
+import { getAvailableServicesApi, getFeeApi } from '@/apis/ghn.api'
+import { clusterOrdersApi } from '@/apis/order.api'
+import ghnLogo from '@/assets/ghn-logo.png'
+import ghtkLogo from '@/assets/ghtk-logo.png'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -13,6 +23,8 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form'
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import {
   Select,
   SelectContent,
@@ -21,25 +33,15 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { FIELD_REQUIRED_MESSAGE } from '@/utils/validators'
-import { useEffect, useId, useState } from 'react'
-import { Label } from '@/components/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import ghtkLogo from '@/assets/ghtk-logo.png'
-import ghnLogo from '@/assets/ghn-logo.png'
-import { cloneDeep } from 'lodash'
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
-import { getAddressString } from '@/utils/helpers'
-import { z } from 'zod'
-import { ShippingMethod } from '@/types/enums/checkout'
-import Image from 'next/image'
-import { Address } from '@/types/entities/address'
-import RightSidebar from './_components/right-sidebar'
 import { ShippingDataType, useOrder } from '@/contexts/order-context'
-import { useRouter } from 'next/navigation'
-import { clusterOrdersApi } from '@/apis/order.api'
-import { getAvailableServicesApi, getFeeApi } from '@/apis/ghn.api'
+import { Address } from '@/types/entities/address'
+import { ShippingMethod } from '@/types/enums/checkout'
+import { getAddressString } from '@/utils/helpers'
+import { FIELD_REQUIRED_MESSAGE } from '@/utils/validators'
+
+import RightSidebar from './_components/right-sidebar'
 
 const formSchema = z.object({
   discountCode: z.array(z.string()),
@@ -197,7 +199,7 @@ export default function Shipping() {
 
   return (
     <div className=''>
-      <div className='text-red-400 font-semibold mt-4 mb-10'>
+      <div className='mt-4 mb-10 font-semibold text-red-400'>
         Lưu ý: Đơn hàng của bạn có thể được TÁCH thành nhiều đơn hàng nhỏ theo
         chính sách của chúng tôi!
       </div>
@@ -208,15 +210,15 @@ export default function Shipping() {
         >
           {clusterOrders.map((clusterOrder, index) => (
             <div key={index} className='grid grid-cols-12 gap-12'>
-              <div className='border-[2px] rounded-md p-4 col-span-9'>
-                <div className='font-semibold text-xl text-mainColor1-800'>
+              <div className='col-span-9 rounded-md border-[2px] p-4'>
+                <div className='text-mainColor1-800 text-xl font-semibold'>
                   Đơn hàng {index + 1}
                 </div>
                 <Separator className='mt-1 mb-4' />
                 <div className='space-y-8'>
-                  <div className='grid grid-cols-2 gap-10 items-start'>
+                  <div className='grid grid-cols-2 items-start gap-10'>
                     <FormItem>
-                      <FormLabel className='text-mainColor1-600 font-medium text-lg'>
+                      <FormLabel className='text-mainColor1-600 text-lg font-medium'>
                         Địa chỉ nhận hàng
                       </FormLabel>
                       <FormDescription className='!mt-0'>
@@ -228,7 +230,7 @@ export default function Shipping() {
                     </FormItem>
 
                     <FormItem>
-                      <FormLabel className='text-mainColor1-600 font-medium text-lg'>
+                      <FormLabel className='text-mainColor1-600 text-lg font-medium'>
                         Địa chỉ gửi hàng
                       </FormLabel>
                       <FormDescription className='!mt-0'>
@@ -244,7 +246,7 @@ export default function Shipping() {
                       name={`discountCode.${index}`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className='text-mainColor1-600 font-medium text-lg mb-2'>
+                          <FormLabel className='text-mainColor1-600 mb-2 text-lg font-medium'>
                             Áp dụng mã giảm giá
                           </FormLabel>
                           <Select
@@ -275,13 +277,13 @@ export default function Shipping() {
                       name={`note.${index}`}
                       render={({ field }) => (
                         <FormItem className='col-span-2'>
-                          <FormLabel className='text-mainColor1-600 font-medium text-lg mb-2'>
+                          <FormLabel className='text-mainColor1-600 mb-2 text-lg font-medium'>
                             Ghi chú
                           </FormLabel>
                           <FormControl>
                             <Textarea
                               className={
-                                'placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-md focus:outline-none focus-visible:ring-0 focus:border-[2px] border'
+                                'placeholder:text-opacity-50 rounded-md border placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none focus-visible:ring-0'
                               }
                               {...field}
                             />
@@ -301,7 +303,7 @@ export default function Shipping() {
                     name={`shippingMethod.${index}`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className='text-mainColor1-600 font-medium text-lg mb-2'>
+                        <FormLabel className='text-mainColor1-600 mb-2 text-lg font-medium'>
                           Dịch vụ vận chuyển
                         </FormLabel>
                         <FormDescription className='!mt-0'>
@@ -414,17 +416,17 @@ export default function Shipping() {
               </div>
             </div>
           ))}
-          <div className='grid grid-cols-2 gap-5 my-10'>
+          <div className='my-10 grid grid-cols-2 gap-5'>
             <Button
               type='button'
-              className='border bg-white text-mainColor1-600  border-mainColor1-600 hover:bg-white text-md font-semibold rounded-lg hover:drop-shadow-xl'
+              className='text-mainColor1-600 border-mainColor1-600 text-md rounded-lg border bg-white font-semibold hover:bg-white hover:drop-shadow-xl'
               onClick={handleBack}
             >
               Quay lại
             </Button>
             <Button
               type='submit'
-              className='bg-mainColor1-600 hover:bg-mainColor1-800 text-white text-md font-semibold rounded-lg hover:drop-shadow-xl'
+              className='bg-mainColor1-600 hover:bg-mainColor1-800 text-md rounded-lg font-semibold text-white hover:drop-shadow-xl'
             >
               Tiếp tục
             </Button>

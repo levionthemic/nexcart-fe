@@ -1,6 +1,12 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import { cloneDeep } from 'lodash'
+import { useRouter } from 'next/navigation'
 import React from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -12,13 +18,8 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { FIELD_REQUIRED_MESSAGE } from '@/utils/validators'
 import { useOrder } from '@/contexts/order-context'
-import { cloneDeep } from 'lodash'
-import { useRouter } from 'next/navigation'
+import { FIELD_REQUIRED_MESSAGE } from '@/utils/validators'
 
 const formSchema = z.object({
   creditName: z
@@ -64,7 +65,7 @@ export default function CreditForm() {
         onSubmit={form.handleSubmit(handleUpdatePayment)}
         className='space-y-8'
       >
-        <div className='text-mainColor1-600 font-medium text-lg mb-2'>
+        <div className='text-mainColor1-600 mb-2 text-lg font-medium'>
           Chi tiết thanh toán
         </div>
         <FormField
@@ -137,14 +138,14 @@ export default function CreditForm() {
         <div className='grid grid-cols-2 gap-5'>
           <Button
             type='button'
-            className='border bg-white text-mainColor1-600  border-mainColor1-600 hover:bg-white text-md font-semibold rounded-lg hover:drop-shadow-xl'
+            className='text-mainColor1-600 border-mainColor1-600 text-md rounded-lg border bg-white font-semibold hover:bg-white hover:drop-shadow-xl'
             onClick={handleBack}
           >
             Quay lại
           </Button>
           <Button
             type='submit'
-            className='bg-mainColor1-600 hover:bg-mainColor1-800 text-white text-md font-semibold rounded-lg hover:drop-shadow-xl'
+            className='bg-mainColor1-600 hover:bg-mainColor1-800 text-md rounded-lg font-semibold text-white hover:drop-shadow-xl'
           >
             Tiếp tục
           </Button>

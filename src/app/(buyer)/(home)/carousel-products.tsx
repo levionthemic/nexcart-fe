@@ -1,13 +1,14 @@
 'use client'
 
-import { ProductCard } from '@/components/product'
+import Autoplay from 'embla-carousel-autoplay'
+
+import { ProductCard } from '@/components/features/product'
 import {
   Carousel,
   CarouselContent,
   CarouselItem
 } from '@/components/ui/carousel'
 import { ProductListItem } from '@/types/entities/product'
-import Autoplay from 'embla-carousel-autoplay'
 
 export default function CarouselProducts({
   bestSellingProducts

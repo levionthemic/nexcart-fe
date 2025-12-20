@@ -6,37 +6,39 @@ import {
   TrendingUp,
   Truck
 } from 'lucide-react'
+
 import UserHeader from '../_components/header'
+
 import OrderTable from './order-table'
 
 function UserOrder() {
   return (
     <div className='px-4'>
-      <div className='flex items-center bg-background rounded-lg h-[100vh] overflow-auto relative'>
-        <div className='px-2 h-full w-full'>
+      <div className='bg-background relative flex h-[100vh] items-center overflow-auto rounded-lg'>
+        <div className='h-full w-full px-2'>
           {/* Header */}
           <UserHeader />
 
           {/* Content */}
           <div className='mb-6'>
-            <div className='text-3xl text-mainColor1-800 font-semibold uppercase'>
+            <div className='text-mainColor1-800 text-3xl font-semibold uppercase'>
               Đơn hàng
             </div>
-            <p className='text-gray-500 text-sm'>
+            <p className='text-sm text-gray-500'>
               Hãy xem những hoạt động mua hàng của bạn trong tuần vừa qua!
             </p>
           </div>
 
-          <div className='grid grid-cols-4 gap-5 my-6'>
-            <div className='py-2 bg-section rounded-lg border w-full'>
-              <div className='text-md text-mainColor1-600 px-4 py-1.5 rounded-lg font-medium flex items-center justify-between'>
+          <div className='my-6 grid grid-cols-4 gap-5'>
+            <div className='bg-section w-full rounded-lg border py-2'>
+              <div className='text-md text-mainColor1-600 flex items-center justify-between rounded-lg px-4 py-1.5 font-medium'>
                 <span>Tổng số đơn hàng</span>
-                <div className='bg-[#F7F7FE] p-2 rounded-full'>
+                <div className='rounded-full bg-[#F7F7FE] p-2'>
                   <Package />
                 </div>
               </div>
               <div className='flex items-end gap-10'>
-                <span className='font-bold ml-4 my-1 text-2xl leading-none'>
+                <span className='my-1 ml-4 text-2xl leading-none font-bold'>
                   2380
                 </span>
                 <div className='flex items-center gap-2 text-sm text-green-500'>
@@ -46,15 +48,15 @@ function UserOrder() {
               </div>
             </div>
 
-            <div className='py-2 bg-section rounded-lg border w-full'>
-              <div className='text-md text-mainColor2-800/90 px-4 py-1.5 rounded-lg font-medium flex items-center justify-between'>
+            <div className='bg-section w-full rounded-lg border py-2'>
+              <div className='text-md text-mainColor2-800/90 flex items-center justify-between rounded-lg px-4 py-1.5 font-medium'>
                 <span>Đơn đang xử lý</span>
-                <div className='bg-[#F9F6FE] p-2 rounded-full'>
+                <div className='rounded-full bg-[#F9F6FE] p-2'>
                   <Loader />
                 </div>
               </div>
               <div className='flex items-end gap-10'>
-                <span className='font-bold ml-4 my-1 text-2xl leading-none'>
+                <span className='my-1 ml-4 text-2xl leading-none font-bold'>
                   32
                 </span>
                 <div className='flex items-center gap-2 text-sm text-red-500'>
@@ -64,15 +66,15 @@ function UserOrder() {
               </div>
             </div>
 
-            <div className='py-2 bg-section rounded-lg border w-full'>
-              <div className='text-md text-red-500 px-4 py-1.5 rounded-lg font-medium flex items-center justify-between'>
+            <div className='bg-section w-full rounded-lg border py-2'>
+              <div className='text-md flex items-center justify-between rounded-lg px-4 py-1.5 font-medium text-red-500'>
                 <span>Đơn đang vận chuyển</span>
-                <div className='bg-[#FEF6F5] p-2 rounded-full'>
+                <div className='rounded-full bg-[#FEF6F5] p-2'>
                   <Truck />
                 </div>
               </div>
               <div className='flex items-end gap-10'>
-                <span className='font-bold ml-4 my-1 text-2xl leading-none'>
+                <span className='my-1 ml-4 text-2xl leading-none font-bold'>
                   127
                 </span>
                 <div className='flex items-center gap-2 text-sm text-green-500'>
@@ -82,15 +84,15 @@ function UserOrder() {
               </div>
             </div>
 
-            <div className='py-2 bg-section rounded-lg border w-full'>
-              <div className='text-md text-green-500 px-4 py-1.5 rounded-lg font-medium flex items-center justify-between'>
+            <div className='bg-section w-full rounded-lg border py-2'>
+              <div className='text-md flex items-center justify-between rounded-lg px-4 py-1.5 font-medium text-green-500'>
                 <span>Đơn đã giao</span>
-                <div className='bg-[#F3FEF8] p-2 rounded-full'>
+                <div className='rounded-full bg-[#F3FEF8] p-2'>
                   <CheckCheck />
                 </div>
               </div>
               <div className='flex items-end gap-10'>
-                <span className='font-bold ml-4 my-1 text-2xl leading-none'>
+                <span className='my-1 ml-4 text-2xl leading-none font-bold'>
                   29
                 </span>
                 <div className='flex items-center gap-2 text-sm text-red-500'>

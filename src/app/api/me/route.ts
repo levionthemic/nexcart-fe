@@ -1,6 +1,7 @@
+import { NextRequest, NextResponse } from 'next/server'
+
 import http from '@/lib/http'
 import { User } from '@/types/entities/user'
-import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(req: NextRequest) {
   const response = await http.get<User>('/users/profile', {

@@ -1,3 +1,5 @@
+import z from 'zod'
+
 import { Role } from '@/types/enums/role'
 import {
   EMAIL_RULE,
@@ -6,7 +8,6 @@ import {
   PASSWORD_RULE,
   PASSWORD_RULE_MESSAGE
 } from '@/utils/validators'
-import z from 'zod'
 
 export const LoginFormSchema = z
   .object({
@@ -84,4 +85,6 @@ export const ResetPasswordFormSchema = z
       })
     }
   })
-export type ResetPasswordFormSchemaType = z.infer<typeof ResetPasswordFormSchema>
+export type ResetPasswordFormSchemaType = z.infer<
+  typeof ResetPasswordFormSchema
+>

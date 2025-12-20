@@ -1,10 +1,11 @@
 'use client'
 
-import { useId, useState } from 'react'
-import { LucideIcon, Star } from 'lucide-react'
-import { cn } from '@/lib/utils'
 import { cva } from 'class-variance-authority'
+import { LucideIcon, Star } from 'lucide-react'
+import { useId, useState } from 'react'
+
 import { Label } from '@/components/ui/label'
+import { cn } from '@/lib/utils'
 
 const Color = {
   default:

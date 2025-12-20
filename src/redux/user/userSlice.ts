@@ -1,11 +1,18 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from '../store'
-import { User } from '@/types/entities/user'
-import { Address } from '@/types/entities/address'
+
+import {
+  LoginPayload,
+  LoginResponse,
+  loginUserApi,
+  logoutUserApi
+} from '@/apis/auth.api'
 import http from '@/lib/http'
-import { LoginPayload, LoginResponse, loginUserApi, logoutUserApi } from '@/apis/auth.api'
+import { Address } from '@/types/entities/address'
+import { User } from '@/types/entities/user'
 import { AccountStatus } from '@/types/enums/account'
 import { Role } from '@/types/enums/role'
+
+import { RootState } from '../store'
 
 //  Define types
 interface UserState {

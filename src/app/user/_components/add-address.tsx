@@ -1,12 +1,20 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Plus } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useDispatch } from 'react-redux'
+import { toast } from 'sonner'
+import { z } from 'zod'
+
 import { createAddressApi } from '@/apis/address.api'
 import {
   getListDistrictsByProvinceIdApi,
   getListProvincesApi,
   getListWardsByDistrictIdApi
 } from '@/apis/ghn.api'
-import Autocomplete from '@/components/Autocomplete'
+import Autocomplete from '@/components/shared/autocomplete'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -26,17 +34,8 @@ import {
 import { Input } from '@/components/ui/input'
 import { AppDispatch } from '@/redux/store'
 import { setUser } from '@/redux/user/userSlice'
-
 import { GhnDistrict, GhnProvince, GhnWard } from '@/types/entities/ghn'
-
 import { FIELD_REQUIRED_MESSAGE } from '@/utils/validators'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Plus } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { useDispatch } from 'react-redux'
-import { toast } from 'sonner'
-import { z } from 'zod'
 
 const addAddressFormSchema = z.object({
   province_id: z.number({ message: FIELD_REQUIRED_MESSAGE }),
@@ -167,7 +166,7 @@ export default function AddAddress({
             onSubmit={addAddressForm.handleSubmit(onSubmit)}
             className='space-y-6'
           >
-            <div className='grid grid-cols-3 gap-4 mb-4'>
+            <div className='mb-4 grid grid-cols-3 gap-4'>
               <FormField
                 control={addAddressForm.control}
                 name='province_id'
@@ -251,7 +250,7 @@ export default function AddAddress({
                   <FormControl>
                     <Input
                       placeholder='Vd: 123 đường ABC, phường X, quận Y, TPHCM'
-                      className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-xl focus:outline-none focus:border-[2px] border border-mainColor1-100/50 ${
+                      className={`placeholder:text-opacity-50 border-mainColor1-100/50 rounded-xl border placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none ${
                         !!addAddressForm.formState.errors?.address &&
                         'border-red-500'
                       }`}

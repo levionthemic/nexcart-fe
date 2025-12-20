@@ -1,10 +1,11 @@
 'use client'
 
+import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+
 import { selectCurrentUser } from '@/redux/user/userSlice'
 import { Address } from '@/types/entities/address'
 import { getAddressString } from '@/utils/helpers'
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
 
 export default function ShowAddress() {
   const [address, setAddress] = useState('123 đường ABC')

@@ -1,12 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
-
-import { cartReducer } from '@/redux/cart/cartSlice'
-import { userReducer } from '@/redux/user/userSlice'
-import { notificationReducer } from '@/redux/notification/notificationSlice'
-
 import { combineReducers } from 'redux'
 import { PersistConfig, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
+
+import { cartReducer } from '@/redux/cart/cartSlice'
+import { notificationReducer } from '@/redux/notification/notificationSlice'
+import { userReducer } from '@/redux/user/userSlice'
 
 // Use noop storage on server, regular storage on client
 // const persistStorage = typeof window !== 'undefined' ?

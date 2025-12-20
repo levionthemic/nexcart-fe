@@ -1,5 +1,14 @@
 'use client'
 
+import Image from 'next/image'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { CiUser } from 'react-icons/ci'
+import { FaArrowRight } from 'react-icons/fa'
+import { IoMdHeartEmpty } from 'react-icons/io'
+import { IoSettingsOutline } from 'react-icons/io5'
+import { LuTruck } from 'react-icons/lu'
+
 import {
   Sidebar,
   SidebarContent,
@@ -11,14 +20,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from '@/components/ui/sidebar'
-import { FaArrowRight } from 'react-icons/fa'
-import { CiUser } from 'react-icons/ci'
-import { LuTruck } from 'react-icons/lu'
-import { IoMdHeartEmpty } from 'react-icons/io'
-import { IoSettingsOutline } from 'react-icons/io5'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import Image from 'next/image'
 
 export default function UserSidebar() {
   const router = useRouter()
@@ -46,13 +47,19 @@ export default function UserSidebar() {
     }
   ]
   return (
-    <Sidebar className='px-4 pb-4 bg-sidebar border-none'>
-      <SidebarHeader className='p-0 bg-transparent'>
+    <Sidebar className='bg-sidebar border-none px-4 pb-4'>
+      <SidebarHeader className='bg-transparent p-0'>
         <div
-          className='my-4 cursor-pointer flex items-center justify-center'
+          className='my-4 flex cursor-pointer items-center justify-center'
           onClick={() => router.push('/')}
         >
-          <Image src='/mainlogo.png' alt='NexCart' width={120} height={40} className='w-32 aspect-video object-cover'/>
+          <Image
+            src='/mainlogo.png'
+            alt='NexCart'
+            width={120}
+            height={40}
+            className='aspect-video w-32 object-cover'
+          />
         </div>
       </SidebarHeader>
 
@@ -63,7 +70,7 @@ export default function UserSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
-                    className='py-2 mb-4 text-white rounded-lg cursor-pointer h-fit text-md bg-mainColor1-800 hover:bg-mainColor1-800/90 hover:text-white'
+                    className='text-md bg-mainColor1-800 hover:bg-mainColor1-800/90 mb-4 h-fit cursor-pointer rounded-lg py-2 text-white hover:text-white'
                     asChild
                   >
                     <Link href={item.url}>
@@ -78,16 +85,16 @@ export default function UserSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className='p-0 bg-sidebar'>
-        <div className='p-4 bg-mainColor1-100/30 rounded-xl'>
-          <div className='mb-4 text-lg font-medium text-primary-foreground'>
+      <SidebarFooter className='bg-sidebar p-0'>
+        <div className='bg-mainColor1-100/30 rounded-xl p-4'>
+          <div className='text-primary-foreground mb-4 text-lg font-medium'>
             Có Sản phẩm trong giỏ hàng của bạn
           </div>
           <div className='flex items-center justify-end gap-4'>
             <p className='text-sm'>Kiểm tra ngay</p>
-            <div className='p-2 bg-white rounded-full'>
+            <div className='rounded-full bg-white p-2'>
               <FaArrowRight
-                className='cursor-pointer text-mainColor1-600'
+                className='text-mainColor1-600 cursor-pointer'
                 onClick={() => router.push('/buyer/cart')}
               />
             </div>

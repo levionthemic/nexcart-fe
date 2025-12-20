@@ -1,13 +1,15 @@
-import CreateProductForm from './create-product-form'
-import PageHeader from '../../_components/page-header'
-import { getCategoriesApi } from '@/apis/category.api'
 import { getBrandsApi } from '@/apis/brand.api'
+import { getCategoriesApi } from '@/apis/category.api'
+
+import PageHeader from '../../_components/page-header'
+
+import CreateProductForm from './create-product-form'
 
 export const dynamic = 'force-dynamic'
 
 export default async function CreateProductPage() {
-  const categories = await getCategoriesApi() || []
-  const brands = await getBrandsApi() || []
+  const categories = (await getCategoriesApi()) || []
+  const brands = (await getBrandsApi()) || []
 
   return (
     <div className='px-6 py-4'>
@@ -29,7 +31,7 @@ export default async function CreateProductPage() {
         title={'Thêm sản phẩm'}
       />
 
-      <div className='bg-white p-4 rounded-lg'>
+      <div className='rounded-lg bg-white p-4'>
         <CreateProductForm categories={categories} brands={brands} />
       </div>
     </div>

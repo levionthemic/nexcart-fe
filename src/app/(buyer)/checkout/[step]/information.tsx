@@ -2,9 +2,12 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSelector } from 'react-redux'
+import { z } from 'zod'
+
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -16,17 +19,6 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { selectCurrentUser } from '@/redux/user/userSlice'
-import {
-  EMAIL_RULE,
-  EMAIL_RULE_MESSAGE,
-  FIELD_REQUIRED_MESSAGE,
-  PHONE_NUMBER_RULE,
-  PHONE_NUMBER_RULE_MESSAGE
-} from '@/utils/validators'
-import { z } from 'zod'
-import { useOrder } from '@/contexts/order-context'
-import { useRouter } from 'next/navigation'
 import {
   Select,
   SelectContent,
@@ -35,8 +27,17 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { getAddressString } from '@/utils/helpers'
+import { useOrder } from '@/contexts/order-context'
+import { selectCurrentUser } from '@/redux/user/userSlice'
 import { Address } from '@/types/entities/address'
+import { getAddressString } from '@/utils/helpers'
+import {
+  EMAIL_RULE,
+  EMAIL_RULE_MESSAGE,
+  FIELD_REQUIRED_MESSAGE,
+  PHONE_NUMBER_RULE,
+  PHONE_NUMBER_RULE_MESSAGE
+} from '@/utils/validators'
 
 const formSchema = z.object({
   name: z
@@ -130,11 +131,11 @@ export default function Information() {
   }
 
   return (
-    <div className='my-6 border border-b-[#ddd] rounded-md p-4 w-[95%]'>
-      <div className='text-mainColor1-600 font-medium text-lg'>
+    <div className='my-6 w-[95%] rounded-md border border-b-[#ddd] p-4'>
+      <div className='text-mainColor1-600 text-lg font-medium'>
         Thông tin người nhận
       </div>
-      <p className='text-sm text-muted-foreground mb-4'>
+      <p className='text-muted-foreground mb-4 text-sm'>
         Mặc định sẽ lấy thông tin cá nhân trong tài khoản của bạn. Bạn có thể
         thay đổi chúng nếu muốn.
       </p>
@@ -154,7 +155,7 @@ export default function Information() {
                   <FormControl>
                     <Input
                       placeholder='Vd: Nguyễn Văn A'
-                      className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-xl focus:outline-none focus:border-[2px] border border-mainColor1-100/50 ${
+                      className={`placeholder:text-opacity-50 border-mainColor1-100/50 rounded-xl border placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none ${
                         !!form.formState.errors['name'] && 'border-red-500'
                       }`}
                       {...field}
@@ -176,7 +177,7 @@ export default function Information() {
                   <FormControl>
                     <Input
                       placeholder='Vd: example@levionthemic.com'
-                      className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-xl focus:outline-none focus:border-[2px] border border-mainColor1-100/50 ${
+                      className={`placeholder:text-opacity-50 border-mainColor1-100/50 rounded-xl border placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none ${
                         !!form.formState.errors['email'] && 'border-red-500'
                       }`}
                       {...field}
@@ -198,7 +199,7 @@ export default function Information() {
                   <FormControl>
                     <Input
                       placeholder='Vd: 0123456789'
-                      className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-xl focus:outline-none focus:border-[2px] border border-mainColor1-100/50 ${
+                      className={`placeholder:text-opacity-50 border-mainColor1-100/50 rounded-xl border placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none ${
                         !!form.formState.errors['phone'] && 'border-red-500'
                       }`}
                       {...field}
@@ -219,7 +220,10 @@ export default function Information() {
             render={({ field }) => (
               <FormItem className='mb-6'>
                 <FormLabel>Địa chỉ mặc định</FormLabel>
-                <Select onValueChange={field.onChange} value={String(field.value)}>
+                <Select
+                  onValueChange={field.onChange}
+                  value={String(field.value)}
+                >
                   <SelectTrigger className='w-full overflow-hidden'>
                     <SelectValue placeholder='Chọn địa chỉ mặc định' />
                   </SelectTrigger>
@@ -247,7 +251,7 @@ export default function Information() {
           <div className='grid grid-cols-1 gap-5'>
             <Button
               type='submit'
-              className='bg-mainColor1-600 hover:bg-mainColor1-800 text-white text-md font-semibold rounded-lg hover:drop-shadow-xl'
+              className='bg-mainColor1-600 hover:bg-mainColor1-800 text-md rounded-lg font-semibold text-white hover:drop-shadow-xl'
             >
               Tiếp tục
             </Button>

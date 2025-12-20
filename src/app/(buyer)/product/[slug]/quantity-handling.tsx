@@ -1,7 +1,20 @@
 'use client'
 
+import { cloneDeep } from 'lodash'
+import { useRouter } from 'next/navigation'
+import { useEffect, useMemo, useState } from 'react'
+import { IoMdAdd } from 'react-icons/io'
+import { IoBagCheckOutline } from 'react-icons/io5'
+import { MdAddShoppingCart } from 'react-icons/md'
+import { RiSubtractFill } from 'react-icons/ri'
+import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'sonner'
+
 import { Button } from '@/components/ui/button'
+import { Ratings } from '@/components/ui/ratings'
 import { Separator } from '@/components/ui/separator'
+import { useReview } from '@/contexts/review-context'
+import { useVariantHandling } from '@/contexts/variant-handling-context'
 import {
   addToCartAPI,
   fetchCurrentCartAPI,
@@ -9,21 +22,14 @@ import {
   setCart
 } from '@/redux/cart/cartSlice'
 import { AppDispatch } from '@/redux/store'
-import { CartProductVariant, Product } from '@/types/entities/product'
-import { useRouter } from 'next/navigation'
-import React, { useEffect, useMemo, useState } from 'react'
-import { IoMdAdd } from 'react-icons/io'
-import { IoBagCheckOutline } from 'react-icons/io5'
-import { MdAddShoppingCart } from 'react-icons/md'
-import { RiSubtractFill } from 'react-icons/ri'
-import { useDispatch, useSelector } from 'react-redux'
-import ReviewRate from './_components/review-rate'
 import { selectCurrentUser } from '@/redux/user/userSlice'
-import { toast } from 'sonner'
-import { cloneDeep } from 'lodash'
-import { useVariantHandling } from '@/contexts/variant-handling-context'
-import { Ratings } from '@/components/ui/ratings'
-import { useReview } from '@/contexts/review-context'
+import {
+  CartProduct,
+  CartProductVariant,
+  Product
+} from '@/types/entities/product'
+
+import ReviewRate from './_components/review-rate'
 
 export default function QuantityHandling({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1)
@@ -70,11 +76,19 @@ export default function QuantityHandling({ product }: { product: Product }) {
         const productVariant = product.product_variants.find(
           (pv) => pv.id === productVariantId
         )!
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { category, brand, product_variants, specifications, reviews, ...restProduct } = product
+
+        const {
+          category,
+          brand,
+          product_variants,
+          specifications,
+          reviews,
+          ...sanitizedProduct
+        } = product
+
         const cartProductVariant: CartProductVariant = {
           ...productVariant,
-          product: restProduct,          
+          product: sanitizedProduct as CartProduct
         }
         cart_items.push({
           product_variant: cartProductVariant,
@@ -135,13 +149,13 @@ export default function QuantityHandling({ product }: { product: Product }) {
   }
 
   return (
-    <div className='sticky left-0 top-36 h-fit'>
-      <div className='p-4 mb-6 bg-white dark:bg-section rounded-lg'>
-        <div className='mb-2 text-xl font-semibold text-mainColor1-600'>
+    <div className='sticky top-36 left-0 h-fit'>
+      <div className='dark:bg-section mb-6 rounded-lg bg-white p-4'>
+        <div className='text-mainColor1-600 mb-2 text-xl font-semibold'>
           Tóm tắt
         </div>
 
-        <div className='flex items-center justify-between mb-2 text-sm'>
+        <div className='mb-2 flex items-center justify-between text-sm'>
           <span className='w-[35%] text-gray-500'>Tên hàng:</span>
           <span className='flex-1 text-right'>{product?.name}</span>
         </div>
@@ -154,10 +168,10 @@ export default function QuantityHandling({ product }: { product: Product }) {
         <Separator className='my-4' />
 
         <div className='flex items-center gap-3'>
-          <div className='font-semibold text-mainColor1-800'>Số lượng:</div>
-          <div className='flex items-center justify-between p-1 border rounded-lg border-mainColor1-100'>
+          <div className='text-mainColor1-800 font-semibold'>Số lượng:</div>
+          <div className='border-mainColor1-100 flex items-center justify-between rounded-lg border p-1'>
             <RiSubtractFill
-              className='text-xl rounded-md cursor-pointer text-mainColor1-800 hover:bg-mainColor1-800/40'
+              className='text-mainColor1-800 hover:bg-mainColor1-800/40 cursor-pointer rounded-md text-xl'
               onClick={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}
             />
             <input
@@ -166,7 +180,7 @@ export default function QuantityHandling({ product }: { product: Product }) {
                 setQuantity(parseInt(e.target.value))
               }}
               readOnly
-              className='w-[50px] text-center mx-1.5 border-none outline-none text-md font-semibold text-mainColor1-800'
+              className='text-md text-mainColor1-800 mx-1.5 w-[50px] border-none text-center font-semibold outline-none'
             />
             <IoMdAdd
               onClick={() =>
@@ -176,29 +190,29 @@ export default function QuantityHandling({ product }: { product: Product }) {
                     : calculateTotalStock || 1000
                 )
               }
-              className='text-xl rounded-md cursor-pointer text-mainColor1-800 hover:bg-mainColor2-800/40'
+              className='text-mainColor1-800 hover:bg-mainColor2-800/40 cursor-pointer rounded-md text-xl'
             />
           </div>
         </div>
 
         <div className='my-5'>
-          <div className='mb-1 text-mainColor1-800/90'>Tạm tính</div>
-          <div className='text-2xl font-bold tracking-normal text-gray-700 dark:text-foreground'>
+          <div className='text-mainColor1-800/90 mb-1'>Tạm tính</div>
+          <div className='dark:text-foreground text-2xl font-bold tracking-normal text-gray-700'>
             {(productEndPrice * (1 - discount / 100)).toLocaleString()}
             <sup>đ</sup>
           </div>
         </div>
 
-        <div className='flex flex-col gap-2 mt-4 mb-2'>
+        <div className='mt-4 mb-2 flex flex-col gap-2'>
           <Button
-            className='w-full py-5 text-lg bg-mainColor1-800 hover:bg-mainColor1-600 hover:drop-shadow-xl'
+            className='bg-mainColor1-800 hover:bg-mainColor1-600 w-full py-5 text-lg hover:drop-shadow-xl'
             onClick={handleCheckout}
           >
             {' '}
             <IoBagCheckOutline /> Mua ngay
           </Button>
           <Button
-            className='w-full bg-white border border-mainColor2-800 text-mainColor2-800 hover:bg-mainColor2-800/90 hover:text-white'
+            className='border-mainColor2-800 text-mainColor2-800 hover:bg-mainColor2-800/90 w-full border bg-white hover:text-white'
             onClick={handleAddToCart}
             variant='outline'
           >
@@ -208,14 +222,14 @@ export default function QuantityHandling({ product }: { product: Product }) {
         </div>
       </div>
 
-      <div className='p-4 mb-6 bg-white dark:bg-section rounded-lg'>
-        <div className='mb-2 text-xl font-semibold text-mainColor1-600'>
+      <div className='dark:bg-section mb-6 rounded-lg bg-white p-4'>
+        <div className='text-mainColor1-600 mb-2 text-xl font-semibold'>
           Đánh giá
         </div>
         <span className='font-semibold'>Tổng quan</span>
 
         <div className='my-3'>
-          <div className='flex items-center gap-4 mt-3'>
+          <div className='mt-3 flex items-center gap-4'>
             <span className='text-3xl font-semibold'>{ratingAverage || 0}</span>
             <Ratings rating={ratingAverage || 0} variant='yellow' size={35} />
           </div>

@@ -1,7 +1,8 @@
-import { Button } from "@/components/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Order } from "@/types/entities/order"
-import { OrderStatus } from "@/types/enums/order-status"
+import { PopoverClose } from '@radix-ui/react-popover'
+import { Row } from '@tanstack/react-table'
+import { CheckIcon, DeleteIcon, EllipsisIcon } from 'lucide-react'
+
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,9 +12,13 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { Row } from "@tanstack/react-table"
-import { CheckIcon, DeleteIcon, EllipsisIcon } from "lucide-react"
-import { PopoverClose } from "@radix-ui/react-popover"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover'
+import { Order } from '@/types/entities/order'
+import { OrderStatus } from '@/types/enums/order-status'
 
 export default function RowActions({
   row,
@@ -30,14 +35,14 @@ export default function RowActions({
             <Button
               size='icon'
               variant='ghost'
-              className='shadow-none text-green-600 hover:bg-green-100 hover:text-green-700 size-6'
+              className='size-6 text-green-600 shadow-none hover:bg-green-100 hover:text-green-700'
               aria-label='Edit item'
             >
               <CheckIcon size={20} />
             </Button>
           </PopoverTrigger>
           <PopoverContent>
-            <div className='text-sm mb-4'>Xác nhận đơn hàng?</div>
+            <div className='mb-4 text-sm'>Xác nhận đơn hàng?</div>
             <div className='flex items-center justify-end gap-2'>
               <PopoverClose asChild>
                 <Button variant='outline'>Hủy</Button>
@@ -57,7 +62,7 @@ export default function RowActions({
             <Button
               size='icon'
               variant='ghost'
-              className='shadow-none size-6'
+              className='size-6 shadow-none'
               aria-label='Edit item'
             >
               <EllipsisIcon size={16} aria-hidden='true' />
