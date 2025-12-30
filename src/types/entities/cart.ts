@@ -1,12 +1,12 @@
 import { CartProductVariant } from './product'
 
 export interface CartItem {
-  product_variant: CartProductVariant
+  productVariant: CartProductVariant
   quantity: number
 }
 
 export interface Cart {
   id: number
-  buyer_id?: string
-  cart_items: CartItem[]
+  buyerId?: string
+  cartItems: CartItem[]
 }

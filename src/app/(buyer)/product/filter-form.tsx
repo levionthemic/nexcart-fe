@@ -1,6 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
+import { useRouter } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -20,9 +24,6 @@ import {
 } from '@/components/ui/select'
 import { Brand } from '@/types/entities/brand'
 import { Category } from '@/types/entities/category'
-import { useRouter } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
 
 interface FilterFormData {
   filterByRate: string
@@ -146,40 +147,40 @@ export default function ProductFilterForm({
                   defaultValue={field.value}
                   className='flex flex-col gap-2'
                 >
-                  <FormItem className='flex items-center px-4 space-x-3 space-y-0 rounded-md cursor-pointer'>
+                  <FormItem className='flex cursor-pointer items-center space-y-0 space-x-3 rounded-md px-4'>
                     <FormControl>
                       <RadioGroupItem value={'all'} className='bg-white' />
                     </FormControl>
-                    <FormLabel className='font-normal cursor-pointer'>
+                    <FormLabel className='cursor-pointer font-normal'>
                       Tất cả
                     </FormLabel>
                   </FormItem>
 
-                  <FormItem className='flex items-center px-4 space-x-3 space-y-0 rounded-md cursor-pointer'>
+                  <FormItem className='flex cursor-pointer items-center space-y-0 space-x-3 rounded-md px-4'>
                     <FormControl>
                       <RadioGroupItem value={'5'} className='bg-white' />
                     </FormControl>
-                    <FormLabel className='font-normal cursor-pointer flex items-center gap-1.5'>
+                    <FormLabel className='flex cursor-pointer items-center gap-1.5 font-normal'>
                       <Ratings rating={5} variant='yellow' size={13} />
                       <span>từ 5 sao</span>
                     </FormLabel>
                   </FormItem>
 
-                  <FormItem className='flex items-center px-4 space-x-3 space-y-0 rounded-md cursor-pointer'>
+                  <FormItem className='flex cursor-pointer items-center space-y-0 space-x-3 rounded-md px-4'>
                     <FormControl>
                       <RadioGroupItem value={'4'} className='bg-white' />
                     </FormControl>
-                    <FormLabel className='font-normal cursor-pointer flex items-center gap-1.5'>
+                    <FormLabel className='flex cursor-pointer items-center gap-1.5 font-normal'>
                       <Ratings rating={4} variant='yellow' size={13} />
                       <span>từ 4 sao</span>
                     </FormLabel>
                   </FormItem>
 
-                  <FormItem className='flex items-center px-4 space-x-3 space-y-0 rounded-md cursor-pointer'>
+                  <FormItem className='flex cursor-pointer items-center space-y-0 space-x-3 rounded-md px-4'>
                     <FormControl>
                       <RadioGroupItem value={'3'} className='bg-white' />
                     </FormControl>
-                    <FormLabel className='font-normal cursor-pointer flex items-center gap-1.5'>
+                    <FormLabel className='flex cursor-pointer items-center gap-1.5 font-normal'>
                       <Ratings rating={3} variant='yellow' size={13} />
                       <span>từ 3 sao</span>
                     </FormLabel>
@@ -202,56 +203,56 @@ export default function ProductFilterForm({
                   defaultValue={field.value}
                   className='flex flex-col gap-2'
                 >
-                  <FormItem className='flex items-center px-4 space-x-3 space-y-0 rounded-md cursor-pointer'>
+                  <FormItem className='flex cursor-pointer items-center space-y-0 space-x-3 rounded-md px-4'>
                     <FormControl>
                       <RadioGroupItem value={'all'} className='bg-white' />
                     </FormControl>
-                    <FormLabel className='font-normal cursor-pointer'>
+                    <FormLabel className='cursor-pointer font-normal'>
                       Tất cả
                     </FormLabel>
                   </FormItem>
 
-                  <FormItem className='flex items-center px-4 space-x-3 space-y-0 rounded-md cursor-pointer'>
+                  <FormItem className='flex cursor-pointer items-center space-y-0 space-x-3 rounded-md px-4'>
                     <FormControl>
                       <RadioGroupItem value={'1'} className='bg-white' />
                     </FormControl>
-                    <FormLabel className='font-normal cursor-pointer'>
+                    <FormLabel className='cursor-pointer font-normal'>
                       {'< 500.000đ'}
                     </FormLabel>
                   </FormItem>
 
-                  <FormItem className='flex items-center px-4 space-x-3 space-y-0 rounded-md cursor-pointer'>
+                  <FormItem className='flex cursor-pointer items-center space-y-0 space-x-3 rounded-md px-4'>
                     <FormControl>
                       <RadioGroupItem value={'500'} className='bg-white' />
                     </FormControl>
-                    <FormLabel className='font-normal cursor-pointer'>
+                    <FormLabel className='cursor-pointer font-normal'>
                       500.000đ - 1.000.000đ
                     </FormLabel>
                   </FormItem>
 
-                  <FormItem className='flex items-center px-4 space-x-3 space-y-0 rounded-md cursor-pointer'>
+                  <FormItem className='flex cursor-pointer items-center space-y-0 space-x-3 rounded-md px-4'>
                     <FormControl>
                       <RadioGroupItem value={'1000'} className='bg-white' />
                     </FormControl>
-                    <FormLabel className='font-normal cursor-pointer'>
+                    <FormLabel className='cursor-pointer font-normal'>
                       1.000.000đ - 5.000.000đ
                     </FormLabel>
                   </FormItem>
 
-                  <FormItem className='flex items-center px-4 space-x-3 space-y-0 rounded-md cursor-pointer'>
+                  <FormItem className='flex cursor-pointer items-center space-y-0 space-x-3 rounded-md px-4'>
                     <FormControl>
                       <RadioGroupItem value={'5000'} className='bg-white' />
                     </FormControl>
-                    <FormLabel className='font-normal cursor-pointer'>
+                    <FormLabel className='cursor-pointer font-normal'>
                       5.000.000đ - 10.000.000đ
                     </FormLabel>
                   </FormItem>
 
-                  <FormItem className='flex items-center px-4 space-x-3 space-y-0 rounded-md cursor-pointer'>
+                  <FormItem className='flex cursor-pointer items-center space-y-0 space-x-3 rounded-md px-4'>
                     <FormControl>
                       <RadioGroupItem value={'10000'} className='bg-white' />
                     </FormControl>
-                    <FormLabel className='font-normal cursor-pointer'>
+                    <FormLabel className='cursor-pointer font-normal'>
                       {'> 10.000.000đ'}
                     </FormLabel>
                   </FormItem>
@@ -275,10 +276,7 @@ export default function ProductFilterForm({
                 </FormControl>
                 <SelectContent>
                   {categories?.map((category: Category) => (
-                    <SelectItem
-                      key={category?.id}
-                      value={String(category.id)}
-                    >
+                    <SelectItem key={category?.id} value={String(category.id)}>
                       {category?.name}
                     </SelectItem>
                   ))}
@@ -312,7 +310,7 @@ export default function ProductFilterForm({
           )}
         />
 
-        <Button type='submit' className='w-full bg-mainColor2-800'>
+        <Button type='submit' className='bg-mainColor2-800 w-full'>
           Lọc
         </Button>
       </form>

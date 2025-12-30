@@ -14,12 +14,12 @@ export interface ProductVariantMinimal {
   length: number
   width: number
   height: number
-  image_url: string
+  imageUrl: string
 }
 
 export interface ProductVariant extends ProductVariantMinimal {
-  shop_product_variants: ShopProductVariant[]
-  product_variant_option_values: ProductVariantOptionValue[]
+  shopProductVariants: ShopProductVariant[]
+  productVariantOptionValues: ProductVariantOptionValue[]
 }
 
 export interface CartProductVariant extends ProductVariant {
@@ -27,7 +27,7 @@ export interface CartProductVariant extends ProductVariant {
 }
 
 export interface ProductVariantOptionValue {
-  option_value: OptionValue
+  optionValue: OptionValue
 }
 
 export interface OptionValue {
@@ -50,8 +50,8 @@ export interface ProductSpecification {
 export interface ShopProductVariant {
   id: number
   shop: Shop
-  stock_quantity: number
-  sold_quantity: number
+  stockQuantity: number
+  soldQuantity: number
 }
 
 export interface ProductBase {
@@ -59,12 +59,12 @@ export interface ProductBase {
   name: string
   sku: string
   description: string
-  thumbnail_url: string
+  thumbnailUrl: string
   rating: number
   sold: number
   slug: string
-  created_at: Date
-  updated_at: Date
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface ProductListItem extends ProductBase {

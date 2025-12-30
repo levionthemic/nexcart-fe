@@ -1,8 +1,9 @@
 'use client'
 
-import envConfig from '@/config'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import React from 'react'
+
+import envConfig from '@/config'
 
 export default function MyGoogleOAuthProvider({
   children

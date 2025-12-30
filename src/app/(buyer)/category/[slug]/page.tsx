@@ -1,24 +1,28 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Image from 'next/image'
+import Link from 'next/link'
+
 import { getCategoriesBySlugApi } from '@/apis/category.api'
+import { getProductsWithFiltersApi } from '@/apis/product.api'
+import { ProductCard } from '@/components/features/product'
+import PaginationComponent from '@/components/shared/pagination'
+import { SidebarProvider } from '@/components/ui/sidebar'
 import { Category } from '@/types/entities/category'
 import {
   DEFAULT_IMAGE_URL,
   DEFAULT_ITEMS_PER_PAGE,
   DEFAULT_PAGE
 } from '@/utils/constants'
-import CategoryBar from '../../(home)/category-bar'
-import { SidebarProvider } from '@/components/ui/sidebar'
-import PaginationComponent from '@/components/pagination/pagination'
-import { getProductsWithFiltersApi } from '@/apis/product.api'
-import { ProductCard } from '@/components/product'
-import Link from 'next/link'
+
+import CategoryBar from '../../(home)/_components/category-bar'
 import ProductFilterForm from '../../product/filter-form'
 
 export default async function CategoryDetailPage({
   params,
   searchParams
-}: any) {
+}: {
+  params: { slug: string }
+  searchParams: { page?: string }
+}) {
   const awaitParams = await params
   const awaitSearchparams = await searchParams
   const slug = awaitParams.slug
@@ -34,19 +38,19 @@ export default async function CategoryDetailPage({
   const brands = data?.brands || []
 
   return (
-    <div className='container mx-auto py-6 relative'>
-      <div className='flex gap-4 relative'>
+    <div className='relative container mx-auto py-6'>
+      <div className='relative flex gap-4'>
         {/* Sidebar menu danh mục con */}
-        {category.is_leaf === false ? (
-          <SidebarProvider className='w-1/5 px-2 py-4 bg-white dark:bg-sidebar rounded-lg sticky top-36 h-[80vh] min-h-[80vh]'>
+        {category.isLeaf === false ? (
+          <SidebarProvider className='dark:bg-sidebar sticky top-36 h-[80vh] min-h-[80vh] w-1/5 rounded-lg bg-white px-2 py-4'>
             <CategoryBar
               categories={category.children || []}
-              className='flex-1 h-full! min-h-full!'
+              className='h-full! min-h-full! flex-1'
             />
           </SidebarProvider>
         ) : (
-          <div className='w-[20%] px-6 h-full sticky top-36 left-0 max-h-full'>
-            <div className='text-xl font-medium text-mainColor2-800'>
+          <div className='sticky top-36 left-0 h-full max-h-full w-[20%] px-6'>
+            <div className='text-mainColor2-800 text-xl font-medium'>
               Bộ lọc sản phẩm
             </div>
 
@@ -59,28 +63,28 @@ export default async function CategoryDetailPage({
         {/* Nội dung bên phải */}
         <main className='flex-1 space-y-6'>
           {/* Tiêu đề danh mục */}
-          <div className='text-2xl font-bold bg-section rounded-lg p-4'>
+          <div className='bg-section rounded-lg p-4 text-2xl font-bold'>
             {category.name}
           </div>
 
-          {category.is_leaf === false && (
+          {category.isLeaf === false && (
             <div className='bg-section rounded-lg p-4'>
-              <span className='font-semibold text-lg'>
+              <span className='text-lg font-semibold'>
                 Khám phá theo danh mục
               </span>
-              <div className='grid grid-cols-6 gap-6 mt-6'>
+              <div className='mt-6 grid grid-cols-6 gap-6'>
                 {category.children?.map((sub) => (
                   <Link
                     key={sub.id}
-                    className='block p-2 text-center border border-transparent hover:border-mainColor1-600 rounded-lg cursor-pointer transition-all'
+                    className='hover:border-mainColor1-600 block cursor-pointer rounded-lg border border-transparent p-2 text-center transition-all'
                     href={`/category/${sub.slug}`}
                   >
                     <Image
-                      src={sub.thumbnail_url || DEFAULT_IMAGE_URL}
+                      src={sub.thumbnailUrl || DEFAULT_IMAGE_URL}
                       width={64}
                       height={64}
                       alt={sub.name}
-                      className='mx-auto mb-2 w-16 h-16 object-cover rounded-full shadow-md'
+                      className='mx-auto mb-2 h-16 w-16 rounded-full object-cover shadow-md'
                     />
                     {sub.name}
                   </Link>
@@ -90,8 +94,8 @@ export default async function CategoryDetailPage({
           )}
 
           {/* Lưới sản phẩm */}
-          <div className='bg-section shadow-md rounded-lg p-4'>
-            <div className='text-lg font-semibold mb-4'>Tất cả sản phẩm</div>
+          <div className='bg-section rounded-lg p-4 shadow-md'>
+            <div className='mb-4 text-lg font-semibold'>Tất cả sản phẩm</div>
           </div>
           <div className='grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5'>
             {!products?.length ? (
@@ -115,7 +119,7 @@ export default async function CategoryDetailPage({
             )}
           </div>
           {/* Phân trang */}
-          <div className='flex flex-row-reverse my-6'>
+          <div className='my-6 flex flex-row-reverse'>
             <PaginationComponent
               currentPage={Number(page || DEFAULT_PAGE)}
               totalPages={Math.ceil(totalProducts / DEFAULT_ITEMS_PER_PAGE)}

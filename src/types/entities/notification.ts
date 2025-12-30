@@ -1,11 +1,11 @@
-import { NotificationType } from "../enums/notification-type"
+import { NotificationType } from '../enums/notification-type'
 
 export interface Notification {
   id: number
-  sender_id: number
-  receiver_id: number
+  senderId: number
+  receiverId: number
   type: NotificationType
   content: string
-  read_at: Date | null
-  created_at: Date
+  readAt: Date | null
+  createdAt: Date
 }

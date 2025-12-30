@@ -1,18 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { useForm } from 'react-hook-form'
 import { FaReply } from 'react-icons/fa'
 import { TbMessageReport } from 'react-icons/tb'
+
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Dialog,
   DialogContent,
@@ -22,9 +17,6 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { useForm } from 'react-hook-form'
 import {
   Form,
   FormControl,
@@ -32,11 +24,22 @@ import {
   FormItem,
   FormLabel
 } from '@/components/ui/form'
-import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
+import { Ratings } from '@/components/ui/ratings'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
+import { Textarea } from '@/components/ui/textarea'
+
 import PageHeader from '../_components/page-header'
+
 import { BarChartComponent } from './_components/bar-chart'
 import { MultiLineChartComponent } from './_components/multiline-chart'
-import { Ratings } from '@/components/ui/ratings'
 
 const mockComments = [
   {
@@ -121,15 +124,15 @@ export default function Comments() {
         title={'Quản lý đánh giá & bình luận'}
       />
 
-      <div className='bg-white p-4 rounded-lg'>
-        <div className='text-lg font-medium mb-4'>Tổng quan</div>
+      <div className='rounded-lg bg-white p-4'>
+        <div className='mb-4 text-lg font-medium'>Tổng quan</div>
 
-        <div className='grid grid-cols-2 gap-4 mb-4'>
+        <div className='mb-4 grid grid-cols-2 gap-4'>
           <BarChartComponent />
           <MultiLineChartComponent />
         </div>
 
-        <div className='text-lg font-medium mb-4'>Danh sách bình luận</div>
+        <div className='mb-4 text-lg font-medium'>Danh sách bình luận</div>
 
         <div className='[&>div]:max-h-96'>
           <Table className='[&_td]:border-border [&_th]:border-border border-separate border-spacing-0 [&_tfoot_td]:border-t [&_th]:border-b [&_tr]:border-none [&_tr:not(:last-child)_td]:border-b'>
@@ -173,11 +176,11 @@ export default function Comments() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className='flex items-center gap-4 justify-center'>
+                    <div className='flex items-center justify-center gap-4'>
                       {!item.responseStatus && (
                         <Dialog onOpenChange={() => setReplication('')}>
                           <DialogTrigger asChild>
-                            <Button className='bg-white shadow-none text-gray-900 p-0 hover:bg-white hover:text-mainColor1-600 hover:scale-105 transition-all hover:duration-300 hover:ease-in-out'>
+                            <Button className='hover:text-mainColor1-600 bg-white p-0 text-gray-900 shadow-none transition-all hover:scale-105 hover:bg-white hover:duration-300 hover:ease-in-out'>
                               <FaReply />
                             </Button>
                           </DialogTrigger>
@@ -221,7 +224,7 @@ export default function Comments() {
                             }}
                           >
                             <DialogTrigger asChild>
-                              <Button className='bg-white shadow-none text-gray-900 p-0 hover:bg-white hover:text-red-500 hover:scale-105 transition-all hover:duration-300 hover:ease-in-out'>
+                              <Button className='bg-white p-0 text-gray-900 shadow-none transition-all hover:scale-105 hover:bg-white hover:text-red-500 hover:duration-300 hover:ease-in-out'>
                                 <TbMessageReport />
                               </Button>
                             </DialogTrigger>
@@ -247,7 +250,7 @@ export default function Comments() {
                                           return (
                                             <FormItem
                                               key={item.id}
-                                              className='flex flex-row items-start space-x-3 space-y-0'
+                                              className='flex flex-row items-start space-y-0 space-x-3'
                                             >
                                               <FormControl>
                                                 <Checkbox

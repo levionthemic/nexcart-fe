@@ -1,11 +1,14 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
 import { useId } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
+import { z } from 'zod'
+
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import {
@@ -27,15 +30,14 @@ import {
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
-import { selectCurrentUser, updateUserAction } from '@/redux/user/userSlice'
-import { FIELD_REQUIRED_MESSAGE } from '@/utils/validators'
-import { z } from 'zod'
-import { AccountStatus } from '@/types/enums/account'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { AppDispatch } from '@/redux/store'
-import UploadCoverPhoto from './upload-cover-photo'
-import UploadAvatar from './upload-avatar'
+import { selectCurrentUser, updateUserAction } from '@/redux/user/userSlice'
+import { AccountStatus } from '@/types/enums/account'
 import { objectToFormData } from '@/utils/helpers'
+import { FIELD_REQUIRED_MESSAGE } from '@/utils/validators'
+
+import UploadAvatar from './upload-avatar'
+import UploadCoverPhoto from './upload-cover-photo'
 
 const formSchema = z.object({
   name: z
@@ -114,7 +116,7 @@ export default function GeneralTab() {
     <div className='bg-section rounded-lg p-4'>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleUpdateStoreGeneralInformation)}>
-          <div className='grid grid-cols-3 gap-8 mb-4'>
+          <div className='mb-4 grid grid-cols-3 gap-8'>
             <div className='space-y-3'>
               <FormField
                 control={form.control}
@@ -125,7 +127,7 @@ export default function GeneralTab() {
                     <FormControl>
                       <Input
                         placeholder='Vd: Cửa hàng ABC'
-                        className={`placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] ${
+                        className={`placeholder:text-opacity-50 rounded-lg border-[1px] placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none ${
                           !!form.formState.errors['name'] && 'border-red-500'
                         }`}
                         {...field}
@@ -277,7 +279,7 @@ export default function GeneralTab() {
                 <FormLabel className='text-base'>Mô tả</FormLabel>
                 <FormControl>
                   <Textarea
-                    className='placeholder:text-green-50 placeholder:text-sm placeholder:text-opacity-50 rounded-lg focus:outline-none focus:border-[2px] border-[1px] h-52'
+                    className='placeholder:text-opacity-50 h-52 rounded-lg border-[1px] placeholder:text-sm placeholder:text-green-50 focus:border-[2px] focus:outline-none'
                     {...field}
                   />
                 </FormControl>
@@ -290,7 +292,7 @@ export default function GeneralTab() {
 
           <Button
             type='submit'
-            className='bg-mainColor1-800/85 rounded-lg w-full py-3 text-md'
+            className='bg-mainColor1-800/85 text-md w-full rounded-lg py-3'
           >
             Cập nhật chỉnh sửa
           </Button>

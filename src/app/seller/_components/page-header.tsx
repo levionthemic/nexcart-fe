@@ -1,3 +1,6 @@
+import Link from 'next/link'
+import React from 'react'
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,8 +9,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
-import Link from 'next/link'
-import React from 'react'
+
 import Timer from './timer'
 
 interface PageHeaderProps {
@@ -19,9 +21,9 @@ interface PageHeaderProps {
 }
 export default function PageHeader({ links, title }: PageHeaderProps) {
   return (
-    <div className='flex items-center justify-between mb-4 gap-8'>
+    <div className='mb-4 flex items-center justify-between gap-8'>
       <div className='flex-1'>
-        <div className='font-bold text-xl mb-2'>{title}</div>
+        <div className='mb-2 text-xl font-bold'>{title}</div>
         <Breadcrumb>
           <BreadcrumbList className='text-sm'>
             {links.map(({ link, label }, index) => (

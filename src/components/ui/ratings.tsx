@@ -1,21 +1,21 @@
-import React from "react"
-import { Star } from "lucide-react"
+import { Star } from 'lucide-react'
+import React from 'react'
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 
 const ratingVariants = {
   default: {
-    star: "text-foreground",
-    emptyStar: "text-muted-foreground",
+    star: 'text-foreground',
+    emptyStar: 'text-muted-foreground'
   },
   destructive: {
-    star: "text-red-500",
-    emptyStar: "text-red-200",
+    star: 'text-red-500',
+    emptyStar: 'text-red-200'
   },
   yellow: {
-    star: "text-yellow-500",
-    emptyStar: "text-yellow-200",
-  },
+    star: 'text-yellow-500',
+    emptyStar: 'text-yellow-200'
+  }
 }
 
 interface RatingsProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -34,7 +34,7 @@ const Ratings = ({ ...props }: RatingsProps) => {
     size = 20,
     fill = true,
     Icon = <Star />,
-    variant = "default",
+    variant = 'default'
   } = props
 
   const fullStars = Math.floor(rating)
@@ -49,15 +49,15 @@ const Ratings = ({ ...props }: RatingsProps) => {
     ) : null
 
   return (
-    <div className={cn("flex items-center gap-0.5")} {...props}>
+    <div className={cn('flex items-center gap-0.5')} {...props}>
       {[...Array(fullStars)].map((_, i) =>
         React.cloneElement(Icon, {
           key: i,
           size,
           className: cn(
-            fill ? "fill-current" : "fill-transparent",
+            fill ? 'fill-current' : 'fill-transparent',
             ratingVariants[variant].star
-          ),
+          )
         })
       )}
       {partialStar}
@@ -65,7 +65,7 @@ const Ratings = ({ ...props }: RatingsProps) => {
         React.cloneElement(Icon, {
           key: i + fullStars + 1,
           size,
-          className: cn(ratingVariants[variant].emptyStar),
+          className: cn(ratingVariants[variant].emptyStar)
         })
       )}
     </div>
@@ -82,22 +82,22 @@ const PartialStar = ({ ...props }: PartialStarProps) => {
   const { fillPercentage, size, className, Icon } = props
 
   return (
-    <div style={{ position: "relative", display: "inline-block" }}>
+    <div style={{ position: 'relative', display: 'inline-block' }}>
       {React.cloneElement(Icon, {
         size,
-        className: cn("fill-transparent", className),
+        className: cn('fill-transparent', className)
       })}
       <div
         style={{
-          position: "absolute",
+          position: 'absolute',
           top: 0,
-          overflow: "hidden",
-          width: `${fillPercentage * 100}%`,
+          overflow: 'hidden',
+          width: `${fillPercentage * 100}%`
         }}
       >
         {React.cloneElement(Icon, {
           size,
-          className: cn("fill-current", className),
+          className: cn('fill-current', className)
         })}
       </div>
     </div>

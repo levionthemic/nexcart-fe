@@ -4,11 +4,13 @@ import { Banknote, CircleX, NotepadText, Truck } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import CountUp from 'react-countup'
 
-import { useLoading } from '@/contexts/loading-context'
-import PageHeader from '../_components/page-header'
-import OrderTable from './order-table'
 import { getOrdersApi } from '@/apis/order.api'
+import { useLoading } from '@/contexts/loading-context'
 import { Order } from '@/types/entities/order'
+
+import PageHeader from '../_components/page-header'
+
+import OrderTable from './order-table'
 
 export default function Orders() {
   const { startLoading, endLoading } = useLoading()
@@ -40,13 +42,13 @@ export default function Orders() {
         title='Quản lý đơn hàng'
       />
 
-      <div className='grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4'>
-        <div className='col-span-1 bg-section rounded-lg p-6 flex items-center justify-between'>
+      <div className='mb-4 grid grid-cols-2 gap-4 lg:grid-cols-4'>
+        <div className='bg-section col-span-1 flex items-center justify-between rounded-lg p-6'>
           <div className=''>
-            <span className='font-medium text-sm text-gray-500 mb-2 inline-block'>
+            <span className='mb-2 inline-block text-sm font-medium text-gray-500'>
               Tổng Đơn hàng đã nhận
             </span>
-            <span className='text-2xl font-bold flex items-end gap-1'>
+            <span className='flex items-end gap-1 text-2xl font-bold'>
               <CountUp
                 end={173}
                 duration={1.5}
@@ -56,16 +58,16 @@ export default function Orders() {
               <span className='text-xs text-gray-600'>đơn hàng</span>
             </span>
           </div>
-          <div className='bg-[#F0FAFF] text-blue-500 p-2 rounded-full'>
+          <div className='rounded-full bg-[#F0FAFF] p-2 text-blue-500'>
             <NotepadText />
           </div>
         </div>
-        <div className='col-span-1 bg-section rounded-lg p-6 flex items-center justify-between'>
+        <div className='bg-section col-span-1 flex items-center justify-between rounded-lg p-6'>
           <div className=''>
-            <span className='font-medium text-sm text-gray-500 mb-2 inline-block'>
+            <span className='mb-2 inline-block text-sm font-medium text-gray-500'>
               Đơn hàng đang vận chuyển
             </span>
-            <span className='text-2xl font-bold flex items-end gap-1'>
+            <span className='flex items-end gap-1 text-2xl font-bold'>
               <CountUp
                 end={14}
                 duration={1.5}
@@ -75,16 +77,16 @@ export default function Orders() {
               <span className='text-xs text-gray-600'>đơn hàng</span>
             </span>
           </div>
-          <div className='bg-[#FFFAEF] text-yellow-500 p-2 rounded-full'>
+          <div className='rounded-full bg-[#FFFAEF] p-2 text-yellow-500'>
             <Truck />
           </div>
         </div>
-        <div className='col-span-1 bg-section rounded-lg p-6 flex items-center justify-between'>
+        <div className='bg-section col-span-1 flex items-center justify-between rounded-lg p-6'>
           <div className=''>
-            <span className='font-medium text-sm text-gray-500 mb-2 inline-block'>
+            <span className='mb-2 inline-block text-sm font-medium text-gray-500'>
               Đơn hàng thành công
             </span>
-            <span className='text-2xl font-bold flex items-end gap-1'>
+            <span className='flex items-end gap-1 text-2xl font-bold'>
               <CountUp
                 end={150}
                 duration={1.5}
@@ -94,16 +96,16 @@ export default function Orders() {
               <span className='text-xs text-gray-600'>đơn hàng</span>
             </span>
           </div>
-          <div className='bg-[#F1FCF6] text-green-600 p-2 rounded-full'>
+          <div className='rounded-full bg-[#F1FCF6] p-2 text-green-600'>
             <Banknote />
           </div>
         </div>
-        <div className='col-span-1 bg-section rounded-lg p-6 flex items-center justify-between'>
+        <div className='bg-section col-span-1 flex items-center justify-between rounded-lg p-6'>
           <div className=''>
-            <span className='font-medium text-sm text-gray-500 mb-2 inline-block'>
+            <span className='mb-2 inline-block text-sm font-medium text-gray-500'>
               Đơn hàng đã hủy
             </span>
-            <span className='text-2xl font-bold flex items-end gap-1'>
+            <span className='flex items-end gap-1 text-2xl font-bold'>
               <CountUp
                 end={9}
                 duration={1.5}
@@ -113,7 +115,7 @@ export default function Orders() {
               <span className='text-xs text-gray-600'>đơn hàng</span>
             </span>
           </div>
-          <div className='bg-[#E8E8E8] text-gray-500 p-2 rounded-full'>
+          <div className='rounded-full bg-[#E8E8E8] p-2 text-gray-500'>
             <CircleX />
           </div>
         </div>

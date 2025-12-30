@@ -1,9 +1,9 @@
+import { SellerHeader } from '@/components/layout/header'
 import { SidebarProvider } from '@/components/ui/sidebar'
-
-import SellerHeader from '@/components/header/seller-header'
-import SellerSidebar from './seller-sidebar'
-import ClientSellerLayout from './client-layout'
 import { LoadingProvider } from '@/contexts/loading-context'
+
+import ClientSellerLayout from './client-layout'
+import SellerSidebar from './seller-sidebar'
 
 export default function SellerLayout({
   children
@@ -15,7 +15,7 @@ export default function SellerLayout({
       <LoadingProvider>
         <SidebarProvider>
           <SellerSidebar />
-          <div className='flex-1 bg-slate-100 dark:bg-background w-[100vh-256px] overflow-x-hidden'>
+          <div className='dark:bg-background w-[100vh-256px] flex-1 overflow-x-hidden bg-slate-100'>
             <SellerHeader />
             <ClientSellerLayout>{children}</ClientSellerLayout>
           </div>

@@ -1,7 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from '../store'
-import { Notification } from '@/types/entities/notification'
+
 import { getNotificationListApi } from '@/apis/notification.api'
+import { Notification } from '@/types/entities/notification'
+
+import { RootState } from '../store'
 
 // -----------------------------
 // Types
@@ -41,13 +43,17 @@ const notificationSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchCurrentNotificationListAPI.fulfilled, (state, action) => {
-      state.currentNotificationList = action.payload
-    })
+    builder.addCase(
+      fetchCurrentNotificationListAPI.fulfilled,
+      (state, action) => {
+        state.currentNotificationList = action.payload
+      }
+    )
   }
 })
 
-export const { setNotificationList, setHasNewNotification } = notificationSlice.actions
+export const { setNotificationList, setHasNewNotification } =
+  notificationSlice.actions
 
 export const selectCurrentNotificationList = (state: RootState) => {
   return state.notification.currentNotificationList
