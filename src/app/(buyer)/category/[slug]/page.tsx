@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -14,13 +13,16 @@ import {
   DEFAULT_PAGE
 } from '@/utils/constants'
 
-import CategoryBar from '../../(home)/category-bar'
+import CategoryBar from '../../(home)/_components/category-bar'
 import ProductFilterForm from '../../product/filter-form'
 
 export default async function CategoryDetailPage({
   params,
   searchParams
-}: any) {
+}: {
+  params: { slug: string }
+  searchParams: { page?: string }
+}) {
   const awaitParams = await params
   const awaitSearchparams = await searchParams
   const slug = awaitParams.slug
@@ -39,7 +41,7 @@ export default async function CategoryDetailPage({
     <div className='relative container mx-auto py-6'>
       <div className='relative flex gap-4'>
         {/* Sidebar menu danh mục con */}
-        {category.is_leaf === false ? (
+        {category.isLeaf === false ? (
           <SidebarProvider className='dark:bg-sidebar sticky top-36 h-[80vh] min-h-[80vh] w-1/5 rounded-lg bg-white px-2 py-4'>
             <CategoryBar
               categories={category.children || []}
@@ -65,7 +67,7 @@ export default async function CategoryDetailPage({
             {category.name}
           </div>
 
-          {category.is_leaf === false && (
+          {category.isLeaf === false && (
             <div className='bg-section rounded-lg p-4'>
               <span className='text-lg font-semibold'>
                 Khám phá theo danh mục
@@ -78,7 +80,7 @@ export default async function CategoryDetailPage({
                     href={`/category/${sub.slug}`}
                   >
                     <Image
-                      src={sub.thumbnail_url || DEFAULT_IMAGE_URL}
+                      src={sub.thumbnailUrl || DEFAULT_IMAGE_URL}
                       width={64}
                       height={64}
                       alt={sub.name}

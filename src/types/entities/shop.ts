@@ -8,5 +8,6 @@ export interface Shop {
   address: Address
   shortAddress: string
   status: ShopStatus
-  created_at: Date
+  createdAt: Date
+  updatedAt: Date
 }

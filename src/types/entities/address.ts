@@ -1,8 +1,8 @@
 export interface Address {
   id?: number
-  province_id: number
-  district_id: number
-  ward_code: string
+  provinceId: number
+  districtId: number
+  wardCode: string
   address: string
-  is_default?: boolean
+  isDefault?: boolean
 }

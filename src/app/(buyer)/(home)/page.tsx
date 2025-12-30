@@ -16,10 +16,10 @@ import { Separator } from '@/components/ui/separator'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { DEFAULT_ITEMS_PER_PAGE } from '@/utils/constants'
 
-import CarouselCategories from './carousel-categories'
-import CarouselProducts from './carousel-products'
-import CategoryBar from './category-bar'
-import CountDown from './countdown'
+import CarouselCategories from './_components/carousel-categories'
+import CarouselProducts from './_components/carousel-products'
+import CategoryBar from './_components/category-bar'
+import CountDown from './_components/countdown'
 
 export const dynamic = 'force-dynamic'
 export default async function HomePage() {
